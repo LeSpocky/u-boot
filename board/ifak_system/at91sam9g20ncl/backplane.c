@@ -280,8 +280,9 @@ int do_bp_test( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 		printf("Init module %lu ...",n);
 		for (i=0x0; i<g_wDprSize; i++) {
 			g_byCmpBuffer[n][i] = 0xFF & rand();
-			BpWrite(i+n*0x10000,g_byCmpBuffer[n][i]);
 		}
+		memcpy( (volatile unsigned char *) (n * 0x10000 + BP_BASE_ADDR),
+				&g_byCmpBuffer[n][0], g_wDprSize );
 		printf("done\n\r");
 	}
 
@@ -325,8 +326,9 @@ int do_bp_test( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 					ulWrCnt += uiNumberOfBytes;
 					for(i=0; i<uiNumberOfBytes; i++) {
 						g_byCmpBuffer[n][uiStartAddr+i] = 0xFF & rand();
-						BpWrite(uiStartAddr+i+n*0x10000,g_byCmpBuffer[n][uiStartAddr+i]);
 					}
+					memcpy( (volatile unsigned char *) (uiStartAddr + n * 0x10000 + BP_BASE_ADDR),
+							&g_byCmpBuffer[n][uiStartAddr], uiNumberOfBytes );
 #ifdef DEBUG_RANDOM_TEST
 					printf("  WE:%.7X...%.7X\n\r",uiStartAddr+n*0x10000,uiStartAddr+i+n*0x10000-1);
 #endif
