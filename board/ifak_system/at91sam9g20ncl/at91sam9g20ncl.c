@@ -89,6 +89,22 @@ static void at91sam9g20ncl_reg_hw_init(void)
 {
 	struct at91_smc *smc = (struct at91_smc *) ATMEL_BASE_SMC;
 
+	/*
+	 *	Set the PIO Register
+	 *
+	 *	AT91SAM9G20 hardware manual says:
+	 *
+	 *	> The pins used for interfacing the Static Memory Controller may
+	 *	> be multiplexed with the PIO lines. The programmer must first
+	 *	> program the PIO controller to assign the Static Memory
+	 *	> Controller pins to their peripheral function. If I/O Lines of
+	 *	> the SMC are not used by the application, they can be used for
+	 *	> other purposes by the PIO Controller.
+	 */
+	at91_set_a_periph( AT91_PIO_PORTC, 9, 1 );	/*	enable CS5		*/
+	at91_set_b_periph( AT91_PIO_PORTC, 12, 1 );	/*	enable CS7		*/
+	at91_set_a_periph( AT91_PIO_PORTC, 15, 1 );	/*	enable NWAIT	*/
+
 	/* Configure SMC CS5 for BP_RAM, Timing ... */
 	writel( AT91_SMC_SETUP_NWE(0x0) | AT91_SMC_SETUP_NCS_WR(0x0) |
 			AT91_SMC_SETUP_NRD(0x0) | AT91_SMC_SETUP_NCS_RD(0x0),
@@ -121,11 +137,6 @@ static void at91sam9g20ncl_reg_hw_init(void)
 	writel( AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE |
 			AT91_SMC_MODE_EXNW_READY | AT91_SMC_MODE_DBW_8 |
 			AT91_SMC_MODE_PS_4, &smc->cs[7].mode );
-
-	/* Set the PIO Register */
-	at91_set_a_periph(AT91_PIO_PORTC, 9, 1); // enable CS5
-	at91_set_b_periph(AT91_PIO_PORTC, 12, 1); // enable CS7
-	at91_set_a_periph(AT91_PIO_PORTC, 15, 1); // enable NWAIT
 }
 #endif
 
