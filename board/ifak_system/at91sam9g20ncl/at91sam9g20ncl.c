@@ -106,8 +106,8 @@ static void at91sam9g20ncl_reg_hw_init(void)
 	at91_set_a_periph( AT91_PIO_PORTC, 15, 1 );	/*	enable NWAIT	*/
 
 	/* Configure SMC CS5 for BP_RAM, Timing ... */
-	writel( AT91_SMC_SETUP_NWE(0x0) | AT91_SMC_SETUP_NCS_WR(0x0) |
-			AT91_SMC_SETUP_NRD(0x0) | AT91_SMC_SETUP_NCS_RD(0x0),
+	writel( AT91_SMC_SETUP_NWE(0x01) | AT91_SMC_SETUP_NCS_WR(0x01) |
+			AT91_SMC_SETUP_NRD(0x01) | AT91_SMC_SETUP_NCS_RD(0x01),
 			&smc->cs[5].setup );
 
 	// e.g. SMC Pulse Register on offset address (0x0454): 0x6F010403
@@ -115,7 +115,7 @@ static void at91sam9g20ncl_reg_hw_init(void)
 			AT91_SMC_PULSE_NRD(0x08) | AT91_SMC_PULSE_NCS_RD(0x08),
 			&smc->cs[5].pulse );
 
-	writel( AT91_SMC_CYCLE_NWE(0x09) | AT91_SMC_CYCLE_NRD(0x09),
+	writel( AT91_SMC_CYCLE_NWE(0x0B) | AT91_SMC_CYCLE_NRD(0x0B),
 			&smc->cs[5].cycle );
 
 	writel( AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE |
