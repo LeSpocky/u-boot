@@ -23,6 +23,16 @@
 
 #include <asm/sizes.h>
 
+/*
+ * Warning: changing CONFIG_SYS_TEXT_BASE requires
+ * adapting the initial boot program (at91bootstrap).
+ * Since the linker has to swallow that define, we must use a pure
+ * hex number here!
+ */
+#ifndef CONFIG_SYS_TEXT_BASE
+#define CONFIG_SYS_TEXT_BASE		0x21e00000
+#endif
+
 /* ARM asynchronous clock */
 #define CONFIG_SYS_AT91_SLOW_CLOCK	32768		/* slow clock xtal */
 #define CONFIG_SYS_AT91_MAIN_CLOCK	18432000	/* main clock xtal */
