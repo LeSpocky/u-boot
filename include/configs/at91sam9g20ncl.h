@@ -124,6 +124,14 @@
 	(ATMEL_BASE_SRAM1 + 0x1000 - GENERATED_GBL_DATA_SIZE)
 #endif
 
+/*
+ * The (arm)linux board id set by generic code depending on configured board
+ * (see boards.cfg for different boards)
+ *
+ * NOTE	We pretend to be sam9g20ek!
+ */
+#define CONFIG_MACH_TYPE MACH_TYPE_AT91SAM9G20EK
+
 /* DataFlash */
 #undef CONFIG_ATMEL_DATAFLASH_SPI
 #undef CONFIG_HAS_DATAFLASH
