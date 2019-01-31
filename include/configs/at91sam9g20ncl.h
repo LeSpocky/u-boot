@@ -87,6 +87,7 @@
 #include <config_cmd_default.h>
 #undef CONFIG_CMD_BDI
 #define CONFIG_CMD_FPGA
+#define CONFIG_CMD_FPGA_LOADMK
 #undef CONFIG_CMD_IMI
 #undef CONFIG_CMD_IMLS
 #undef CONFIG_CMD_LOADS
