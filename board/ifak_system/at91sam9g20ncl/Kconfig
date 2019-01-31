@@ -1,0 +1,12 @@
+if TARGET_AT91SAM9G20NCL
+
+config SYS_BOARD
+	default "at91sam9g20ncl"
+
+config SYS_VENDOR
+	default "ifak_system"
+
+config SYS_CONFIG_NAME
+	default "at91sam9g20ncl"
+
+endif

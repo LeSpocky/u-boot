@@ -75,6 +75,10 @@ config TARGET_AT91SAM9260EK
 	select AT91SAM9260
 	select BOARD_EARLY_INIT_F
 
+config TARGET_AT91SAM9G20NCL
+	bool "isNet Lite"
+	select CPU_ARM926EJS
+
 config TARGET_ETHERNUT5
 	bool "Ethernut5 board"
 	select AT91SAM9XE
@@ -416,6 +420,7 @@ source "board/conclusive/kstr-sama5d27/Kconfig"
 source "board/egnite/ethernut5/Kconfig"
 source "board/esd/meesc/Kconfig"
 source "board/gardena/smart-gateway-at91sam/Kconfig"
+source "board/ifak_system/at91sam9g20ncl/Kconfig"
 source "board/l+g/vinco/Kconfig"
 source "board/ronetix/pm9261/Kconfig"
 source "board/ronetix/pm9263/Kconfig"
