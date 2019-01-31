@@ -12,37 +12,12 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
-include $(TOPDIR)/config.mk
+obj-y				+= at91sam9g20ncl.o
+obj-$(CONFIG_AT91_LED)		+= led.o
+obj-$(CONFIG_AT91_BUTTON)	+= button.o
+obj-$(CONFIG_FPGA)		+= fpga.o
+obj-y				+= backplane.o
+obj-y				+= hrttest.o
+obj-$(CONFIG_HAS_DATAFLASH)	+= partition.o
 
-LIB	= $(obj)lib$(BOARD).o
-
-COBJS-y				+= at91sam9g20ncl.o
-COBJS-$(CONFIG_AT91_LED)	+= led.o
-COBJS-$(CONFIG_AT91_BUTTON)	+= button.o
-COBJS-$(CONFIG_FPGA)		+= fpga.o
-COBJS-y				+= backplane.o
-COBJS-y				+= hrttest.o
-COBJS-$(CONFIG_HAS_DATAFLASH)	+= partition.o
-
-SRCS	:= $(SOBJS:.o=.S) $(COBJS-y:.o=.c)
-OBJS	:= $(addprefix $(obj),$(COBJS-y))
-SOBJS	:= $(addprefix $(obj),$(SOBJS))
-
-$(LIB):	$(obj).depend $(OBJS) $(SOBJS)
-	$(call cmd_link_o_target, $(OBJS) $(SOBJS))
-
-clean:
-	rm -f $(SOBJS) $(OBJS)
-
-distclean:	clean
-	rm -f $(LIB) core *.bak $(obj).depend
-
-#########################################################################
-
-# defines $(obj).depend target
-include $(SRCTREE)/rules.mk
-
-sinclude $(obj).depend
-
-#########################################################################
 # vim: ft=make noet sts=0 ts=8 sw=8 sr
