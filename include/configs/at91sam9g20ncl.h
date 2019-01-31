@@ -21,7 +21,7 @@
  */
 #include <asm/hardware.h>
 
-#include <asm/sizes.h>
+#include <linux/sizes.h>
 
 /*
  * Warning: changing CONFIG_SYS_TEXT_BASE requires
