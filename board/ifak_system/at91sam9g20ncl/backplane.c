@@ -45,6 +45,8 @@
 #define DEBUG_TESTS
 //#undef DEBUG_TESTS
 
+static uint8_t bp_rand( void );
+
 /* global vars */
 BYTE byTestPattern[]	= {0x53,0xa5,0xC2,0x18,0x81,0xef,0x01};
 BYTE byModuleInfo[8]	= {0,0,0,0,0,0,0,0};
@@ -54,7 +56,7 @@ WORD g_wDprSize = sizeof(g_byCmpBuffer[0]);
 /* TODO	warning: large integer implicitly truncated to unsigned type */
 WORD g_wDprStartAddr = BP_RAM_START_ADDR;
 
-uint16_t random_startwert = 0x0AA;
+static uint16_t random_startwert = 0x0AA;
 
 u8 atoi( uchar *string ) {
 	u8 res = 0;
@@ -67,7 +69,7 @@ u8 atoi( uchar *string ) {
 	return res;
 }
 
-uint8_t rand( void ) {
+uint8_t bp_rand( void ) {
 	//FIXME-SME        static uint16_t startwert=0x0AA;
 
 	uint16_t temp;
@@ -133,7 +135,7 @@ BYTE init_modul( BYTE byModuleNr ) {
 
 	printf("Init module %d ...", byModuleNr);
 	for (i=0x0; i<g_wDprSize; i++) {
-		g_byCmpBuffer[byModuleNr][i] = 0xFF & rand();
+		g_byCmpBuffer[byModuleNr][i] = 0xFF & bp_rand();
 		BpWrite(i+byModuleNr*0x10000,g_byCmpBuffer[byModuleNr][i]);
 	}
 	printf("done\n\r");
@@ -266,7 +268,7 @@ int do_bp_test( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 		if ((n & 0xF) == 0 )
 			printf("rand() =");
 
-		printf(" %i", rand());
+		printf(" %i", bp_rand());
 
 		if ((n & 0xF) == 0xF)
 			printf("\n");
@@ -279,7 +281,7 @@ int do_bp_test( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 	for (n=0; n<byModuleCount; n++)	{
 		printf("Init module %lu ...",n);
 		for (i=0x0; i<g_wDprSize; i++) {
-			g_byCmpBuffer[n][i] = 0xFF & rand();
+			g_byCmpBuffer[n][i] = 0xFF & bp_rand();
 		}
 		memcpy( (volatile unsigned char *) (n * 0x10000 + BP_BASE_ADDR),
 				&g_byCmpBuffer[n][0], g_wDprSize );
@@ -309,23 +311,23 @@ int do_bp_test( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 
 	do {
 		do {
-			n=(rand() % byModuleCount );
+			n=(bp_rand() % byModuleCount );
 			{
 				WORD uiStartAddr ;
 				WORD uiNumberOfBytes;
 
-				uiStartAddr = rand() % g_wDprSize;
-				uiNumberOfBytes = (rand()+1) % 256;
+				uiStartAddr = bp_rand() % g_wDprSize;
+				uiNumberOfBytes = (bp_rand()+1) % 256;
 
 				if ((uiStartAddr + uiNumberOfBytes) > g_wDprSize) {
 					uiNumberOfBytes = g_wDprSize - uiStartAddr;
 				}
 
-				if ((rand() & 1) ) {
+				if ((bp_rand() & 1) ) {
 					//write
 					ulWrCnt += uiNumberOfBytes;
 					for(i=0; i<uiNumberOfBytes; i++) {
-						g_byCmpBuffer[n][uiStartAddr+i] = 0xFF & rand();
+						g_byCmpBuffer[n][uiStartAddr+i] = 0xFF & bp_rand();
 					}
 					memcpy( (volatile unsigned char *) (uiStartAddr + n * 0x10000 + BP_BASE_ADDR),
 							&g_byCmpBuffer[n][uiStartAddr], uiNumberOfBytes );
@@ -439,7 +441,7 @@ int do_bp_test_short_read_write( cmd_tbl_t *cmdtp, int flag, int argc,
 
 	printf("Init module %d ...", byModule);
 	for (i=0x0; i<g_wDprSize; i++) {
-		g_byCmpBuffer[byModule][i] = 0xFF & rand();
+		g_byCmpBuffer[byModule][i] = 0xFF & bp_rand();
 		BpWrite(i+byModule*0x10000,g_byCmpBuffer[byModule][i]);
 	}
 	printf("done\n\r");
@@ -472,7 +474,7 @@ int do_bp_test_short_read_write( cmd_tbl_t *cmdtp, int flag, int argc,
 		do {
 			ulRdCnt++;
 
-			g_byCmpBuffer[byModule][uiAddr] = 0xFF & rand();
+			g_byCmpBuffer[byModule][uiAddr] = 0xFF & bp_rand();
 
 #ifdef DEBUG_SHORT_READ_WRITE_TEST
 			printf("ADR: 0x%.5X ", uiAddr+byModule*0x10000);
@@ -559,7 +561,7 @@ int do_bp_test_4byte_write_read( cmd_tbl_t *cmdtp, int flag, int argc,
 	for (n=0; n<byModuleCount; n++)	{
 		printf("Init module %d ...",n);
 		for (i=0x0; i<g_wDprSize; i++) {
-			g_byCmpBuffer[n][i] = 0xFF & rand();
+			g_byCmpBuffer[n][i] = 0xFF & bp_rand();
 			BpWrite(i+n*0x10000,g_byCmpBuffer[n][i]);
 		}
 		printf("done\n\r");
@@ -589,12 +591,12 @@ int do_bp_test_4byte_write_read( cmd_tbl_t *cmdtp, int flag, int argc,
 
 	do {
 		do {
-			n=(rand() % byModuleCount );
+			n=(bp_rand() % byModuleCount );
 			{
 				WORD uiStartAddr ;
 				WORD uiNumberOfBytes;
 
-				uiStartAddr = rand() % g_wDprSize;
+				uiStartAddr = bp_rand() % g_wDprSize;
 				uiNumberOfBytes = 4 % 256;
 
 				if ((uiStartAddr + uiNumberOfBytes) > g_wDprSize) {
@@ -604,7 +606,7 @@ int do_bp_test_4byte_write_read( cmd_tbl_t *cmdtp, int flag, int argc,
 				//write
 				ulWrCnt += uiNumberOfBytes;
 				for(i=0; i<uiNumberOfBytes; i++) {
-					g_byCmpBuffer[n][uiStartAddr+i] = 0xFF & rand();
+					g_byCmpBuffer[n][uiStartAddr+i] = 0xFF & bp_rand();
 					BpWrite(uiStartAddr+i+n*0x10000,g_byCmpBuffer[n][uiStartAddr+i]);
 				}
 #ifdef DEBUG_RANDOM_TEST
@@ -802,7 +804,7 @@ int do_bp_debug_random_function( cmd_tbl_t *cmdtp, int flag, int argc,
 		if ((n & 0xF) == 0 )
 			printf("rand() =");
 
-		printf(" %i", rand());
+		printf(" %i", bp_rand());
 
 		if ((n & 0xF) == 0xF)
 			printf("\n");

@@ -34,8 +34,6 @@ typedef unsigned long DWORD;
 
 u8 atoi( uchar *string );
 
-uint8_t rand( void );
-
 int msleep( int time );
 
 BYTE init_modul( BYTE byModuleNr );
