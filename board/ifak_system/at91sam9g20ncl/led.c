@@ -1,15 +1,17 @@
 /*******************************************************************//**
- *  @file   led.c
+ *	@file		led.c
  *
- *  @author Peter Schulz <psu@ifak-system.com>
- *  @author Alexander Dahl <ada@ifak-system.com>
+ *	@author		Peter Schulz <psu@ifak-system.com>
+ *	@author		Alexander Dahl <ada@thorsis.com>
  *
- *  Copyright 2010,2012 ifak system GmbH
+ *	@copyright	2010,2012 ifak system GmbH
+ *	@copyright	2019 Thorsis Technologies GmbH
  **********************************************************************/
 
 #include <common.h>
 #include <asm/io.h>
 #include <asm/arch/gpio.h>
+#include <status_led.h>
 
 void coloured_LED_init( void ) {
 	/* Clock is enabled in board_early_init_f() */

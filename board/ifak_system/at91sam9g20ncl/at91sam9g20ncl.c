@@ -22,6 +22,8 @@
 #endif
 #include <netdev.h>
 
+#include <status_led.h>
+
 DECLARE_GLOBAL_DATA_PTR;
 
 /* ------------------------------------------------------------------------- */
