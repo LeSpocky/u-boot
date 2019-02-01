@@ -71,9 +71,6 @@
 #define	CONFIG_FACTORYRESET_BUTTON	AT91_PIN_PA11	/* this is the FACTORY_RESET button */
 
 #define CONFIG_BOOTDELAY		3
-#define CONFIG_AUTOBOOT_KEYED
-#define CONFIG_AUTOBOOT_STOP_STR	"is"
-#define CONFIG_AUTOBOOT_PROMPT		"Hit keys 'is' to stop autoboot (%d seconds).\n", bootdelay
 
 /*
  * BOOTP options
