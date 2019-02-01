@@ -1,10 +1,11 @@
 /*******************************************************************//**
- *  @file	backplane.c
+ *	@file		backplane.c
  *
- *  @author	Norman Rädke <nra@ifak-system.com>
- *  @author	Alexander Dahl <ada@ifak-system.com>
+ *	@author		Norman Rädke <nra@ifak-system.com>
+ *	@author		Alexander Dahl <ada@thorsis.com>
  *
- *  Copyright 2010,2012 ifak system GmbH
+ *	@copyright	2010,2012 ifak system GmbH
+ *	@copyright	2019 Thorsis Technologies GmbH
  **********************************************************************/
 
 #include "backplane.h"
@@ -53,8 +54,6 @@ BYTE byModuleInfo[8]	= {0,0,0,0,0,0,0,0};
 BYTE byModuleCount	= 0;
 BYTE g_byCmpBuffer[sizeof(byModuleInfo)][0x8000];
 WORD g_wDprSize = sizeof(g_byCmpBuffer[0]);
-/* TODO	warning: large integer implicitly truncated to unsigned type */
-WORD g_wDprStartAddr = BP_RAM_START_ADDR;
 
 static uint16_t random_startwert = 0x0AA;
 
@@ -773,27 +772,6 @@ int do_bp_dpr_size( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) 
 	return  0;
 }
 
-/**
- *  @deprecated	not used
- */
-int do_bp_dpr_startaddress( cmd_tbl_t *cmdtp, int flag, int argc,
-		char * const argv[] )
-{
-	switch (argc) {
-	case 2:			/* modul number */
-		g_wDprStartAddr = simple_strtoul((char *)argv[1], NULL, 16);
-		/* FALL TROUGH */
-	case 1:			/* get status */
-		printf ("g_wDprStartAddr = %X\n", g_wDprStartAddr);
-		return 0;
-	default:
-		printf ("Usage:\n%s\n", cmdtp->help);
-		return 1;
-	}
-
-	return  0;
-}
-
 #ifdef DEBUG
 int do_bp_debug_random_function( cmd_tbl_t *cmdtp, int flag, int argc,
 		char * const argv[] )
@@ -854,14 +832,6 @@ U_BOOT_CMD(
 	"DP-RAM size",
 	"[size]\n"
 	"get or set the DP-RAM size of the backplane bus"
-);
-
-
-U_BOOT_CMD(
-	bpadd, 2, 1, do_bp_dpr_startaddress,
-	"DP-RAM start address",
-	"[address]\n"
-	"get or set the DP-RAM startaddress of the backplane bus"
 );
 
 
