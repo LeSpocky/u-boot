@@ -87,10 +87,6 @@
  * Command line configuration.
  */
 #define CONFIG_CMD_FPGA_LOADMK
-#define CONFIG_CMD_PING		1
-#define CONFIG_CMD_DHCP		1
-#define CONFIG_CMD_NAND		1
-#undef CONFIG_CMD_USB
 
 /*
  * SDRAM: 1 bank, min 32, max 128 MB
