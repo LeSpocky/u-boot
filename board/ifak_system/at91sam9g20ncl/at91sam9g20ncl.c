@@ -22,6 +22,7 @@
 #endif
 #include <netdev.h>
 
+#include "button.h"
 #include <status_led.h>
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -198,7 +199,7 @@ int board_init(void)
 #endif
 
 #ifdef CONFIG_AT91_BUTTON
-	BUTTON_init();	/* init BUTTON */
+	ncl_button_init();	/* init BUTTON */
 #endif
 
 #ifdef CONFIG_HAS_DATAFLASH

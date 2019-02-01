@@ -1,18 +1,21 @@
 /*******************************************************************//**
- *  @file   button.c
+ *	@file		button.c
  *
- *  @author Peter Schulz <psu@ifak-system.com>
- *  @author Alexander Dahl <ada@ifak-system.com>
+ *	@author		Peter Schulz <psu@ifak-system.com>
+ *	@author		Alexander Dahl <ada@thorsis.com>
  *
- *  Copyright 2010,2012 ifak system GmbH
+ *	@copyright	2010,2012 ifak system GmbH
+ *	@copyright	2019 Thorsis Technologies GmbH
  **********************************************************************/
+
+#include "button.h"
 
 #include <common.h>
 #include <asm/arch/at91sam9260.h>
 #include <asm/arch/at91_pmc.h>
 #include <asm/arch/gpio.h>
 
-void BUTTON_init(void)
+void ncl_button_init(void)
 {
 	at91_set_gpio_input(CONFIG_FACTORYRESET_BUTTON, 1);
 }
