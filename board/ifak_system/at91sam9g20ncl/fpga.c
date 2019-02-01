@@ -3,6 +3,8 @@
  * Heiko Schocher, DENX Software Engineering, hs@denx.de
  * (C) Copyright 2010
  * psu@ifak-system.com
+ * (C) Copyright 2019
+ * Thorsis Technologies GmbH
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
@@ -34,8 +36,6 @@
 #else
 #define	PRINTF(fmt,args...)
 #endif
-
-static unsigned long regval;
 
 #define ERROR_FPGA_PRG_INIT_LOW  -1        /* Timeout after PRG* asserted   */
 #define ERROR_FPGA_PRG_INIT_HIGH -2        /* Timeout after PRG* deasserted */
@@ -114,7 +114,7 @@ int fpga_done_fn (int cookie)
 /* writes the complete buffer to the FPGA
    writing the complete buffer in one function is much faster,
    then calling it for every bit */
-int fpga_write_fn (void *buf, size_t len, int flush, int cookie)
+int fpga_write_fn( const void *buf, size_t len, int flush, int cookie )
 {
 	size_t bytecount = 0;
 	unsigned char *data = (unsigned char *) buf;
@@ -183,19 +183,21 @@ Altera_desc fpga[CONFIG_FPGA_COUNT] = {
 };
 
 /*
- * Initialize the fpga.  Return 1 on success, 0 on failure.
+ *	Initialize the fpga.  Return 1 on success, 0 on failure.
  */
-int ncl_fpga_init (void)
+int ncl_fpga_init( void )
 {
 	int i;
 
-	PRINTF ("%s:%d: Initialize FPGA interface\n", __FUNCTION__, __LINE__);
-	fpga_init ();
+	PRINTF( "%s:%d: Initialize FPGA interface\n", __FUNCTION__, __LINE__ );
+	fpga_init();
 
-	for (i = 0; i < CONFIG_FPGA_COUNT; i++) {
-		PRINTF ("%s:%d: Adding fpga %d\n", __FUNCTION__, __LINE__, i);
-		fpga_add (fpga_altera, &fpga[i]);
+	for ( i = 0; i < CONFIG_FPGA_COUNT; i++ )
+	{
+		PRINTF( "%s:%d: Adding fpga %d\n", __FUNCTION__, __LINE__, i );
+		fpga_add( fpga_altera, &fpga[i] );
 	}
+
 	return 1;
 }
 
