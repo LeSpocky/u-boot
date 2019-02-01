@@ -1,14 +1,17 @@
 /*******************************************************************//**
- *  @file	hrttest.c
+ *	@file	hrttest.c
  *
- *  @author	Norman Rädke <nra@ifak-system.com>
- *  @author	Alexander Dahl <ada@ifak-system.com>
+ *	@author	Norman Rädke <nra@ifak-system.com>
+ *	@author	Alexander Dahl <ada@thorsis.com>
  *
- *  Copyright 2010,2012 ifak system GmbH
+ *	@copyright	2010,2012 ifak system GmbH
+ *	@copyright	2019 Thorsis Technologies GmbH
  **********************************************************************/
 
 #include <common.h>
 #include <command.h>
+#include <console.h>
+
 /*
 #include <asm/arch/at91sam9260_matrix.h>
 #include <asm/arch/at91sam9_smc.h>

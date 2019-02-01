@@ -24,6 +24,7 @@
 #include <altera.h>
 #include <ACEX1K.h>
 #include <command.h>
+#include <console.h>
 #include <fpga.h>
 #include <asm/arch/at91sam9260.h>
 #include <asm/arch/at91_pmc.h>
