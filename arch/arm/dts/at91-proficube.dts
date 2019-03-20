@@ -1,0 +1,43 @@
+/*
+ * at91-proficube.dts – Device Tree file for Thorsis Technologies ProfiCube board
+ *
+ * Copyright 2019 Thorsis Technologies GmbH
+ */
+/dts-v1/;
+#include "sama5d2.dtsi"
+#include "sama5d2-pinfunc.h"
+/ {
+	model = "Thorsis Technologies ProfiCube";
+	compatible = "thorsis,proficube", "atmel,sama5d27", "atmel,sama5d2", "atmel,sama5";
+
+	memory {
+		reg = <0x20000000 0x8000000>;
+	};
+
+	chosen {
+		u-boot,dm-pre-reloc;
+		stdout-path = &uart1;
+	};
+
+	ahb {
+		apb {
+			uart1: serial@f8020000 {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_uart1_default>;
+				status = "okay";
+				u-boot,dm-pre-reloc;
+			};
+
+			pioA: gpio@fc038000 {
+				pinctrl {
+					pinctrl_uart1_default: uart1_default {
+						pinmux = <PIN_PD2__URXD1>,
+							 <PIN_PD3__UTXD1>;
+						bias-disable;
+						u-boot,dm-pre-reloc;
+					};
+				};
+			};
+		};
+	};
+};

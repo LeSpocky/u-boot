@@ -150,6 +150,14 @@ config TARGET_GARDENA_SMART_GATEWAY_AT91SAM
 	select BOARD_LATE_INIT
 	select SUPPORT_SPL
 
+config TARGET_PROFICUBE
+	bool "Thorsis ProfiCube board"
+	select BOARD_EARLY_INIT_F
+	select SAMA5D2
+	help
+	  The Thorsis Technologies ProfiCube is a monolithic PROFINET to
+	  PROFIBUS gateway based on a SAMA5D27 SoC.
+
 config TARGET_SAM9X60EK
 	bool "SAM9X60-EK board"
 	select SAM9X60
@@ -399,5 +407,6 @@ source "board/ronetix/pm9g45/Kconfig"
 source "board/siemens/corvus/Kconfig"
 source "board/siemens/taurus/Kconfig"
 source "board/siemens/smartweb/Kconfig"
+source "board/thorsis/proficube/Kconfig"
 
 endif
