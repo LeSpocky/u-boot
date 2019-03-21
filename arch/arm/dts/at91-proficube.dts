@@ -21,6 +21,17 @@
 
 	ahb {
 		apb {
+			macb0: ethernet@f8008000 {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_macb0_rmii>;
+				phy-mode = "rmii";
+				status = "okay";
+
+				ethernet-phy@1 {
+					reg = <0x1>;
+				};
+			};
+
 			uart1: serial@f8020000 {
 				pinctrl-names = "default";
 				pinctrl-0 = <&pinctrl_uart1_default>;
@@ -30,6 +41,20 @@
 
 			pioA: gpio@fc038000 {
 				pinctrl {
+					pinctrl_macb0_rmii: macb0_rmii {
+						pinmux = <PIN_PC10__GTXCK>,
+							 <PIN_PC11__GTXEN>,
+							 <PIN_PC12__GRXDV>,
+							 <PIN_PC13__GRXER>,
+							 <PIN_PC14__GRX0>,
+							 <PIN_PC15__GRX1>,
+							 <PIN_PC16__GTX0>,
+							 <PIN_PC17__GTX1>,
+							 <PIN_PC18__GMDC>,
+							 <PIN_PC19__GMDIO>;
+						bias-disable;
+					};
+
 					pinctrl_uart1_default: uart1_default {
 						pinmux = <PIN_PD2__URXD1>,
 							 <PIN_PD3__UTXD1>;
