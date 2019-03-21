@@ -2,6 +2,7 @@
  * Copyright 2019 Thorsis Technologies GmbH
  */
 
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <common.h>
 #include <debug_uart.h>
 #include <asm/io.h>
