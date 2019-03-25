@@ -11,6 +11,10 @@ CONFIG_NAND_BOOT=y
 CONFIG_CMD_NAND=y
 CONFIG_CMD_DHCP=y
 CONFIG_CMD_PING=y
+CONFIG_CMD_MTDPARTS=y
+CONFIG_MTDIDS_DEFAULT="nand0=atmel_nand"
+CONFIG_MTDPARTS_DEFAULT="mtdparts=atmel_nand:256k(bootstrap)ro,768k(uboot)ro,256k(env1),256k(env2),512k(reserved)ro,50M(rootfs_rec)ro,-(filesystem)"
+CONFIG_CMD_UBI=y
 CONFIG_OF_CONTROL=y
 CONFIG_DEFAULT_DEVICE_TREE="at91-proficube"
 CONFIG_ENV_IS_IN_NAND=y
