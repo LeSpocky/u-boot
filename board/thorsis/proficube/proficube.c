@@ -15,6 +15,90 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+static void board_ebi_init(void)
+{
+	struct at91_smc *smc = (struct at91_smc *) ATMEL_BASE_SMC;
+
+	pr_debug("%s: called\n", __func__);
+
+	at91_periph_clk_enable(ATMEL_ID_HSMC);
+
+	/*
+	 * > 36.7.1 I/O Lines
+	 * > The pins used for interfacing the Static Memory Controller are
+	 * > multiplexed with the PIO lines. The programmer must first
+	 * > program the PIO controller to assign the Static Memory
+	 * > Controller pins to their peripheral function. If I/O lines of
+	 * > the SMC are not used by the application, they can be used for
+	 * > other purposes by the PIO controller.
+	 */
+
+	/* Configure address lines */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 11, 0);	/* A0 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 12, 0);	/* A1 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 13, 0);	/* A2 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 14, 0);	/* A3 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 15, 0);	/* A4 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 16, 0);	/* A5 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 17, 0);	/* A6 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 18, 0);	/* A7 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 19, 0);	/* A8 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 20, 0);	/* A9 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 21, 0);	/* A10 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 22, 0);	/* A11 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 23, 0);	/* A12 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 24, 0);	/* A13 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 25, 0);	/* A14 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 26, 0);	/* A15 */
+
+	/* Configure data, NRD, and NWE lines (also needed for NAND!) */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 22, ATMEL_PIO_DRVSTR_ME);	/* D0 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 23, ATMEL_PIO_DRVSTR_ME);	/* D1 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 24, ATMEL_PIO_DRVSTR_ME);	/* D2 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 25, ATMEL_PIO_DRVSTR_ME);	/* D3 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 26, ATMEL_PIO_DRVSTR_ME);	/* D4 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 27, ATMEL_PIO_DRVSTR_ME);	/* D5 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 28, ATMEL_PIO_DRVSTR_ME);	/* D6 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 29, ATMEL_PIO_DRVSTR_ME);	/* D7 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 2, 0);	/* RE */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 30, 0);	/* WE */
+
+	/*
+	 * TODO	The following are very conservative timings known and tested
+	 * 	to work, optimize!
+	 */
+
+	/* Configure SMC CS1 for FPGA */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 6, ATMEL_PIO_PUEN_MASK);	/* NCS1 */
+
+	writel(AT91_SMC_SETUP_NWE(4) | AT91_SMC_SETUP_NCS_WR(2) |
+	       AT91_SMC_SETUP_NRD(4) | AT91_SMC_SETUP_NCS_RD(2),
+	       &smc->cs[1].setup);
+	writel(AT91_SMC_PULSE_NWE(8) | AT91_SMC_PULSE_NCS_WR(12) |
+	       AT91_SMC_PULSE_NRD(8) | AT91_SMC_PULSE_NCS_RD(12),
+	       &smc->cs[1].pulse);
+	writel(AT91_SMC_CYCLE_NWE(16) | AT91_SMC_CYCLE_NRD(16),
+	       &smc->cs[1].cycle);
+	writel(AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE |
+	       AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8,
+	       &smc->cs[1].mode);
+
+	/* Configure SMC CS2 for FPGA */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 7, ATMEL_PIO_PUEN_MASK);	/* NCS2 */
+
+	writel(AT91_SMC_SETUP_NWE(4) | AT91_SMC_SETUP_NCS_WR(2) |
+	       AT91_SMC_SETUP_NRD(4) | AT91_SMC_SETUP_NCS_RD(2),
+	       &smc->cs[2].setup);
+	writel(AT91_SMC_PULSE_NWE(8) | AT91_SMC_PULSE_NCS_WR(12) |
+	       AT91_SMC_PULSE_NRD(8) | AT91_SMC_PULSE_NCS_RD(12),
+	       &smc->cs[2].pulse);
+	writel(AT91_SMC_CYCLE_NWE(16) | AT91_SMC_CYCLE_NRD(16),
+	       &smc->cs[2].cycle);
+	writel(AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE |
+	       AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8,
+	       &smc->cs[2].mode);
+}
+
 #ifdef CONFIG_NAND_ATMEL
 static void board_nand_hw_init(void)
 {
@@ -22,7 +106,7 @@ static void board_nand_hw_init(void)
 
 	pr_debug("%s: called\n", __func__);
 
-	at91_periph_clk_enable(ATMEL_ID_HSMC);
+	/* NOTE	Peripheral clk already enabled by board_ebi_init() */
 
 	/* Configure SMC CS3 for NAND */
 	writel(AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1) |
@@ -43,16 +127,8 @@ static void board_nand_hw_init(void)
 	       AT91_SMC_MODE_TDF_CYCLE(3),
 	       &smc->cs[3].mode);
 
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 22, ATMEL_PIO_DRVSTR_ME);	/* D0 */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 23, ATMEL_PIO_DRVSTR_ME);	/* D1 */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 24, ATMEL_PIO_DRVSTR_ME);	/* D2 */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 25, ATMEL_PIO_DRVSTR_ME);	/* D3 */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 26, ATMEL_PIO_DRVSTR_ME);	/* D4 */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 27, ATMEL_PIO_DRVSTR_ME);	/* D5 */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 28, ATMEL_PIO_DRVSTR_ME);	/* D6 */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 29, ATMEL_PIO_DRVSTR_ME);	/* D7 */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 2, 0);	/* RE */
-	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 30, 0);	/* WE */
+	/* NOTE	Data, NRD, and NWE already configured by board_ebi_init() */
+
 	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 31, ATMEL_PIO_PUEN_MASK);	/* NCS */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 8, ATMEL_PIO_PUEN_MASK);	/* RDY */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 0, ATMEL_PIO_PUEN_MASK);	/* ALE */
@@ -90,6 +166,8 @@ int board_init(void)
 {
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + 0x100;
+
+	board_ebi_init();
 
 #ifdef CONFIG_NAND_ATMEL
 	board_nand_hw_init();
