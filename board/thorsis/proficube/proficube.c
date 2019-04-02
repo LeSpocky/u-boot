@@ -63,21 +63,16 @@ static void board_ebi_init(void)
 	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 2, 0);	/* RE */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 30, 0);	/* WE */
 
-	/*
-	 * TODO	The following are very conservative timings known and tested
-	 * 	to work, optimize!
-	 */
-
 	/* Configure SMC CS1 for FPGA */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 6, ATMEL_PIO_PUEN_MASK);	/* NCS1 */
 
-	writel(AT91_SMC_SETUP_NWE(4) | AT91_SMC_SETUP_NCS_WR(2) |
-	       AT91_SMC_SETUP_NRD(4) | AT91_SMC_SETUP_NCS_RD(2),
+	writel(AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1) |
+	       AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1),
 	       &smc->cs[1].setup);
-	writel(AT91_SMC_PULSE_NWE(8) | AT91_SMC_PULSE_NCS_WR(12) |
-	       AT91_SMC_PULSE_NRD(8) | AT91_SMC_PULSE_NCS_RD(12),
+	writel(AT91_SMC_PULSE_NWE(2) | AT91_SMC_PULSE_NCS_WR(2) |
+	       AT91_SMC_PULSE_NRD(4) | AT91_SMC_PULSE_NCS_RD(4),
 	       &smc->cs[1].pulse);
-	writel(AT91_SMC_CYCLE_NWE(16) | AT91_SMC_CYCLE_NRD(16),
+	writel(AT91_SMC_CYCLE_NWE(4) | AT91_SMC_CYCLE_NRD(6),
 	       &smc->cs[1].cycle);
 	writel(AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE |
 	       AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8,
@@ -86,13 +81,13 @@ static void board_ebi_init(void)
 	/* Configure SMC CS2 for FPGA */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 7, ATMEL_PIO_PUEN_MASK);	/* NCS2 */
 
-	writel(AT91_SMC_SETUP_NWE(4) | AT91_SMC_SETUP_NCS_WR(2) |
-	       AT91_SMC_SETUP_NRD(4) | AT91_SMC_SETUP_NCS_RD(2),
+	writel(AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1) |
+	       AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1),
 	       &smc->cs[2].setup);
-	writel(AT91_SMC_PULSE_NWE(8) | AT91_SMC_PULSE_NCS_WR(12) |
-	       AT91_SMC_PULSE_NRD(8) | AT91_SMC_PULSE_NCS_RD(12),
+	writel(AT91_SMC_PULSE_NWE(2) | AT91_SMC_PULSE_NCS_WR(2) |
+	       AT91_SMC_PULSE_NRD(4) | AT91_SMC_PULSE_NCS_RD(4),
 	       &smc->cs[2].pulse);
-	writel(AT91_SMC_CYCLE_NWE(16) | AT91_SMC_CYCLE_NRD(16),
+	writel(AT91_SMC_CYCLE_NWE(4) | AT91_SMC_CYCLE_NRD(6),
 	       &smc->cs[2].cycle);
 	writel(AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE |
 	       AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8,
