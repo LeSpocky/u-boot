@@ -13,6 +13,10 @@
 #include <asm/arch/sama5d2.h>
 #include <asm/arch/sama5d2_smc.h>
 
+#ifdef CONFIG_FPGA
+#include "proficube_fpga.h"
+#endif
+
 DECLARE_GLOBAL_DATA_PTR;
 
 static void board_ebi_init(void)
@@ -93,6 +97,17 @@ static void board_ebi_init(void)
 	       AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8,
 	       &smc->cs[2].mode);
 }
+
+#ifdef CONFIG_MISC_INIT_R
+int misc_init_r(void)
+{
+#ifdef CONFIG_FPGA
+	board_fpga_init();
+#endif
+
+	return 0;
+}
+#endif
 
 #ifdef CONFIG_NAND_ATMEL
 static void board_nand_hw_init(void)

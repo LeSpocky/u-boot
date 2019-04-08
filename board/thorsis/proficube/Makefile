@@ -3,3 +3,4 @@
 #
 
 obj-y += proficube.o
+obj-$(CONFIG_FPGA) += proficube_fpga.o
