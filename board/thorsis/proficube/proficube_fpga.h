@@ -9,6 +9,10 @@
 #define PROFICUBE_FPGA_PIN_CONF_DONE	AT91_PIO_PORTA, 9
 #define PROFICUBE_FPGA_PIN_nSTATUS	AT91_PIO_PORTA, 10
 
+#define PROFICUBE_FPGA_SPI_BUS		0
+#define PROFICUBE_FPGA_SPI_CS		1
+#define PROFICUBE_FPGA_SPI_DEV_NAME	"ep4ce6@1"
+
 void board_fpga_init(void);
 
 #endif
