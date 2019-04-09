@@ -50,11 +50,11 @@
 			pioA: gpio@fc038000 {
 				pinctrl {
 					pinctrl_spi0_default: spi0_default {
-						pinmux = <PIN_PA14__SPI0_SPCK>,
-							 <PIN_PA15__SPI0_MOSI>,
-							 <PIN_PA16__SPI0_MISO>,
-							 <PIN_PA17__GPIO>,
-							 <PIN_PA18__GPIO>;
+						pinmux = <PIN_PA14__SPI0_SPCK>, /* DCLK  */
+							 <PIN_PA15__SPI0_MOSI>, /* ASD0  */
+							 <PIN_PA16__SPI0_MISO>, /* DATA0 */
+							 <PIN_PA17__GPIO>,      /* /CS0  */
+							 <PIN_PA18__GPIO>;      /* /CS1  */
 						bias-disable;
 						u-boot,dm-pre-reloc;
 					};
