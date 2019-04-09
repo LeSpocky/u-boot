@@ -98,17 +98,6 @@ static void board_ebi_init(void)
 	       &smc->cs[2].mode);
 }
 
-#ifdef CONFIG_MISC_INIT_R
-int misc_init_r(void)
-{
-#ifdef CONFIG_FPGA
-	board_fpga_init();
-#endif
-
-	return 0;
-}
-#endif
-
 #ifdef CONFIG_NAND_ATMEL
 static void board_nand_hw_init(void)
 {
@@ -192,3 +181,16 @@ int dram_init(void)
 				    CONFIG_SYS_SDRAM_SIZE);
 	return 0;
 }
+
+#ifdef CONFIG_MISC_INIT_R
+int misc_init_r(void)
+{
+	pr_debug("%s: called\n", __func__);
+
+#ifdef CONFIG_FPGA
+	board_fpga_init();
+#endif
+
+	return 0;
+}
+#endif
