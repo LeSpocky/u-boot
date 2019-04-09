@@ -98,6 +98,40 @@ static void board_ebi_init(void)
 	       &smc->cs[2].mode);
 }
 
+#ifdef CONFIG_FPGA
+static void board_fpga_hw_init(void)
+{
+	pr_debug("%s: called\n", __func__);
+	/*
+	 * PA08: /CONFIG
+	 * PA09: CONF_DONE
+	 * PA10: /STATUS
+	 * PA11: /FPGA_RES
+	 *
+	 * NOTE	The SPI pins are initialized by DT/pinctrl.
+	 *
+	 * PA14: SPI0_SPCK (DCLK)
+	 * PA15: SPI0_MOSI (ASD0)
+	 * PA16: SPI0_MISO (DATA0)
+	 * PA17: SPI0_NPCS0 (/CS0)
+	 * PA18: SPI0_NPCS1 (/CS1)
+	 *
+	 * PA19: /CE
+	 */
+
+	atmel_pio4_set_gpio(PROFICUBE_FPGA_PIN_nCONFIG, 0);
+	atmel_pio4_set_gpio(PROFICUBE_FPGA_PIN_CONF_DONE, 0);
+	atmel_pio4_set_gpio(PROFICUBE_FPGA_PIN_nSTATUS, 0);
+
+	/*
+	 * nCE is connected to the uC, we don't really need to set it,
+	 * just ensure it is set to low.
+	 */
+	atmel_pio4_set_gpio(AT91_PIO_PORTA, 19, 0);
+	atmel_pio4_set_pio_output(AT91_PIO_PORTA, 19, 0);
+}
+#endif
+
 #ifdef CONFIG_NAND_ATMEL
 static void board_nand_hw_init(void)
 {
@@ -167,6 +201,10 @@ int board_init(void)
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + 0x100;
 
 	board_ebi_init();
+
+#ifdef CONFIG_FPGA
+	board_fpga_hw_init();
+#endif
 
 #ifdef CONFIG_NAND_ATMEL
 	board_nand_hw_init();
