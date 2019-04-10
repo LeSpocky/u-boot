@@ -16,6 +16,14 @@
 #include <log.h>
 #include <malloc.h>
 
+static int do_fpga_wrap_ret(int ret)
+{
+	if (ret != FPGA_SUCCESS)
+		debug("fpga: function returned %d\n", ret);
+
+	return ret ? CMD_RET_FAILURE : CMD_RET_SUCCESS;
+}
+
 static long do_fpga_get_device(char *arg)
 {
 	long dev = FPGA_INVALID_DEVICE;
@@ -63,7 +71,7 @@ static int do_fpga_check_params(long *dev, long *fpga_data, size_t *data_size,
 	}
 	*data_size = local_data_size;
 
-	return 0;
+	return CMD_RET_SUCCESS;
 }
 
 #if defined(CONFIG_CMD_FPGA_LOAD_SECURE)
@@ -114,7 +122,8 @@ int do_fpga_loads(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	if (ret)
 		return ret;
 
-	return fpga_loads(dev, (void *)fpga_data, data_size, &fpga_sec_info);
+	return do_fpga_wrap_ret(fpga_loads(dev, (void *)fpga_data,
+					   data_size, &fpga_sec_info));
 }
 #endif
 
@@ -138,7 +147,8 @@ static int do_fpga_loadfs(struct cmd_tbl *cmdtp, int flag, int argc,
 	fpga_fsinfo.dev_part = argv[5];
 	fpga_fsinfo.filename = argv[6];
 
-	return fpga_fsload(dev, (void *)fpga_data, data_size, &fpga_fsinfo);
+	return do_fpga_wrap_ret(fpga_fsload(dev, (void *)fpga_data,
+					    data_size, &fpga_fsinfo));
 }
 #endif
 
@@ -147,7 +157,7 @@ static int do_fpga_info(struct cmd_tbl *cmdtp, int flag, int argc,
 {
 	long dev = do_fpga_get_device(argv[0]);
 
-	return fpga_info(dev);
+	return do_fpga_wrap_ret(fpga_info(dev));
 }
 
 static int do_fpga_dump(struct cmd_tbl *cmdtp, int flag, int argc,
@@ -162,7 +172,7 @@ static int do_fpga_dump(struct cmd_tbl *cmdtp, int flag, int argc,
 	if (ret)
 		return ret;
 
-	return fpga_dump(dev, (void *)fpga_data, data_size);
+	return do_fpga_wrap_ret(fpga_dump(dev, (void *)fpga_data, data_size));
 }
 
 static int do_fpga_load(struct cmd_tbl *cmdtp, int flag, int argc,
@@ -177,7 +187,8 @@ static int do_fpga_load(struct cmd_tbl *cmdtp, int flag, int argc,
 	if (ret)
 		return ret;
 
-	return fpga_load(dev, (void *)fpga_data, data_size, BIT_FULL, 0);
+	return do_fpga_wrap_ret(fpga_load(dev, (void *)fpga_data,
+					  data_size, BIT_FULL, 0));
 }
 
 static int do_fpga_loadb(struct cmd_tbl *cmdtp, int flag, int argc,
@@ -192,7 +203,8 @@ static int do_fpga_loadb(struct cmd_tbl *cmdtp, int flag, int argc,
 	if (ret)
 		return ret;
 
-	return fpga_loadbitstream(dev, (void *)fpga_data, data_size, BIT_FULL);
+	return do_fpga_wrap_ret(fpga_loadbitstream(dev, (void *)fpga_data,
+						   data_size, BIT_FULL));
 }
 
 #if defined(CONFIG_CMD_FPGA_LOADP)
@@ -208,7 +220,8 @@ static int do_fpga_loadp(struct cmd_tbl *cmdtp, int flag, int argc,
 	if (ret)
 		return ret;
 
-	return fpga_load(dev, (void *)fpga_data, data_size, BIT_PARTIAL, 0);
+	return do_fpga_wrap_ret(fpga_load(dev, (void *)fpga_data,
+					  data_size, BIT_PARTIAL, 0));
 }
 #endif
 
@@ -225,8 +238,8 @@ static int do_fpga_loadbp(struct cmd_tbl *cmdtp, int flag, int argc,
 	if (ret)
 		return ret;
 
-	return fpga_loadbitstream(dev, (void *)fpga_data, data_size,
-				  BIT_PARTIAL);
+	return do_fpga_wrap_ret(fpga_loadbitstream(dev, (void *)fpga_data,
+						   data_size, BIT_PARTIAL));
 }
 #endif
 
@@ -307,14 +320,14 @@ static int do_fpga_loadmk(struct cmd_tbl *cmdtp, int flag, int argc,
 			data_size = image_size;
 #else
 			puts("Gunzip image is not supported\n");
-			return 1;
+			return CMD_RET_FAILURE;
 #endif
 		} else {
 			data = (ulong)image_get_data(hdr);
 			data_size = image_get_data_size(hdr);
 		}
-		return fpga_load(dev, (void *)data, data_size,
-				  BIT_FULL, 0);
+		return do_fpga_wrap_ret(fpga_load(dev, (void *)data,
+						  data_size, BIT_FULL, 0));
 	}
 #endif
 #if defined(CONFIG_FIT)
@@ -342,7 +355,8 @@ static int do_fpga_loadmk(struct cmd_tbl *cmdtp, int flag, int argc,
 			return CMD_RET_FAILURE;
 		}
 
-		return fpga_load(dev, fit_data, data_size, BIT_FULL, 0);
+		return do_fpga_wrap_ret(fpga_load(dev, fit_data,
+						  data_size, BIT_FULL, 0));
 	}
 #endif
 	default:
