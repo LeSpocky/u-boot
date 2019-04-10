@@ -56,6 +56,7 @@
 
 /* FPGA */
 #define CONFIG_MAX_FPGA_DEVICES		1
+#define CONFIG_SYS_FPGA_CHECK_CTRLC
 #define CONFIG_SYS_FPGA_PROG_FEEDBACK
 
 /* Environment */
