@@ -7,6 +7,7 @@
 #include <debug_uart.h>
 #include <asm/io.h>
 #include <asm/arch/at91_common.h>
+#include <asm/arch/at91_pmc.h>
 #include <asm/arch/atmel_pio4.h>
 #include <asm/arch/clk.h>
 #include <asm/arch/gpio.h>
@@ -16,6 +17,20 @@
 #ifdef CONFIG_FPGA
 #include "proficube_fpga.h"
 #endif
+
+#define SAMA5D2_PMC_PCKx_CSS_SLOW_CLK	0
+#define SAMA5D2_PMC_PCKx_CSS_MAIN_CLK	1
+#define SAMA5D2_PMC_PCKx_CSS_PLLA_CLK	2
+#define SAMA5D2_PMC_PCKx_CSS_UPLL_CLK	3
+
+#define SAMA5D2_PMC_PCKx_PRES_OFFSET		4
+#define SAMA5D2_PMC_PCKx_PRES_CLOCK		(0 << SAMA5D2_PMC_PCKx_PRES_OFFSET)
+#define SAMA5D2_PMC_PCKx_PRES_CLOCK_DIV2	(1 << SAMA5D2_PMC_PCKx_PRES_OFFSET)
+#define SAMA5D2_PMC_PCKx_PRES_CLOCK_DIV4	(2 << SAMA5D2_PMC_PCKx_PRES_OFFSET)
+#define SAMA5D2_PMC_PCKx_PRES_CLOCK_DIV8	(3 << SAMA5D2_PMC_PCKx_PRES_OFFSET)
+#define SAMA5D2_PMC_PCKx_PRES_CLOCK_DIV16	(4 << SAMA5D2_PMC_PCKx_PRES_OFFSET)
+#define SAMA5D2_PMC_PCKx_PRES_CLOCK_DIV32	(5 << SAMA5D2_PMC_PCKx_PRES_OFFSET)
+#define SAMA5D2_PMC_PCKx_PRES_CLOCK_DIV64	(6 << SAMA5D2_PMC_PCKx_PRES_OFFSET)
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -101,7 +116,11 @@ static void board_ebi_init(void)
 #ifdef CONFIG_FPGA
 static void board_fpga_hw_init(void)
 {
-	pr_debug("%s: called\n", __func__);
+	struct at91_pmc *pmc = (struct at91_pmc *)ATMEL_BASE_PMC;
+	u32 status;
+
+	pr_debug("%s: entered\n", __func__);
+
 	/*
 	 * PA08: /CONFIG
 	 * PA09: CONF_DONE
@@ -129,6 +148,24 @@ static void board_fpga_hw_init(void)
 	 */
 	atmel_pio4_set_gpio(AT91_PIO_PORTA, 19, 0);
 	atmel_pio4_set_pio_output(AT91_PIO_PORTA, 19, 0);
+
+	/*
+	 * Clock init.
+	 *
+	 * Use PA21 as PCK2 and output main clock without prescaler (24 MHz).
+	 */
+	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 21, 0);
+
+	writel(SAMA5D2_PMC_PCKx_CSS_MAIN_CLK | SAMA5D2_PMC_PCKx_PRES_CLOCK,
+	       &pmc->pck[2]);
+
+	at91_system_clk_enable(AT91_PMC_PCK2);
+
+	do {
+		status = readl(&pmc->sr);
+	} while (!(status & AT91_PMC_PCK2RDY));
+
+	pr_debug("%s: leaving\n", __func__);
 }
 #endif
 
