@@ -86,19 +86,19 @@ static void board_ebi_init(void)
 	/* Configure SMC CS1 for FPGA */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 6, ATMEL_PIO_PUEN_MASK);	/* NCS1 */
 
-	reg = AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1)
-		| AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1);
+	reg = AT91_SMC_SETUP_NWE(2) | AT91_SMC_SETUP_NCS_WR(2)
+		| AT91_SMC_SETUP_NRD(2) | AT91_SMC_SETUP_NCS_RD(2);
 	writel(reg, &smc->cs[1].setup);
 	pr_debug("%s: written 0x%08x to cs1 setup at %p\n",
 		 __func__, reg, &smc->cs[1].setup);
 
-	reg = AT91_SMC_PULSE_NWE(2) | AT91_SMC_PULSE_NCS_WR(2)
+	reg = AT91_SMC_PULSE_NWE(4) | AT91_SMC_PULSE_NCS_WR(4)
 		| AT91_SMC_PULSE_NRD(4) | AT91_SMC_PULSE_NCS_RD(4);
 	writel(reg, &smc->cs[1].pulse);
 	pr_debug("%s: written 0x%08x to cs1 pulse at %p\n",
 		 __func__, reg, &smc->cs[1].pulse);
 
-	reg = AT91_SMC_CYCLE_NWE(4) | AT91_SMC_CYCLE_NRD(6);
+	reg = AT91_SMC_CYCLE_NWE(10) | AT91_SMC_CYCLE_NRD(10);
 	writel(reg, &smc->cs[1].cycle);
 	pr_debug("%s: written 0x%08x to cs1 cycle at %p\n",
 		 __func__, reg, &smc->cs[1].cycle);
@@ -112,19 +112,19 @@ static void board_ebi_init(void)
 	/* Configure SMC CS2 for FPGA */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 7, ATMEL_PIO_PUEN_MASK);	/* NCS2 */
 
-	reg = AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1)
-		| AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1);
+	reg = AT91_SMC_SETUP_NWE(2) | AT91_SMC_SETUP_NCS_WR(2)
+		| AT91_SMC_SETUP_NRD(2) | AT91_SMC_SETUP_NCS_RD(2);
 	writel(reg, &smc->cs[2].setup);
 	pr_debug("%s: written 0x%08x to cs2 setup at %p\n",
 		 __func__, reg, &smc->cs[2].setup);
 
-	reg = AT91_SMC_PULSE_NWE(2) | AT91_SMC_PULSE_NCS_WR(2)
+	reg = AT91_SMC_PULSE_NWE(4) | AT91_SMC_PULSE_NCS_WR(4)
 		| AT91_SMC_PULSE_NRD(4) | AT91_SMC_PULSE_NCS_RD(4);
 	writel(reg, &smc->cs[2].pulse);
 	pr_debug("%s: written 0x%08x to cs2 pulse at %p\n",
 		 __func__, reg, &smc->cs[2].pulse);
 
-	reg = AT91_SMC_CYCLE_NWE(4) | AT91_SMC_CYCLE_NRD(6);
+	reg = AT91_SMC_CYCLE_NWE(10) | AT91_SMC_CYCLE_NRD(10);
 	writel(reg, &smc->cs[2].cycle);
 	pr_debug("%s: written 0x%08x to cs2 cycle at %p\n",
 		 __func__, reg, &smc->cs[2].cycle);
