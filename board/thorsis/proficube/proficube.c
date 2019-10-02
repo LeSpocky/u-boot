@@ -37,6 +37,7 @@ DECLARE_GLOBAL_DATA_PTR;
 static void board_ebi_init(void)
 {
 	struct at91_smc *smc = (struct at91_smc *) ATMEL_BASE_SMC;
+	u32 reg;
 
 	pr_debug("%s: called\n", __func__);
 
@@ -85,32 +86,54 @@ static void board_ebi_init(void)
 	/* Configure SMC CS1 for FPGA */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 6, ATMEL_PIO_PUEN_MASK);	/* NCS1 */
 
-	writel(AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1) |
-	       AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1),
-	       &smc->cs[1].setup);
-	writel(AT91_SMC_PULSE_NWE(2) | AT91_SMC_PULSE_NCS_WR(2) |
-	       AT91_SMC_PULSE_NRD(4) | AT91_SMC_PULSE_NCS_RD(4),
-	       &smc->cs[1].pulse);
-	writel(AT91_SMC_CYCLE_NWE(4) | AT91_SMC_CYCLE_NRD(6),
-	       &smc->cs[1].cycle);
-	writel(AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE |
-	       AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8,
-	       &smc->cs[1].mode);
+	reg = AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1)
+		| AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1);
+	writel(reg, &smc->cs[1].setup);
+	pr_debug("%s: written 0x%08x to cs1 setup at %p\n",
+		 __func__, reg, &smc->cs[1].setup);
+
+	reg = AT91_SMC_PULSE_NWE(2) | AT91_SMC_PULSE_NCS_WR(2)
+		| AT91_SMC_PULSE_NRD(4) | AT91_SMC_PULSE_NCS_RD(4);
+	writel(reg, &smc->cs[1].pulse);
+	pr_debug("%s: written 0x%08x to cs1 pulse at %p\n",
+		 __func__, reg, &smc->cs[1].pulse);
+
+	reg = AT91_SMC_CYCLE_NWE(4) | AT91_SMC_CYCLE_NRD(6);
+	writel(reg, &smc->cs[1].cycle);
+	pr_debug("%s: written 0x%08x to cs1 cycle at %p\n",
+		 __func__, reg, &smc->cs[1].cycle);
+
+	reg = AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE
+		| AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8;
+	writel(reg, &smc->cs[1].mode);
+	pr_debug("%s: written 0x%08x to cs1 mode at %p\n",
+		 __func__, reg, &smc->cs[1].mode);
 
 	/* Configure SMC CS2 for FPGA */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 7, ATMEL_PIO_PUEN_MASK);	/* NCS2 */
 
-	writel(AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1) |
-	       AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1),
-	       &smc->cs[2].setup);
-	writel(AT91_SMC_PULSE_NWE(2) | AT91_SMC_PULSE_NCS_WR(2) |
-	       AT91_SMC_PULSE_NRD(4) | AT91_SMC_PULSE_NCS_RD(4),
-	       &smc->cs[2].pulse);
-	writel(AT91_SMC_CYCLE_NWE(4) | AT91_SMC_CYCLE_NRD(6),
-	       &smc->cs[2].cycle);
-	writel(AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE |
-	       AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8,
-	       &smc->cs[2].mode);
+	reg = AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1)
+		| AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1);
+	writel(reg, &smc->cs[2].setup);
+	pr_debug("%s: written 0x%08x to cs2 setup at %p\n",
+		 __func__, reg, &smc->cs[2].setup);
+
+	reg = AT91_SMC_PULSE_NWE(2) | AT91_SMC_PULSE_NCS_WR(2)
+		| AT91_SMC_PULSE_NRD(4) | AT91_SMC_PULSE_NCS_RD(4);
+	writel(reg, &smc->cs[2].pulse);
+	pr_debug("%s: written 0x%08x to cs2 pulse at %p\n",
+		 __func__, reg, &smc->cs[2].pulse);
+
+	reg = AT91_SMC_CYCLE_NWE(4) | AT91_SMC_CYCLE_NRD(6);
+	writel(reg, &smc->cs[2].cycle);
+	pr_debug("%s: written 0x%08x to cs2 cycle at %p\n",
+		 __func__, reg, &smc->cs[2].cycle);
+
+	reg = AT91_SMC_MODE_RM_NRD | AT91_SMC_MODE_WM_NWE
+		| AT91_SMC_MODE_EXNW_DISABLE | AT91_SMC_MODE_DBW_8;
+	writel(reg, &smc->cs[2].mode);
+	pr_debug("%s: written 0x%08x to cs2 mode at %p\n",
+		 __func__, reg, &smc->cs[2].mode);
 }
 
 #ifdef CONFIG_FPGA
