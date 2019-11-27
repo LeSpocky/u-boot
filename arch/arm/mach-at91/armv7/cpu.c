@@ -17,6 +17,7 @@
 #include <asm/arch/at91_pit.h>
 #include <asm/arch/at91_gpbr.h>
 #include <asm/arch/clk.h>
+#include <asm/arch/sama5_sfr.h>
 
 #ifndef CFG_SYS_AT91_MAIN_CLOCK
 #define CFG_SYS_AT91_MAIN_CLOCK 0
@@ -51,9 +52,18 @@ void arch_preboot_os(void)
 #if defined(CONFIG_DISPLAY_CPUINFO)
 int print_cpuinfo(void)
 {
+#if defined(CONFIG_SAMA5D2) || defined(CONFIG_SAMA5D4)
+	struct atmel_sfr *sfr = (struct atmel_sfr *)ATMEL_BASE_SFR;
+#endif
 	char buf[32];
 
 	printf("CPU: %s\n", get_cpu_name());
+
+#if defined(CONFIG_SAMA5D2) || defined(CONFIG_SAMA5D4)
+	printf("Serial number 0: 0x%08x\n", sfr->sn0);
+	printf("              1: 0x%08x\n", sfr->sn1);
+#endif
+
 	printf("Crystal frequency: %8s MHz\n",
 	       strmhz(buf, get_main_clk_rate()));
 	printf("CPU clock        : %8s MHz\n",
