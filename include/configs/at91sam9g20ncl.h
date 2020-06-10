@@ -3,8 +3,8 @@
  * Stelian Pop <stelian.pop@leadtechdesign.com>
  * Lead Tech Design <www.leadtechdesign.com>
  *
- * Copyright 2010-2012 ifak system GmbH
- * Copyright 2019 Thorsis Technologies GmbH
+ * © 2010 ifak system GmbH
+ * © 2019 Thorsis Technologies GmbH
  *
  * Used configuation settings for the AT91SAM9260EK & AT91SAM9G20EK
  * boards for this AT91SAM9G20NCL configuration.
@@ -223,7 +223,6 @@
 #define CONFIG_SYS_MAXARGS		16
 #define CONFIG_SYS_LONGHELP		1
 #define CONFIG_CMDLINE_EDITING		1
-#define CONFIG_SYS_HUSH_PARSER
 
 #define CONFIG_PREBOOT
 
