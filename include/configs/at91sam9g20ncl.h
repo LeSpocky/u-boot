@@ -1,12 +1,12 @@
 /*
  * (C) Copyright 2007-2008
- * Stelian Pop <stelian.pop@leadtechdesign.com>
+ * Stelian Pop <stelian@popies.net>
  * Lead Tech Design <www.leadtechdesign.com>
  *
  * © 2010 ifak system GmbH
  * © 2019 Thorsis Technologies GmbH
  *
- * Used configuation settings for the AT91SAM9260EK & AT91SAM9G20EK
+ * Based on configuation settings for the AT91SAM9260EK & AT91SAM9G20EK
  * boards for this AT91SAM9G20NCL configuration.
  *
  * SPDX-License-Identifier:	GPL-2.0+
@@ -227,6 +227,7 @@
 #define CONFIG_SYS_MAXARGS		16
 #define CONFIG_SYS_LONGHELP		1
 #define CONFIG_CMDLINE_EDITING		1
+#define CONFIG_AUTO_COMPLETE
 
 #define CONFIG_PREBOOT
 
