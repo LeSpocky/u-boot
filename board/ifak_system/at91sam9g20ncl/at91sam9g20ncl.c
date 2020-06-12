@@ -136,8 +136,6 @@ static void at91sam9g20ncl_macb_hw_init(void)
 {
 	struct at91_port *pioa = (struct at91_port *)ATMEL_BASE_PIOA;
 
-	at91_periph_clk_enable(ATMEL_ID_EMAC0);
-
 	/*
 	 * Disable pull-up on:
 	 *	RXDV (PA17) => PHY normal mode (not Test mode)
