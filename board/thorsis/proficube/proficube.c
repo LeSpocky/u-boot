@@ -5,6 +5,7 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <common.h>
 #include <debug_uart.h>
+#include <init.h>
 #include <asm/io.h>
 #include <asm/arch/at91_common.h>
 #include <asm/arch/at91_pmc.h>

@@ -16,8 +16,8 @@
 #include <asm/arch/hardware.h>
 #include <asm/arch/at91_pit.h>
 #include <asm/arch/at91_gpbr.h>
+#include <asm/arch/at91_sfr.h>
 #include <asm/arch/clk.h>
-#include <asm/arch/sama5_sfr.h>
 
 #ifndef CFG_SYS_AT91_MAIN_CLOCK
 #define CFG_SYS_AT91_MAIN_CLOCK 0

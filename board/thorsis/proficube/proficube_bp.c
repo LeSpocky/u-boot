@@ -7,6 +7,7 @@
 #include <asm/io.h>
 #include <command.h>
 #include <console.h>
+#include <rand.h>
 
 /* TODO	Get through DT?	*/
 #define BP_BASE_MOD	0x60000000
