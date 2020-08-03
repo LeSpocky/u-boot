@@ -18,6 +18,7 @@
 #include <dm.h>
 #include <errno.h>
 #include <fpga.h>
+#include <malloc.h>
 
 #include "proficube_fpga.h"
 
