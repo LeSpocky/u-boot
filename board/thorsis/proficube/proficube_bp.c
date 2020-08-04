@@ -40,7 +40,7 @@ void bp_upd_pr_cnt(struct bp_cnt *cnt)
 	printf("%ld MB and %ld byte read  \r", cnt->rd_m, cnt->rd);
 }
 
-int do_bp_dpr(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+int do_bp_dpr(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
 {
 	switch (argc) {
 	case 2:
@@ -56,7 +56,7 @@ int do_bp_dpr(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	return CMD_RET_USAGE;
 }
 
-int do_bp_test(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+int do_bp_test(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
 {
 	u8 by_cmp_buf[0x8000], data;
 	struct bp_cnt cnt = {};

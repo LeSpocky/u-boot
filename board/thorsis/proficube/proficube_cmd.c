@@ -10,7 +10,7 @@
 #include "proficube_led.h"
 #endif
 
-static int do_tt_hello(cmd_tbl_t *cmdtp, int flag,
+static int do_tt_hello(struct cmd_tbl *cmdtp, int flag,
 		       int argc, char * const argv[])
 {
 	printf("Hello TT!\n");

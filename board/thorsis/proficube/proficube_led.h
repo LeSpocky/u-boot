@@ -7,7 +7,7 @@
 
 #include <command.h>
 
-int do_tt_ledtest(cmd_tbl_t *cmdtp, int flag,
+int do_tt_ledtest(struct cmd_tbl *cmdtp, int flag,
 		  int argc, char * const argv[]);
 
 #endif

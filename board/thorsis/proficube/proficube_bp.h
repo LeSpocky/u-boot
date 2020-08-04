@@ -7,8 +7,8 @@
 
 #include <command.h>
 
-int do_bp_test(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]);
+int do_bp_test(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[]);
 
-int do_bp_dpr(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]);
+int do_bp_dpr(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[]);
 
 #endif
