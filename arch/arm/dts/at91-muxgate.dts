@@ -1,0 +1,98 @@
+/*
+ * at91-muxgate.dts – Device Tree file for Thorsis Technologies MUXgate board
+ *
+ * © 2020 Thorsis Technologies GmbH
+ */
+/dts-v1/;
+#include <dt-bindings/gpio/gpio.h>
+#include "sama5d2.dtsi"
+#include "sama5d2-pinfunc.h"
+/ {
+	model = "Thorsis Technologies MUXgate";
+	compatible = "thorsis,muxgate", "atmel,sama5d27", "atmel,sama5d2", "atmel,sama5";
+
+	memory {
+		reg = <0x20000000 0x08000000>;
+	};
+
+	chosen {
+		u-boot,dm-pre-reloc;
+		stdout-path = &uart1;
+	};
+
+	ahb {
+		apb {
+			spi0: spi@f8000000 {
+				cs-gpios = <&pioA PIN_PA17 GPIO_ACTIVE_HIGH>, <0>, <0>, <0>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_spi0_default>;
+				status = "okay";
+				u-boot,dm-pre-reloc;
+			};
+
+			macb0: ethernet@f8008000 {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_macb0_rmii>;
+				phy-mode = "rmii";
+				status = "okay";
+
+				ethernet-phy@1 {
+					reg = <0x1>;
+				};
+			};
+
+			uart1: serial@f8020000 {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_uart1_default>;
+				status = "okay";
+				u-boot,dm-pre-reloc;
+			};
+
+			pioA: gpio@fc038000 {
+				pinctrl {
+					pinctrl_spi0_default: spi0_default {
+						pinmux = <PIN_PA14__SPI0_SPCK>, /* LED_SCK	*/
+							 <PIN_PA15__SPI0_MOSI>, /* LED_MOSI	*/
+							 <PIN_PA16__SPI0_MISO>,	/* n.c.		*/
+							 <PIN_PA17__GPIO>,      /* LED_CS	*/
+							 <PIN_PA18__GPIO>;      /* LED_/OE	*/
+						bias-disable;
+						u-boot,dm-pre-reloc;
+					};
+
+					pinctrl_macb0_rmii: macb0_rmii {
+						pinmux = <PIN_PC10__GTXCK>,
+							 <PIN_PC11__GTXEN>,
+							 <PIN_PC12__GRXDV>,
+							 <PIN_PC13__GRXER>,
+							 <PIN_PC14__GRX0>,
+							 <PIN_PC15__GRX1>,
+							 <PIN_PC16__GTX0>,
+							 <PIN_PC17__GTX1>,
+							 <PIN_PC18__GMDC>,
+							 <PIN_PC19__GMDIO>;
+						bias-disable;
+					};
+
+					pinctrl_uart1_default: uart1_default {
+						pinmux = <PIN_PD2__URXD1>,
+							 <PIN_PD3__UTXD1>;
+						bias-disable;
+						u-boot,dm-pre-reloc;
+					};
+				};
+			};
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		status = "okay";
+
+		led-5 {
+			label = "red:debug";
+			gpios = <&pioA PIN_PB5 GPIO_ACTIVE_HIGH>;
+			default-state = "keep";
+		};
+	};
+};

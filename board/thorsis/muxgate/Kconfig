@@ -1,0 +1,15 @@
+if TARGET_MUXGATE
+
+config SYS_BOARD
+	default "muxgate"
+
+config SYS_VENDOR
+	default "thorsis"
+
+config SYS_SOC
+	default "at91"
+
+config SYS_CONFIG_NAME
+	default "muxgate"
+
+endif

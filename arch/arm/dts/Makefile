@@ -1004,6 +1004,9 @@ dtb-$(CONFIG_TARGET_OMAP3_EVM) += \
 
 dtb-$(CONFIG_TARGET_DEVKIT8000) += omap3-devkit8000.dtb
 
+dtb-$(CONFIG_TARGET_MUXGATE) += \
+	at91-muxgate.dtb
+
 dtb-$(CONFIG_TARGET_PROFICUBE) += \
 	at91-proficube.dtb
 
