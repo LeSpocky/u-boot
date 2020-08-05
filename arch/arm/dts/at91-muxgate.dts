@@ -23,11 +23,24 @@
 	ahb {
 		apb {
 			spi0: spi@f8000000 {
-				cs-gpios = <&pioA PIN_PA17 GPIO_ACTIVE_HIGH>, <0>, <0>, <0>;
 				pinctrl-names = "default";
 				pinctrl-0 = <&pinctrl_spi0_default>;
 				status = "okay";
 				u-boot,dm-pre-reloc;
+
+				gpio_spi: gpio@0 {
+					compatible = "fairchild,74hc595";
+					gpio-controller;
+					#gpio-cells = <2>;
+					reg = <0>;
+					registers-number = <1>;
+					/*
+					 * periph clock 82 MHz / max.  SCBR 255 demands at least
+					 * <321569> or changing periph clock rate …
+					 */
+					spi-max-frequency = <400000>;
+					oe-gpios = <&pioA PIN_PA18 GPIO_ACTIVE_LOW>;
+				};
 			};
 
 			macb0: ethernet@f8008000 {
@@ -51,11 +64,11 @@
 			pioA: gpio@fc038000 {
 				pinctrl {
 					pinctrl_spi0_default: spi0_default {
-						pinmux = <PIN_PA14__SPI0_SPCK>, /* LED_SCK	*/
-							 <PIN_PA15__SPI0_MOSI>, /* LED_MOSI	*/
-							 <PIN_PA16__SPI0_MISO>,	/* n.c.		*/
-							 <PIN_PA17__GPIO>,      /* LED_CS	*/
-							 <PIN_PA18__GPIO>;      /* LED_/OE	*/
+						pinmux = <PIN_PA14__SPI0_SPCK>,  /* LED_SCK  */
+							 <PIN_PA15__SPI0_MOSI>,  /* LED_MOSI */
+							 <PIN_PA16__SPI0_MISO>,  /* n.c.     */
+							 <PIN_PA17__SPI0_NPCS0>, /* LED_CS   */
+							 <PIN_PA18__GPIO>;       /* LED_/OE  */
 						bias-disable;
 						u-boot,dm-pre-reloc;
 					};
@@ -89,6 +102,63 @@
 		compatible = "gpio-leds";
 		status = "okay";
 
+		/*
+		 * Four dual color (red/green) LEDs connected to the
+		 * 74xx595 shift register.
+		 *
+		 * NOTE	If you switch ON both colors of the same LED,
+		 *	it will go off. We're just misusing the
+		 *	gpio-leds driver here for simplicity.
+		 */
+		red-1 {
+			label = "red:indicator-1";
+			gpios = <&gpio_spi 0 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+
+		green-1 {
+			label = "green:indicator-1";
+			gpios = <&gpio_spi 1 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+
+		red-2 {
+			label = "red:indicator-2";
+			gpios = <&gpio_spi 2 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+
+		green-2 {
+			label = "green:indicator-2";
+			gpios = <&gpio_spi 3 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+
+		red-3 {
+			label = "red:indicator-3";
+			gpios = <&gpio_spi 4 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+
+		green-3 {
+			label = "green:indicator-3";
+			gpios = <&gpio_spi 5 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+
+		red-4 {
+			label = "red:indicator-4";
+			gpios = <&gpio_spi 6 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+
+		green-4 {
+			label = "green:indicator-4";
+			gpios = <&gpio_spi 7 GPIO_ACTIVE_HIGH>;
+			default-state = "off";
+		};
+
+		/* separate LED, might be missing */
 		led-5 {
 			label = "red:debug";
 			gpios = <&pioA PIN_PB5 GPIO_ACTIVE_HIGH>;
