@@ -8,10 +8,10 @@
 #include <command.h>
 #include <linux/delay.h>
 
+#include "../common/tt_led.h"
+
 #define TT_FPGA_LEDOR	0x7000A000
 #define TT_FPGA_LEDCR	0x7000A001
-
-#define TT_LED_DELAY	250
 
 int do_tt_ledtest(struct cmd_tbl *cmdtp, int flag,
 		  int argc, char * const argv[])

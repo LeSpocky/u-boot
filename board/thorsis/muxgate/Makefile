@@ -3,3 +3,4 @@
 #
 
 obj-y += muxgate.o
+obj-$(CONFIG_LED) += muxgate_led.o
