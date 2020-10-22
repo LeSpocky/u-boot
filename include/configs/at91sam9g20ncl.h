@@ -65,8 +65,6 @@
 #define CONFIG_AT91_BUTTON
 #define	CONFIG_FACTORYRESET_BUTTON	AT91_PIN_PA11	/* this is the FACTORY_RESET button */
 
-#define CONFIG_BOOTDELAY		3
-
 /*
  * BOOTP options
  */
