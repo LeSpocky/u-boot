@@ -166,6 +166,14 @@ config TARGET_PROFICUBE
 	  The Thorsis Technologies ProfiCube is a monolithic PROFINET to
 	  PROFIBUS gateway based on a SAMA5D27 SoC.
 
+config TARGET_VERA2
+	bool "Thorsis Vera2 board"
+	select BOARD_EARLY_INIT_F
+	select SAMA5D2
+	help
+	  The Thorsis Technologies Vera2 board is multi purpose C2X
+	  research platform based on a SAMA5D27 SoC.
+
 config TARGET_SAM9X60EK
 	bool "SAM9X60-EK board"
 	select SAM9X60
@@ -417,5 +425,6 @@ source "board/siemens/taurus/Kconfig"
 source "board/siemens/smartweb/Kconfig"
 source "board/thorsis/muxgate/Kconfig"
 source "board/thorsis/proficube/Kconfig"
+source "board/thorsis/vera2/Kconfig"
 
 endif

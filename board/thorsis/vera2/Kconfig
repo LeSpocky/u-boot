@@ -1,0 +1,15 @@
+if TARGET_VERA2
+
+config SYS_BOARD
+	default "vera2"
+
+config SYS_VENDOR
+	default "thorsis"
+
+config SYS_SOC
+	default "at91"
+
+config SYS_CONFIG_NAME
+	default "vera2"
+
+endif

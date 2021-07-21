@@ -1055,6 +1055,9 @@ dtb-$(CONFIG_TARGET_SAMA5D4EK) += \
 dtb-$(CONFIG_TARGET_SAMA5D4_XPLAINED) += \
 	at91-sama5d4_xplained.dtb
 
+dtb-$(CONFIG_TARGET_VERA2) += \
+	at91-vera2.dtb
+
 dtb-$(CONFIG_TARGET_VINCO) += \
 	at91-vinco.dtb
 
