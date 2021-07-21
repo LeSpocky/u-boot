@@ -1,5 +1,5 @@
 /*
- * Configuration file for the Thorsis MUXgate board.
+ * Configuration file for the Thorsis Technologies MUXgate board.
  *
  * © 2020 Thorsis Technologies GmbH
  */
@@ -19,7 +19,7 @@
 
 /* SDRAM */
 #define CONFIG_SYS_SDRAM_BASE		0x20000000
-#define CONFIG_SYS_SDRAM_SIZE		0x8000000
+#define CONFIG_SYS_SDRAM_SIZE		SZ_128M
 
 #define CONFIG_SYS_INIT_SP_ADDR \
 	(CONFIG_SYS_SDRAM_BASE + SZ_16K - GENERATED_GBL_DATA_SIZE)

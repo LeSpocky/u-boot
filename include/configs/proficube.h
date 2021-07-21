@@ -1,7 +1,7 @@
 /*
- * Configuration file for the Thorsis ProfiCube board.
+ * Configuration file for the Thorsis Technologies ProfiCube board.
  *
- * Copyright 2019 Thorsis Technologies GmbH
+ * © 2019 Thorsis Technologies GmbH
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 
 /* SDRAM */
 #define CONFIG_SYS_SDRAM_BASE		0x20000000
-#define CONFIG_SYS_SDRAM_SIZE		0x8000000
+#define CONFIG_SYS_SDRAM_SIZE		SZ_128M
 
 #define CONFIG_SYS_INIT_SP_ADDR \
 	(CONFIG_SYS_SDRAM_BASE + SZ_16K - GENERATED_GBL_DATA_SIZE)
@@ -34,7 +34,7 @@
 #define CONFIG_SYS_NAND_MASK_ALE	BIT(21)
 #define CONFIG_SYS_NAND_MASK_CLE	BIT(22)
 /*
- * as of U-Boot v2019.1 using the RDY pin does not work with atmel nand
+ * as of U-Boot v2019.01 using the RDY pin does not work with atmel nand
  * driver and the pio4 controller on SAMA5D2 …
  */
 #undef CONFIG_SYS_NAND_READY_PIN
