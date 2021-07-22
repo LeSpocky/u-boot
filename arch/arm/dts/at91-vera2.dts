@@ -4,6 +4,7 @@
  * © 2021 Thorsis Technologies GmbH
  */
 /dts-v1/;
+#include <dt-bindings/gpio/gpio.h>
 #include "sama5d2.dtsi"
 #include "sama5d2-pinfunc.h"
 / {
@@ -49,6 +50,12 @@
 
 			pioA: gpio@fc038000 {
 				pinctrl {
+					pinctrl_leds_gpio: leds_gpio {
+						pinmux = <PIN_PD7__GPIO>,
+							 <PIN_PD9__GPIO>;
+						bias-disable;
+					};
+
 					pinctrl_macb0_rmii: macb0_rmii {
 						pinmux = <PIN_PC10__GTXCK>,
 							 <PIN_PC11__GTXEN>,
@@ -88,6 +95,26 @@
 					};
 				};
 			};
+		};
+	};
+
+	led-controller-0 {
+		compatible = "gpio-leds";
+		status = "okay";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_leds_gpio>;
+
+		green-1 {
+			label = "green:status";
+			gpios = <&pioA PIN_PD7 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		green-2 {
+			label = "green:lan";
+			gpios = <&pioA PIN_PD9 GPIO_ACTIVE_LOW>;
+			default-state = "off";
 		};
 	};
 };
