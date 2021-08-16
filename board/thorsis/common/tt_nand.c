@@ -2,12 +2,15 @@
  * © 2021 Thorsis Technologies GmbH
  */
 
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <asm/io.h>
 #include <asm/arch/atmel_pio4.h>
 #include <asm/arch/sama5d2_smc.h>
 
 void tt_nand_configure_pio_datarw(void)
 {
+	pr_debug("%s: called\n", __func__);
+
 	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 22, ATMEL_PIO_DRVSTR_ME);	/* D0 */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 23, ATMEL_PIO_DRVSTR_ME);	/* D1 */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 24, ATMEL_PIO_DRVSTR_ME);	/* D2 */
@@ -22,6 +25,8 @@ void tt_nand_configure_pio_datarw(void)
 
 void tt_nand_configure_pio_misc(void)
 {
+	pr_debug("%s: called\n", __func__);
+
 	atmel_pio4_set_b_periph(AT91_PIO_PORTA, 31, ATMEL_PIO_PUEN_MASK);	/* NCS */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 8, ATMEL_PIO_PUEN_MASK);	/* RDY */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 0, ATMEL_PIO_PUEN_MASK);	/* ALE */
@@ -30,6 +35,8 @@ void tt_nand_configure_pio_misc(void)
 
 void tt_nand_configure_smc(struct at91_smc *smc)
 {
+	pr_debug("%s: called\n", __func__);
+
 	/* Configure SMC CS3 for NAND */
 	writel(AT91_SMC_SETUP_NWE(1) | AT91_SMC_SETUP_NCS_WR(1) |
 	       AT91_SMC_SETUP_NRD(1) | AT91_SMC_SETUP_NCS_RD(1),
