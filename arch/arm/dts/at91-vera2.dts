@@ -51,6 +51,14 @@
 
 			pioA: gpio@fc038000 {
 				pinctrl {
+					pinctrl-names = "default";
+					pinctrl-0 = <&pinctrl_gpio_default>;
+
+					pinctrl_gpio_default: gpio_default {
+						pinmux = <PIN_PB13__GPIO>;
+						bias-pull-down;
+					};
+
 					pinctrl_key_gpio: key_gpio {
 						pinmux = <PIN_PD21__GPIO>;
 						bias-disable;
@@ -99,6 +107,16 @@
 						bias-disable;
 						u-boot,dm-pre-reloc;
 					};
+				};
+
+				/* init trigger pin to output-low with
+				 * internal pull-down to avoid reboot loops
+				 * triggered by monoflop at TPS54341
+				 * EN input */
+				pb13 {
+					gpio-hog;
+					gpios = <PIN_PB13 GPIO_ACTIVE_HIGH>;
+					output-low;
 				};
 			};
 		};
