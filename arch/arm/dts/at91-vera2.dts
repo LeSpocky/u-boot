@@ -151,7 +151,7 @@
 		};
 
 		green-2 {
-			label = "green:lan";
+			label = "green:debug";
 			gpios = <&pioA PIN_PD9 GPIO_ACTIVE_LOW>;
 			default-state = "off";
 		};
