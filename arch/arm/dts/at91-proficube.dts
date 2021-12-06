@@ -4,6 +4,8 @@
  * Copyright 2019 Thorsis Technologies GmbH
  */
 /dts-v1/;
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
 #include "sama5d2.dtsi"
 #include "sama5d2-pinfunc.h"
 / {
@@ -49,6 +51,11 @@
 
 			pioA: gpio@fc038000 {
 				pinctrl {
+					pinctrl_key_gpio: key_gpio {
+						pinmux = <PIN_PD21__GPIO>;
+						bias-disable;
+					};
+
 					pinctrl_spi0_default: spi0_default {
 						pinmux = <PIN_PA14__SPI0_SPCK>, /* DCLK  */
 							 <PIN_PA15__SPI0_MOSI>, /* DATA0 */
@@ -81,6 +88,21 @@
 					};
 				};
 			};
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		status = "okay";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_key_gpio>;
+
+		reset {
+			label = "reset";
+			gpios = <&pioA PIN_PD21 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
 		};
 	};
 };
