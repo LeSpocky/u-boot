@@ -14,6 +14,7 @@
 #include <asm/arch/gpio.h>
 #include <asm/arch/sama5d2.h>
 #include <asm/arch/sama5d2_smc.h>
+#include <linux/sizes.h>
 
 #ifdef CONFIG_FPGA
 #include "proficube_fpga.h"
@@ -253,8 +254,34 @@ int board_init(void)
 
 int dram_init(void)
 {
-	gd->ram_size = get_ram_size((void *)CONFIG_SYS_SDRAM_BASE,
-				    CONFIG_SYS_SDRAM_SIZE);
+	unsigned int extension_id;
+	long size;
+
+	pr_debug("%s: entered\n", __func__);
+
+	extension_id = get_extension_chip_id();
+	switch (extension_id) {
+	case ARCH_EXID_SAMA5D27C_D5M:
+		size = SZ_64M;
+		break;
+	case ARCH_EXID_SAMA5D27C_D1G:
+		size = SZ_128M;
+		break;
+	default:
+		size = SZ_64M;
+		break;
+	}
+
+	pr_debug("exid: 0x%08x\n", extension_id);
+	pr_debug("size: 0x%08lx (%ld)\n", size, size);
+	pr_debug("CONFIG_SYS_SDRAM_BASE: %p\n", (void *) CONFIG_SYS_SDRAM_BASE);
+
+	gd->ram_size = get_ram_size((void *)CONFIG_SYS_SDRAM_BASE, size);
+
+	pr_debug("gd->ram_size: 0x%08lx (%lu)\n", gd->ram_size, gd->ram_size);
+
+	pr_debug("%s: leaving\n", __func__);
+
 	return 0;
 }
 
