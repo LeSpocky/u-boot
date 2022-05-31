@@ -45,7 +45,7 @@
 
 #define BOOT_TARGET_DEVICES(func) \
 	func(MMC, mmc, 0) \
-	func(UBIFS, ubifs, 0)
+	func(UBIFS, ubifs, 0, UBI, boot)
 #include <config_distro_bootcmd.h>
 
 #define CONFIG_EXTRA_ENV_SETTINGS \

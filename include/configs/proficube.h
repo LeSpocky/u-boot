@@ -42,7 +42,7 @@
 	"ramdisk_addr_r=0x23300000\0"
 
 #define BOOT_TARGET_DEVICES(func) \
-        func(UBIFS, ubifs, 0)
+	func(UBIFS, ubifs, 0, filesystem, boot)
 #include <config_distro_bootcmd.h>
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
