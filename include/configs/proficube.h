@@ -33,11 +33,6 @@
 
 #endif
 
-/* FPGA */
-#define CONFIG_MAX_FPGA_DEVICES		1
-#define CONFIG_SYS_FPGA_CHECK_CTRLC
-#define CONFIG_SYS_FPGA_PROG_FEEDBACK
-
 /* Environment */
 #define MEM_LAYOUT_ENV_SETTINGS \
 	"kernel_addr_r=0x22000000\0" \
