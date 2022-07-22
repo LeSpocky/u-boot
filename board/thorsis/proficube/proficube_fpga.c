@@ -120,12 +120,12 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 
 #ifdef CONFIG_DM_SPI
 	struct udevice *dev;
-	ret = spi_get_bus_and_cs(PROFICUBE_FPGA_SPI_BUS,
-				 PROFICUBE_FPGA_SPI_CS,
-				 PROFICUBE_FPGA_SPI_SPEED, SPI_MODE_0,
-				 "spi_generic_drv",
-				 PROFICUBE_FPGA_SPI_DEV_NAME, &dev,
-				 &slave);
+	ret = _spi_get_bus_and_cs(PROFICUBE_FPGA_SPI_BUS,
+				  PROFICUBE_FPGA_SPI_CS,
+				  PROFICUBE_FPGA_SPI_SPEED, SPI_MODE_0,
+				  "spi_generic_drv",
+				  PROFICUBE_FPGA_SPI_DEV_NAME, &dev,
+				  &slave);
 	if (ret)
 	{
 		pr_err("spi_get_bus_and_cs() failed: %d!\n", ret);
