@@ -13,14 +13,24 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <common.h>
 #include <asm/arch/atmel_pio4.h>
+#include <ACEX1K.h>
 #include <altera.h>
 #include <console.h>
 #include <dm.h>
+#include <efinix.h>
+#include <env.h>
 #include <errno.h>
 #include <fpga.h>
 #include <malloc.h>
 
 #include "proficube_fpga.h"
+
+struct proficube_fpga_info {
+	const char	*fpgaimg;
+	Altera_desc	*fpgadesc;
+};
+
+static Altera_desc *proficube_get_fpga_desc(void);
 
 #if PROFICUBE_USE_SPI
 #include <spi.h>
@@ -98,6 +108,7 @@ static int proficube_fpga_status(int cookie)
 static int proficube_fpga_write(const void *buf, size_t len, int flush, int cookie)
 {
 	struct spi_slave *slave;
+	Altera_desc *fpga_desc;
 	uint8_t *data = NULL;
 	int ret = 0;
 	size_t i;
@@ -105,9 +116,15 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	pr_debug("%s: called (%s)\n", __func__,
 		 PROFICUBE_USE_SPI ? "spi" : "gpio");
 
-	if (len > PROFICUBE_FPGA_SIZE)
-	{
-		pr_err("FPGA image too big (%zu > %zu)!", len, PROFICUBE_FPGA_SIZE);
+	fpga_desc = proficube_get_fpga_desc();
+	if (fpga_desc) {
+		if (len > fpga_desc->size) {
+			pr_err("FPGA image too big (%zu > %zu)!",
+			       len, fpga_desc->size);
+			return FPGA_FAIL;
+		}
+	} else {
+		pr_err("Could not determine FPGA type!");
 		return FPGA_FAIL;
 	}
 
@@ -167,14 +184,21 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	const size_t len_40 = len / 40;
 #endif
 	const uint8_t *data = buf;
+	Altera_desc *fpga_desc;
 	size_t bytecount = 0;
 
 	pr_debug("%s: called (%s)\n", __func__,
 		 PROFICUBE_USE_SPI ? "spi" : "gpio");
 
-	if (len > PROFICUBE_FPGA_SIZE)
-	{
-		pr_err("FPGA image too big (%zu > %zu)!", len, PROFICUBE_FPGA_SIZE);
+	fpga_desc = proficube_get_fpga_desc();
+	if (fpga_desc) {
+		if (len > fpga_desc->size) {
+			pr_err("FPGA image too big (%zu > %zu)!",
+			       len, fpga_desc->size);
+			return FPGA_FAIL;
+		}
+	} else {
+		pr_err("Could not determine FPGA type!");
 		return FPGA_FAIL;
 	}
 
@@ -235,17 +259,80 @@ static Altera_CYC2_Passive_Serial_fns proficube_fns = {
 	.post = NULL
 };
 
-static Altera_desc proficube_fpga = {
+static Altera_desc proficube_fpga_ep3c5 = {
 	.family = Altera_CYC2,
 	.iface = passive_serial,
-	.size = PROFICUBE_FPGA_SIZE,
+	.size = Altera_EP3C5_SIZE,
 	.iface_fns = &proficube_fns
+};
+
+static Altera_desc proficube_fpga_ep4ce6 = {
+	.family = Altera_CYC2,
+	.iface = passive_serial,
+	.size = ALTERA_EP4CE6_SIZE,
+	.iface_fns = &proficube_fns
+};
+
+static Altera_desc proficube_fpga_t20q144 = {
+	.family = Altera_CYC2,
+	.iface = passive_serial,
+	.size = EFINIX_TRION_T20Q144_SIZE,
+	.iface_fns = &proficube_fns
+};
+
+static const struct proficube_fpga_info proficube_fpgas[] = {
+	{
+		.fpgaimg = "fpga_ep3c5.uimg",
+		.fpgadesc = &proficube_fpga_ep3c5
+	},
+	{
+		.fpgaimg = "fpga_ep4ce6.uimg",
+		.fpgadesc = &proficube_fpga_ep4ce6
+	},
+	{
+		.fpgaimg = "fpga_t20q144.uimg",
+		.fpgadesc = &proficube_fpga_t20q144
+	},
+	{
+		.fpgaimg = NULL,
+		.fpgadesc = NULL
+	}
 };
 
 void board_fpga_init(void)
 {
+	Altera_desc *fpga_desc;
+
 	pr_debug("%s: called\n", __func__);
 
-	fpga_init();
-	fpga_add(fpga_altera, &proficube_fpga);
+	fpga_desc = proficube_get_fpga_desc();
+	if (fpga_desc) {
+		fpga_init();
+		fpga_add(fpga_altera, fpga_desc);
+	} else {
+		pr_err("Could not determine FPGA type!");
+	}
+}
+
+Altera_desc *proficube_get_fpga_desc(void)
+{
+	const struct proficube_fpga_info *p;
+	char *fpgaimg;
+
+	/*
+	 * If the env variable is missing we assume the default FPGA
+	 * type, the one we started with in the previous hardware
+	 * revisions.
+	 * We do the same in our U-Boot scripts.
+	 */
+	fpgaimg = env_get("fpgaimg");
+	if (!fpgaimg)
+		fpgaimg = "fpga_ep4ce6.uimg";
+
+	for (p = proficube_fpgas; p->fpgaimg; p++) {
+		if (!strcmp(fpgaimg, p->fpgaimg))
+			return p->fpgadesc;
+	}
+
+	return NULL;
 }
