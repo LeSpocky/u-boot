@@ -10,7 +10,8 @@
  * 	bus and cs here.
  */
 
-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+#define LOG_CATEGORY LOGC_BOARD
+
 #include <common.h>
 #include <asm/arch/atmel_pio4.h>
 #include <ACEX1K.h>
@@ -21,6 +22,7 @@
 #include <env.h>
 #include <errno.h>
 #include <fpga.h>
+#include <log.h>
 #include <malloc.h>
 
 #include "proficube_fpga.h"
@@ -58,7 +60,7 @@ static uint8_t bitrev8(uint8_t v)
 
 static int proficube_fpga_abort(int cookie)
 {
-	pr_debug("%s: called\n", __func__);
+	log_debug("%s: called\n", __func__);
 
 	return FPGA_SUCCESS;
 }
@@ -68,16 +70,16 @@ static int proficube_fpga_abort(int cookie)
  */
 static int proficube_fpga_config(int assert_config, int flush, int cookie)
 {
-	pr_debug("%s: called\n", __func__);
+	log_debug("%s: called\n", __func__);
 
 	if (assert_config)
 	{
-		pr_debug("Setting nCONFIG to HIGH.\n");
+		log_debug("Setting nCONFIG to HIGH.\n");
 		atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_nCONFIG, 1);
 	}
 	else
 	{
-		pr_debug("Setting nCONFIG to LOW.\n");
+		log_debug("Setting nCONFIG to LOW.\n");
 		atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_nCONFIG, 0);
 	}
 
@@ -89,7 +91,7 @@ static int proficube_fpga_config(int assert_config, int flush, int cookie)
  */
 static int proficube_fpga_done(int cookie)
 {
-	pr_debug("%s: called\n", __func__);
+	log_debug("%s: called\n", __func__);
 
 	return atmel_pio4_get_pio_input(PROFICUBE_FPGA_PIN_CONF_DONE);
 }
@@ -99,7 +101,7 @@ static int proficube_fpga_done(int cookie)
  */
 static int proficube_fpga_status(int cookie)
 {
-	pr_debug("%s: called\n", __func__);
+	log_debug("%s: called\n", __func__);
 
 	return atmel_pio4_get_pio_input(PROFICUBE_FPGA_PIN_nSTATUS);
 }
@@ -113,25 +115,25 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	int ret = 0;
 	size_t i;
 
-	pr_debug("%s: called (%s)\n", __func__,
+	log_debug("%s: called (%s)\n", __func__,
 		 PROFICUBE_USE_SPI ? "spi" : "gpio");
 
 	fpga_desc = proficube_get_fpga_desc();
 	if (fpga_desc) {
 		if (len > fpga_desc->size) {
-			pr_err("FPGA image too big (%zu > %zu)!",
+			log_err("FPGA image too big (%zu > %zu)!\n",
 			       len, fpga_desc->size);
 			return FPGA_FAIL;
 		}
 	} else {
-		pr_err("Could not determine FPGA type!");
+		log_err("Could not determine FPGA type!\n");
 		return FPGA_FAIL;
 	}
 
 	data = malloc(len);
 	if (!data)
 	{
-		pr_err("Could not allocate memory!\n");
+		log_err("Could not allocate memory!\n");
 		return FPGA_FAIL;
 	}
 
@@ -145,7 +147,7 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 				  &slave);
 	if (ret)
 	{
-		pr_err("spi_get_bus_and_cs() failed: %d!\n", ret);
+		log_err("spi_get_bus_and_cs() failed: %d!\n", ret);
 		goto err_data_allocated;
 	}
 #else
@@ -155,7 +157,7 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	ret = spi_claim_bus(slave);
 	if (ret)
 	{
-		pr_debug("spi_claim_bus(%p) failed: %d!\n", slave, ret);
+		log_debug("spi_claim_bus(%p) failed: %d!\n", slave, ret);
 		goto err_data_allocated;
 	}
 
@@ -167,7 +169,7 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	ret = spi_xfer(slave, len * 8, data, NULL, SPI_XFER_ONCE);
 	if(ret)
 	{
-		pr_err("Error %d during SPI transaction\n", ret);
+		log_err("Error %d during SPI transaction\n", ret);
 	}
 
 	spi_release_bus(slave);
@@ -187,18 +189,18 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	Altera_desc *fpga_desc;
 	size_t bytecount = 0;
 
-	pr_debug("%s: called (%s)\n", __func__,
+	log_debug("%s: called (%s)\n", __func__,
 		 PROFICUBE_USE_SPI ? "spi" : "gpio");
 
 	fpga_desc = proficube_get_fpga_desc();
 	if (fpga_desc) {
 		if (len > fpga_desc->size) {
-			pr_err("FPGA image too big (%zu > %zu)!",
+			log_err("FPGA image too big (%zu > %zu)!\n",
 			       len, fpga_desc->size);
 			return FPGA_FAIL;
 		}
 	} else {
-		pr_err("Could not determine FPGA type!");
+		log_err("Could not determine FPGA type!\n");
 		return FPGA_FAIL;
 	}
 
@@ -237,7 +239,7 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 #ifdef CONFIG_SYS_FPGA_PROG_FEEDBACK
 		if (bytecount % len_40 == 0)
 		{
-			putc ('.');		/* let them know we are alive */
+			putc('.');		/* let them know we are alive */
 #ifdef CONFIG_SYS_FPGA_CHECK_CTRLC
 			if (ctrlc ()) return FPGA_FAIL;
 #endif
@@ -303,14 +305,14 @@ void board_fpga_init(void)
 {
 	Altera_desc *fpga_desc;
 
-	pr_debug("%s: called\n", __func__);
+	log_debug("%s: called\n", __func__);
 
 	fpga_desc = proficube_get_fpga_desc();
 	if (fpga_desc) {
 		fpga_init();
 		fpga_add(fpga_altera, fpga_desc);
 	} else {
-		pr_err("Could not determine FPGA type!");
+		log_err("Could not determine FPGA type!\n");
 	}
 }
 
