@@ -139,6 +139,7 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 
 #ifdef CONFIG_DM_SPI
 	struct udevice *dev;
+	log_debug("Using SPI CS%u.\n", PROFICUBE_FPGA_SPI_CS);
 	ret = _spi_get_bus_and_cs(PROFICUBE_FPGA_SPI_BUS,
 				  PROFICUBE_FPGA_SPI_CS,
 				  PROFICUBE_FPGA_SPI_SPEED, SPI_MODE_0,
@@ -204,6 +205,12 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 		return FPGA_FAIL;
 	}
 
+	if (fpga_desc->family == ALTERA_FAMILY_EFINIX_TRION) {
+		log_debug("Claim SPI CS%u (%x, %u)\n", PROFICUBE_FPGA_SPI_CS,
+			  PROFICUBE_FPGA_PIN_SPI_CS(PROFICUBE_FPGA_SPI_CS));
+		atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_SPI_CS(PROFICUBE_FPGA_SPI_CS), 1);
+	}
+
 	while (bytecount < len)
 	{
 		uint8_t val = data[bytecount++];
@@ -211,17 +218,20 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 
 		do
 		{
-			if (val & 0x01)
-			{
-				/* set data to 1 */
-				atmel_pio4_set_pio_output(
-					PROFICUBE_FPGA_PIN_DATA0, 1);
-			}
-			else
-			{
-				/* set data to 0 */
-				atmel_pio4_set_pio_output(
-					PROFICUBE_FPGA_PIN_DATA0, 0);
+			switch (fpga_desc->family) {
+			case ALTERA_FAMILY_EFINIX_TRION:
+#if 0
+				/* Unmodified board rev v1.2 had this wrong. */
+				atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_ASDO,
+							  (val & 0x01) ? 1 : 0);
+				break;
+#endif
+			case Altera_CYC2:
+				atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_DATA0,
+							  (val & 0x01) ? 1 : 0);
+				break;
+			default:
+				return FPGA_FAIL;
 			}
 
 			/* set clk to 1 */
@@ -245,6 +255,12 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 #endif
 		}
 #endif
+	}
+
+	if (fpga_desc->family == ALTERA_FAMILY_EFINIX_TRION) {
+		log_debug("Release SPI CS%u (%x, %u)\n", PROFICUBE_FPGA_SPI_CS,
+			  PROFICUBE_FPGA_PIN_SPI_CS(PROFICUBE_FPGA_SPI_CS));
+		atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_SPI_CS(PROFICUBE_FPGA_SPI_CS), 1);
 	}
 
 	return FPGA_SUCCESS;

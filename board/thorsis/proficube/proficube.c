@@ -165,6 +165,8 @@ static void board_fpga_hw_init(void)
 	/*
 	 * nCE is connected to the uC, we don't really need to set it,
 	 * just ensure it is set to low.
+	 * This is necessary for Altera Cyclon FPGAs on boards up to
+	 * v1.1, but should not hurt for the Efinix Trion on hw v1.2.
 	 */
 	atmel_pio4_set_gpio(AT91_PIO_PORTA, 19, 0);
 	atmel_pio4_set_pio_output(AT91_PIO_PORTA, 19, 0);
