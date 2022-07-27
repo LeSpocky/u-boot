@@ -30,6 +30,7 @@ static const struct altera_fpga {
 #elif defined(CONFIG_FPGA_CYCLON2)
 	{ Altera_ACEX1K, "CycloneII", CYC2_load, CYC2_dump, CYC2_info },
 	{ Altera_CYC2,   "CycloneII", CYC2_load, CYC2_dump, CYC2_info },
+	{ ALTERA_FAMILY_EFINIX_TRION,	"Trion", CYC2_load, CYC2_dump, CYC2_info },
 #endif
 #if defined(CONFIG_FPGA_STRATIX_II)
 	{ Altera_StratixII, "StratixII", StratixII_load,

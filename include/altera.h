@@ -60,6 +60,8 @@ enum altera_family {
 	Altera_SoCFPGA,
 	/* Intel FPGA Family with SDM (Secure Device Manager) Mailbox */
 	Intel_FPGA_SDM_Mailbox,
+	/* Efinix Trion Family (almost similar to Cyclon III/IV) */
+	ALTERA_FAMILY_EFINIX_TRION,
 
 	/* Add new models here */
 

@@ -276,7 +276,7 @@ static Altera_desc proficube_fpga_ep4ce6 = {
 };
 
 static Altera_desc proficube_fpga_t20q144 = {
-	.family = Altera_CYC2,
+	.family = ALTERA_FAMILY_EFINIX_TRION,
 	.iface = passive_serial,
 	.size = EFINIX_TRION_T20Q144_SIZE,
 	.iface_fns = &proficube_fns
