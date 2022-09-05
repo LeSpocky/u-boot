@@ -195,7 +195,7 @@ int board_init(void)
 	coloured_LED_init();	/* init LED */
 #endif
 
-#ifdef CONFIG_AT91_BUTTON
+#ifdef CONFIG_TT_NCL_BUTTON
 	ncl_button_init();	/* init BUTTON */
 #endif
 

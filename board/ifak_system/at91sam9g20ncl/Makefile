@@ -14,7 +14,7 @@
 
 obj-y				+= at91sam9g20ncl.o
 obj-$(CONFIG_AT91_LED)		+= led.o
-obj-$(CONFIG_AT91_BUTTON)	+= button.o
+obj-$(CONFIG_TT_NCL_BUTTON)	+= button.o
 obj-$(CONFIG_FPGA)		+= fpga.o
 obj-y				+= backplane.o
 obj-y				+= hrttest.o

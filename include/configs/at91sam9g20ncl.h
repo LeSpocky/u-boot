@@ -60,10 +60,6 @@
 #define CONFIG_AT91_LED
 #define	CONFIG_USER_LED		AT91_PIN_PA22	/* this is the user led */
 
-/* BUTTON */
-#define CONFIG_AT91_BUTTON
-#define	CONFIG_FACTORYRESET_BUTTON	AT91_PIN_PA11	/* this is the FACTORY_RESET button */
-
 /*
  * BOOTP options
  */

@@ -15,13 +15,19 @@
 #include <asm/arch/at91_pmc.h>
 #include <asm/arch/gpio.h>
 
+/*
+ * Hardcoded for now, this should go to dts later, maybe when switching
+ * to generic (gpio) button support with v2020.10?
+ */
+#define	NCL_PIN_FACTORYRESET	AT91_PIN_PA11
+
 void ncl_button_init(void)
 {
-	at91_set_gpio_input(CONFIG_FACTORYRESET_BUTTON, 1);
+	at91_set_gpio_input(NCL_PIN_FACTORYRESET, 1);
 }
 
 int do_button( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
-	return at91_get_gpio_value(CONFIG_FACTORYRESET_BUTTON);
+	return at91_get_gpio_value(NCL_PIN_FACTORYRESET);
 }
 
 U_BOOT_CMD( button, 1, 1, do_button,

@@ -9,4 +9,18 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
 	default "at91sam9g20ncl"
 
+menu "isNet Lite board options"
+
+config TT_NCL_BUTTON
+	bool "Reset button support"
+	depends on !CMD_BUTTON
+	help
+	  Factory reset button support for isNet Lite board.
+	  Note: U-Boot will get generic button support with v2020.10!
+
+comment "Generic CMD_BUTTON is selected!"
+	depends on CMD_BUTTON
+
+endmenu
+
 endif
