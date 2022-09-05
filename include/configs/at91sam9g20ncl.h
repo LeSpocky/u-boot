@@ -58,7 +58,6 @@
 
 /* LED */
 #define CONFIG_AT91_LED
-#define	CONFIG_USER_LED		AT91_PIN_PA22	/* this is the user led */
 
 /*
  * BOOTP options
