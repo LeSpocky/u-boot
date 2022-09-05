@@ -75,7 +75,6 @@ static void at91sam9g20ncl_nand_hw_init(void)
 }
 #endif
 
-#ifdef CONFIG_NCL_REG_SET
 static void at91sam9g20ncl_reg_hw_init(void)
 {
 	struct at91_smc *smc = (struct at91_smc *) ATMEL_BASE_SMC;
@@ -129,7 +128,6 @@ static void at91sam9g20ncl_reg_hw_init(void)
 			AT91_SMC_MODE_EXNW_READY | AT91_SMC_MODE_DBW_8 |
 			AT91_SMC_MODE_PS_4, &smc->cs[7].mode );
 }
-#endif
 
 #ifdef CONFIG_MACB
 static void at91sam9g20ncl_macb_hw_init(void)
@@ -210,9 +208,7 @@ int board_init(void)
 	ncl_fpga_init();
 #endif
 
-#ifdef CONFIG_NCL_REG_SET
 	at91sam9g20ncl_reg_hw_init();
-#endif
 
 	return 0;
 }

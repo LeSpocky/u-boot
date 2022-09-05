@@ -225,9 +225,6 @@
  */
 #define CONFIG_SYS_MALLOC_LEN	ROUND(3 * CONFIG_ENV_SIZE + 128*1024, 0x1000)
 
-/* isNet Lite */
-#define CONFIG_NCL_REG_SET
-
 #endif /* __CONFIG_H */
 
 /* vim: set noet sts=0 ts=8 sw=8 sr: */
