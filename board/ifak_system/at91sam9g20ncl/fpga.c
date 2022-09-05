@@ -42,36 +42,42 @@
 #define ERROR_FPGA_PRG_INIT_HIGH -2        /* Timeout after PRG* deasserted */
 #define ERROR_FPGA_PRG_DONE      -3        /* Timeout after programming     */
 
-#define FPGA_DONE_STATE (at91_get_gpio_value(CONFIG_SYS_GPIO_CON_DON))
+#define NCL_PIN_CLK		AT91_PIN_PA2	/* FPGA clk pin (cpu output)		*/
+#define NCL_PIN_DATA		AT91_PIN_PA1	/* FPGA data pin (cpu output)		*/
+#define NCL_PIN_STATUS		AT91_PIN_PA27	/* FPGA status pin (cpu input)		*/
+#define NCL_PIN_CONFIG		AT91_PIN_PA25	/* FPGA CONFIG pin (cpu output)		*/
+#define NCL_PIN_CON_DON		AT91_PIN_PA26	/* FPGA CONFIG_DONE pin (cpu input)	*/
+
+#define FPGA_DONE_STATE (at91_get_gpio_value(NCL_PIN_CON_DON))
 
 #define FPGA_WRITE_1 {							\
-		at91_set_gpio_output(CONFIG_SYS_GPIO_DATA,1);  /* set data to 1  */	\
-		at91_set_gpio_output(CONFIG_SYS_GPIO_CLK,1);  /* set data to 1  */	\
-		at91_set_gpio_output(CONFIG_SYS_GPIO_CLK,0);} /* set clk to 0  */
+		at91_set_gpio_output(NCL_PIN_DATA,1);  /* set data to 1  */	\
+		at91_set_gpio_output(NCL_PIN_CLK,1);  /* set data to 1  */	\
+		at91_set_gpio_output(NCL_PIN_CLK,0);} /* set clk to 0  */
 
 #define FPGA_WRITE_0 {							\
-		at91_set_gpio_output(CONFIG_SYS_GPIO_DATA,0);  /* set data to 0  */	\
-		at91_set_gpio_output(CONFIG_SYS_GPIO_CLK,1);  /* set data to 1  */	\
-		at91_set_gpio_output(CONFIG_SYS_GPIO_CLK,0);} /* set clk to 0  */
+		at91_set_gpio_output(NCL_PIN_DATA,0);  /* set data to 0  */	\
+		at91_set_gpio_output(NCL_PIN_CLK,1);  /* set data to 1  */	\
+		at91_set_gpio_output(NCL_PIN_CLK,0);} /* set clk to 0  */
 
 /* Plattforminitializations */
 int fpga_pre_fn (int cookie)
 {
 	/* initialize the GPIO Pins */
 	/* output */
-	at91_set_gpio_output(CONFIG_SYS_GPIO_CLK,0);
-	at91_set_gpio_output(CONFIG_SYS_GPIO_DATA,0);
+	at91_set_gpio_output(NCL_PIN_CLK,0);
+	at91_set_gpio_output(NCL_PIN_DATA,0);
 
 	/* output */
-	at91_set_gpio_output(CONFIG_SYS_GPIO_CONFIG,0);
+	at91_set_gpio_output(NCL_PIN_CONFIG,0);
 
 	/* First we set STATUS to 0 (reset state) */
 	/* CONFIG = 0 STATUS = 0 -> FPGA in reset state */
-	// at91_set_gpio_output(CONFIG_SYS_GPIO_STATUS,0);
+	// at91_set_gpio_output(NCL_PIN_STATUS,0);
 
 	/* input */
-	at91_set_gpio_input(CONFIG_SYS_GPIO_CON_DON,1);
-	at91_set_gpio_input(CONFIG_SYS_GPIO_STATUS,0);
+	at91_set_gpio_input(NCL_PIN_CON_DON,1);
+	at91_set_gpio_input(NCL_PIN_STATUS,0);
 
 	PRINTF("FPGA IO configured\n");
 
@@ -82,10 +88,10 @@ int fpga_pre_fn (int cookie)
 int fpga_config_fn (int assert_config, int flush, int cookie)
 {
 	if (assert_config) {
-		at91_set_gpio_output(CONFIG_SYS_GPIO_CONFIG,1);
+		at91_set_gpio_output(NCL_PIN_CONFIG,1);
 		PRINTF("CONFIG set to HIGH\n");
 	} else {
-		at91_set_gpio_output(CONFIG_SYS_GPIO_CONFIG,0);
+		at91_set_gpio_output(NCL_PIN_CONFIG,0);
 	}
 	return FPGA_SUCCESS;
 }
@@ -93,7 +99,7 @@ int fpga_config_fn (int assert_config, int flush, int cookie)
 /* Returns the state of STATUS Pin */
 int fpga_status_fn (int cookie)
 {
-	if (at91_get_gpio_value(CONFIG_SYS_GPIO_STATUS)) {
+	if (at91_get_gpio_value(NCL_PIN_STATUS)) {
 		PRINTF("STATUS = HIGH\n");
 		return FPGA_FAIL;
 	}
@@ -104,7 +110,7 @@ int fpga_status_fn (int cookie)
 /* Returns the state of CONF_DONE Pin */
 int fpga_done_fn (int cookie)
 {
-	if (at91_get_gpio_value(CONFIG_SYS_GPIO_CON_DON)) {
+	if (at91_get_gpio_value(NCL_PIN_CON_DON)) {
 		PRINTF("CONF_DON = HIGH\n");
 		return FPGA_FAIL;
 	}

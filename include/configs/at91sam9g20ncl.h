@@ -161,13 +161,6 @@
 #define CONFIG_FPGA_COUNT		1
 #define CONFIG_SYS_FPGA_MAX_SIZE	512 * 1024
 
-/* FPGA program pin configuration */
-#define CONFIG_SYS_GPIO_CLK		AT91_PIN_PA2	/* FPGA clk pin (cpu output)		*/
-#define CONFIG_SYS_GPIO_DATA		AT91_PIN_PA1	/* FPGA data pin (cpu output)		*/
-#define CONFIG_SYS_GPIO_STATUS		AT91_PIN_PA27	/* FPGA status pin (cpu input)		*/
-#define CONFIG_SYS_GPIO_CONFIG		AT91_PIN_PA25	/* FPGA CONFIG pin (cpu output)		*/
-#define CONFIG_SYS_GPIO_CON_DON		AT91_PIN_PA26	/* FPGA CONFIG_DONE pin (cpu input)	*/
-
 #define CONFIG_SYS_MEMTEST_START	CONFIG_SYS_SDRAM_BASE
 #define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + CONFIG_SYS_SDRAM_SIZE - SZ_2M)
 
