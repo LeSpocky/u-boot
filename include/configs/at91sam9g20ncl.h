@@ -138,7 +138,6 @@
 #define CONFIG_SYS_NO_FLASH			1
 
 /* File Systems */
-#define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
 #define CONFIG_RBTREE
 #define CONFIG_MTD_DEVICE
