@@ -29,9 +29,7 @@
  * Since the linker has to swallow that define, we must use a pure
  * hex number here!
  */
-#ifndef CONFIG_SYS_TEXT_BASE
 #define CONFIG_SYS_TEXT_BASE		0x21e00000
-#endif
 
 /* ARM asynchronous clock */
 #define CONFIG_SYS_AT91_SLOW_CLOCK	32768		/* slow clock xtal */
