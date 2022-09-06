@@ -129,9 +129,6 @@
 #define CONFIG_SYS_NAND_READY_PIN	AT91_PIN_PC13
 #endif
 
-/* NOR flash - no real flash on this board */
-#define CONFIG_SYS_NO_FLASH			1
-
 /* File Systems */
 #define CONFIG_CMD_UBIFS
 #define CONFIG_RBTREE
