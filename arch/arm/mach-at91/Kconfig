@@ -78,6 +78,7 @@ config TARGET_AT91SAM9260EK
 config TARGET_AT91SAM9G20NCL
 	bool "isNet Lite"
 	select CPU_ARM926EJS
+	select BOARD_EARLY_INIT_F
 
 config TARGET_ETHERNUT5
 	bool "Ethernut5 board"
