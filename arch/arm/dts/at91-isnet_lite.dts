@@ -1,0 +1,114 @@
+/*
+ * at91-isnet-lite.dts -- Device Tree file for Thorsis Technologies isNet Lite board
+ *
+ * Copyright 2022 Thorsis Technologies GmbH
+ *
+ * Author: Alexander Dahl <ada@thorsis.com>
+ *
+ * Licensed under GPLv2.
+ */
+/dts-v1/;
+#include <dt-bindings/input/input.h>
+#include "at91sam9g20.dtsi"
+
+/ {
+	model = "Thorsis Technologies isNet Lite";
+	compatible = "thorsis,isnet-lite", "atmel,at91sam9g20", "atmel,at91sam9";
+
+	chosen {
+		u-boot,dm-pre-reloc;
+		stdout-path = &dbgu;
+	};
+
+	memory {
+		reg = <0x20000000 0x02000000>;
+	};
+
+	clocks {
+		slow_xtal {
+			clock-frequency = <32768>;
+		};
+
+		main_xtal {
+			clock-frequency = <18432000>;
+		};
+	};
+
+	ahb {
+		apb {
+			/*
+			pinctrl@fffff400 {
+				pinctrl {
+					pinctrl_key_gpio: key_gpio {
+						atmel,pins = <AT91_PIOA 11 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;
+					};
+				};
+			};
+			*/
+
+			dbgu: serial@fffff200 {
+				u-boot,dm-pre-reloc;
+				status = "okay";
+			};
+
+			macb0: ethernet@fffc4000 {
+				phy-mode = "rmii";
+				status = "okay";
+			};
+
+			shdwc@fffffd10 {
+				atmel,wakeup-counter = <10>;
+				atmel,wakeup-rtt-timer;
+			};
+
+			rtc@fffffd20 {
+				atmel,rtt-rtc-time-reg = <&gpbr 0x0>;
+				status = "okay";
+			};
+
+			watchdog@fffffd40 {
+				status = "okay";
+			};
+
+			gpbr: syscon@fffffd50 {
+				status = "okay";
+			};
+		};
+
+		nand0: nand@40000000 {
+			nand-bus-width = <8>;
+			nand-ecc-mode = "soft";
+			nand-on-flash-bbt;
+			status = "okay";
+
+			/* maybe add partitions here later */
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+
+		/*
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_key_gpio>;
+		*/
+
+		reset {
+			label = "Reset Button";
+			gpios = <&pioA 11 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+			wakeup-source;
+			debounce-interval = <60>;
+		};
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		/* name/label same as in dtb for Linux */
+		status {
+			label = "status";
+			gpios = <&pioA 22 GPIO_ACTIVE_HIGH>;
+		};
+	};
+};
