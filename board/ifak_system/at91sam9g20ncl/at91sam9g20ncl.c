@@ -10,6 +10,7 @@
  */
 
 #include <common.h>
+#include <debug_uart.h>
 #include <asm/io.h>
 #include <asm/arch/at91sam9260_matrix.h>
 #include <asm/arch/at91sam9_smc.h>
@@ -124,10 +125,22 @@ static void at91sam9g20ncl_reg_hw_init(void)
 			AT91_SMC_MODE_PS_4, &smc->cs[7].mode );
 }
 
+#ifdef CONFIG_DEBUG_UART_BOARD_INIT
+void board_debug_uart_init(void)
+{
+	at91_seriald_hw_init();
+}
+#endif
+
+#ifdef CONFIG_BOARD_EARLY_INIT_F
 int board_early_init_f(void)
 {
+#ifdef CONFIG_DEBUG_UART
+	debug_uart_init();
+#endif
 	return 0;
 }
+#endif
 
 int board_init(void)
 {
