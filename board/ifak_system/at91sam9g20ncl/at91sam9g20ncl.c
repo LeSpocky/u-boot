@@ -17,11 +17,6 @@
 #include <asm/arch/clk.h>
 #include <asm/arch/gpio.h>
 
-#if defined(CONFIG_RESET_PHY_R) && defined(CONFIG_MACB)
-# include <net.h>
-#endif
-#include <netdev.h>
-
 #include "button.h"
 #include <status_led.h>
 
@@ -129,54 +124,8 @@ static void at91sam9g20ncl_reg_hw_init(void)
 			AT91_SMC_MODE_PS_4, &smc->cs[7].mode );
 }
 
-#ifdef CONFIG_MACB
-static void at91sam9g20ncl_macb_hw_init(void)
-{
-	struct at91_port *pioa = (struct at91_port *)ATMEL_BASE_PIOA;
-
-	/*
-	 * Disable pull-up on:
-	 *	RXDV (PA17) => PHY normal mode (not Test mode)
-	 *	ERX0 (PA14) => PHY ADDR0
-	 *	ERX1 (PA15) => PHY ADDR1
-	 *	ERX2 (PA25) => PHY ADDR2
-	 *	ERX3 (PA26) => PHY ADDR3
-	 *	ECRS (PA28) => PHY ADDR4  => PHYADDR = 0x0
-	 *
-	 * PHY has internal pull-down
-	 */
-	writel(pin_to_mask(AT91_PIN_PA14) |
-		pin_to_mask(AT91_PIN_PA15) |
-		pin_to_mask(AT91_PIN_PA17) |
-		pin_to_mask(AT91_PIN_PA25) |
-		pin_to_mask(AT91_PIN_PA26) |
-		pin_to_mask(AT91_PIN_PA28),
-		&pioa->pudr);
-
-	at91_phy_reset();
-
-	/* Re-enable pull-up */
-	writel(pin_to_mask(AT91_PIN_PA14) |
-		pin_to_mask(AT91_PIN_PA15) |
-		pin_to_mask(AT91_PIN_PA17) |
-		pin_to_mask(AT91_PIN_PA25) |
-		pin_to_mask(AT91_PIN_PA26) |
-		pin_to_mask(AT91_PIN_PA28),
-		&pioa->puer);
-
-	/* Initialize EMAC=MACB hardware */
-	at91_macb_hw_init();
-}
-#endif
-
 int board_early_init_f(void)
 {
-	at91_periph_clk_enable(ATMEL_ID_PIOA);
-	at91_periph_clk_enable(ATMEL_ID_PIOB);
-	at91_periph_clk_enable(ATMEL_ID_PIOC);
-
-	at91_seriald_hw_init();
-
 	return 0;
 }
 
@@ -199,9 +148,6 @@ int board_init(void)
 
 #ifdef CONFIG_HAS_DATAFLASH
 	at91_spi0_hw_init((1 << 0) | (1 << 1));
-#endif
-#ifdef CONFIG_MACB
-	at91sam9g20ncl_macb_hw_init();
 #endif
 
 #ifdef CONFIG_FPGA
@@ -226,14 +172,5 @@ void reset_phy(void)
 {
 }
 #endif
-
-int board_eth_init(bd_t *bis)
-{
-	int rc = 0;
-#ifdef CONFIG_MACB
-	rc = macb_eth_initialize(0, (void *)ATMEL_BASE_EMAC0, 0x00);
-#endif
-	return rc;
-}
 
 /* vim: set noet sts=0 ts=8 sw=8 sr: */
