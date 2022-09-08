@@ -196,6 +196,8 @@ int ncl_fpga_init( void )
 {
 	int i;
 
+	at91_periph_clk_enable(ATMEL_ID_PIOA);
+
 	PRINTF( "%s:%d: Initialize FPGA interface\n", __FUNCTION__, __LINE__ );
 	fpga_init();
 

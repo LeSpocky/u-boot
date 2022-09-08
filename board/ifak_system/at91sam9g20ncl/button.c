@@ -23,10 +23,15 @@
 
 void ncl_button_init(void)
 {
+	debug("%s: entered\n", __func__);
+
+	at91_periph_clk_enable(ATMEL_ID_PIOA);
 	at91_set_gpio_input(NCL_PIN_FACTORYRESET, 1);
 }
 
 int do_button( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
+	debug("%s: entered\n", __func__);
+
 	return at91_get_gpio_value(NCL_PIN_FACTORYRESET);
 }
 
