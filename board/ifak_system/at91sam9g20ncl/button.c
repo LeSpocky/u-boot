@@ -14,6 +14,7 @@
 #include <asm/arch/at91sam9260.h>
 #include <asm/arch/at91_pmc.h>
 #include <asm/arch/gpio.h>
+#include <mach/clk.h>
 
 /*
  * Hardcoded for now, this should go to dts later, maybe when switching
