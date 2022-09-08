@@ -112,12 +112,8 @@
 #endif
 
 /* File Systems */
-#define CONFIG_CMD_UBIFS
-#define CONFIG_RBTREE
 #define CONFIG_MTD_DEVICE
 #define CONFIG_MTD_PARTITIONS
-#define CONFIG_CMD_MTDPARTS
-#define CONFIG_LZO
 
 #define CONFIG_SYS_LOAD_ADDR		0x21800000	/* load address */
 
