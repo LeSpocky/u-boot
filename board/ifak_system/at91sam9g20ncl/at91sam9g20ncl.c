@@ -39,6 +39,8 @@ static void at91sam9g20ncl_nand_hw_init(void)
 	struct at91_matrix *matrix = (struct at91_matrix *)ATMEL_BASE_MATRIX;
 	unsigned long csa;
 
+	debug("%s: entered\n", __func__);
+
 	/* Assign CS3 to NAND/SmartMedia Interface */
 	csa = readl(&matrix->ebicsa);
 	csa |= AT91_MATRIX_CS3A_SMC_SMARTMEDIA;
@@ -74,6 +76,8 @@ static void at91sam9g20ncl_nand_hw_init(void)
 static void at91sam9g20ncl_reg_hw_init(void)
 {
 	struct at91_smc *smc = (struct at91_smc *) ATMEL_BASE_SMC;
+
+	debug("%s: entered\n", __func__);
 
 	/*
 	 *	Set the PIO Register
@@ -125,6 +129,13 @@ static void at91sam9g20ncl_reg_hw_init(void)
 			AT91_SMC_MODE_PS_4, &smc->cs[7].mode );
 }
 
+#if defined(CONFIG_SHOW_BOOT_PROGRESS)
+void show_boot_progress(int progress)
+{
+	debug("Boot reached stage %d\n", progress);
+}
+#endif
+
 #ifdef CONFIG_DEBUG_UART_BOARD_INIT
 void board_debug_uart_init(void)
 {
@@ -135,6 +146,8 @@ void board_debug_uart_init(void)
 #ifdef CONFIG_BOARD_EARLY_INIT_F
 int board_early_init_f(void)
 {
+	debug("%s: entered\n", __func__);
+
 #ifdef CONFIG_DEBUG_UART
 	debug_uart_init();
 #endif
@@ -144,6 +157,8 @@ int board_early_init_f(void)
 
 int board_init(void)
 {
+	debug("%s: entered\n", __func__);
+
 	/* adress of boot parameters */
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + 0x100;
 
@@ -174,6 +189,8 @@ int board_init(void)
 
 int dram_init(void)
 {
+	debug("%s: entered\n", __func__);
+
 	gd->ram_size = get_ram_size(
 		(void *)CONFIG_SYS_SDRAM_BASE,
 		CONFIG_SYS_SDRAM_SIZE);
