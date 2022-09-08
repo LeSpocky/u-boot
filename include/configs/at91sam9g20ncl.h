@@ -123,8 +123,6 @@
 #define CONFIG_ENV_SIZE			0x40000		/* 1 sector = 128 kB  = 0x20000 */
 #define CONFIG_BOOTCOMMAND		"nand read 0x21800000 0x0120000 0x200000; bootm 0x21800000"
 
-#define CONFIG_BOOTARGS			"console=ttyS0,115200"
-
 #endif
 
 #define CONFIG_SYS_CBSIZE		256
