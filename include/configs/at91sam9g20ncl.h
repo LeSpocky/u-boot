@@ -115,7 +115,7 @@
 #define CONFIG_SYS_MEMTEST_START	CONFIG_SYS_SDRAM_BASE
 #define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + CONFIG_SYS_SDRAM_SIZE - SZ_2M)
 
-#if defined(CONFIG_SYS_USE_NANDFLASH)
+#if defined(CONFIG_NAND_BOOT)
 
 /* bootstrap + u-boot + env + linux in nandflash */
 #define CONFIG_ENV_OFFSET		0xA0000
