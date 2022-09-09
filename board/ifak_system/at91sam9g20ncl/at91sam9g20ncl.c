@@ -174,10 +174,6 @@ int board_init(void)
 	ncl_button_init();	/* init BUTTON */
 #endif
 
-#ifdef CONFIG_HAS_DATAFLASH
-	at91_spi0_hw_init((1 << 0) | (1 << 1));
-#endif
-
 #ifdef CONFIG_FPGA
 	ncl_fpga_init();
 #endif

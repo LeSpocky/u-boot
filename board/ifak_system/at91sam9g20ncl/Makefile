@@ -18,6 +18,5 @@ obj-$(CONFIG_TT_NCL_BUTTON)	+= button.o
 obj-$(CONFIG_FPGA)		+= fpga.o
 obj-y				+= backplane.o
 obj-y				+= hrttest.o
-obj-$(CONFIG_HAS_DATAFLASH)	+= partition.o
 
 # vim: ft=make noet sts=0 ts=8 sw=8 sr
