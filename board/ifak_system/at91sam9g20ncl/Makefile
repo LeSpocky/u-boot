@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0+
 #
 # (C) Copyright 2003-2008
 # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
@@ -6,11 +7,11 @@
 # Stelian Pop <stelian.pop@leadtechdesign.com>
 # Lead Tech Design <www.leadtechdesign.com>
 #
-# Copyright 2010,2012 ifak system GmbH
-# Copyright 2019 Thorsis Technologies GmbH
+# (C) Copyright 2010
+# ifak system GmbH
 #
-# SPDX-License-Identifier:	GPL-2.0+
-#
+# (C) Copyright 2019
+# Thorsis Technologies GmbH
 
 obj-y				+= at91sam9g20ncl.o
 obj-$(CONFIG_AT91_LED)		+= led.o

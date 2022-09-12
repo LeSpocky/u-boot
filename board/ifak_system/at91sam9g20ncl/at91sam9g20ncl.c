@@ -1,12 +1,14 @@
+// SPDX-License-Identifier: GPL-2.0+
 /*
  * (C) Copyright 2007-2008
  * Stelian Pop <stelian@popies.net>
  * Lead Tech Design <www.leadtechdesign.com>
  *
- * © 2010 ifak system GmbH
- * © 2019 Thorsis Technologies GmbH
+ * (C) Copyright 2010
+ * ifak system GmbH
  *
- * SPDX-License-Identifier:	GPL-2.0+
+ * (C) Copyright 2019
+ * Thorsis Technologies GmbH
  */
 
 #include <common.h>

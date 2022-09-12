@@ -1,12 +1,13 @@
+/* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * (C) Copyright 2006
  * Heiko Schocher, DENX Software Engineering, hs@denx.de
+ *
  * (C) Copyright 2010
- * psu@ifak-system.com
+ * Peter Schulz <psu@ifak-system.com>
+ *
  * (C) Copyright 2019
  * Thorsis Technologies GmbH
- *
- * SPDX-License-Identifier:	GPL-2.0+
  */
 
 /*
