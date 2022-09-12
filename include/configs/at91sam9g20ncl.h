@@ -91,11 +91,8 @@
 #define CONFIG_SYS_NAND_USE_FLASH_BBT
 #endif
 
-/* File Systems */
-#define CONFIG_MTD_DEVICE
-#define CONFIG_MTD_PARTITIONS
-
-#define CONFIG_SYS_LOAD_ADDR		0x21800000	/* load address */
+/* load address */
+#define CONFIG_SYS_LOAD_ADDR		0x21800000
 
 /* FPGA */
 #undef FPGA_DEBUG
