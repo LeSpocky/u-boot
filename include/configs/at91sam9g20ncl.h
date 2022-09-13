@@ -112,8 +112,6 @@
 
 #endif
 
-#define CONFIG_PREBOOT
-
 /*
  * Size of malloc() pool
  */
