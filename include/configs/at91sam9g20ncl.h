@@ -86,7 +86,6 @@
 #define CONFIG_SYS_NAND_READY_PIN	AT91_PIN_PC13
 
 #define CONFIG_SYS_NAND_ONFI_DETECTION
-#define CONFIG_SYS_NAND_USE_FLASH_BBT
 #endif
 
 /* load address */
