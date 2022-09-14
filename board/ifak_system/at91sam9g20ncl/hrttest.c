@@ -4,7 +4,7 @@
  *	@author	Norman Rädke <nra@ifak-system.com>
  *	@author	Alexander Dahl <ada@thorsis.com>
  *
- *	@copyright	2010,2012 ifak system GmbH
+ *	@copyright	2010 ifak system GmbH
  *	@copyright	2019 Thorsis Technologies GmbH
  **********************************************************************/
 
@@ -190,7 +190,7 @@ static int hrttest_getParam( void ) {
 	return 0;
 }
 
-int do_hrt_test( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
+int do_hrt_test(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
 	int i=0;
 	int module=0;
 	BYTE channel=0;

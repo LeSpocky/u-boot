@@ -4,7 +4,7 @@
  *	@author		Norman Rädke <nra@ifak-system.com>
  *	@author		Alexander Dahl <ada@thorsis.com>
  *
- *	@copyright	2010,2012 ifak system GmbH
+ *	@copyright	2010 ifak system GmbH
  *	@copyright	2019 Thorsis Technologies GmbH
  **********************************************************************/
 
@@ -12,8 +12,8 @@
 
 /*
 #include <common.h>
-#include <command.h>
 */
+#include <command.h>
 #include <console.h>
 
 #include <asm/io.h>
@@ -143,7 +143,7 @@ BYTE init_modul( BYTE byModuleNr ) {
 	return 0;
 }
 
-int do_bp_scan( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
+int do_bp_scan(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
 	int i,n;
 	BOOL bModuleFound;
 
@@ -232,7 +232,7 @@ int do_bp_scan( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 	return  0;
 }
 
-int do_bp_reset_random_generator( cmd_tbl_t *cmdtp, int flag, int argc,
+int do_bp_reset_random_generator(struct cmd_tbl *cmdtp, int flag, int argc,
 		char * const argv[] )
 {
 	random_startwert = 0x0AA;
@@ -240,7 +240,7 @@ int do_bp_reset_random_generator( cmd_tbl_t *cmdtp, int flag, int argc,
 	return  0;
 }
 
-int do_bp_test( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
+int do_bp_test(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
 	DWORD i, n;
 	BYTE byData;
 	DWORD ulRdCnt = 0;
@@ -399,7 +399,7 @@ int do_bp_test( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 	return  0;
 }
 
-int do_bp_test_short_read_write( cmd_tbl_t *cmdtp, int flag, int argc,
+int do_bp_test_short_read_write(struct cmd_tbl *cmdtp, int flag, int argc,
 		char * const argv[] )
 {
 	DWORD i;
@@ -531,7 +531,7 @@ int do_bp_test_short_read_write( cmd_tbl_t *cmdtp, int flag, int argc,
 }
 
 #ifdef DEBUG_BPT_4B
-int do_bp_test_4byte_write_read( cmd_tbl_t *cmdtp, int flag, int argc,
+int do_bp_test_4byte_write_read(struct cmd_tbl *cmdtp, int flag, int argc,
 		char * const argv[] )
 {
 	DWORD i, n;
@@ -677,7 +677,7 @@ int do_bp_test_4byte_write_read( cmd_tbl_t *cmdtp, int flag, int argc,
 }
 #endif /* DEBUG_BPT_4B */
 
-int do_bp_debug( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
+int do_bp_debug(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
 	int i,n;
 
 	if(byModuleCount == 0) {
@@ -741,7 +741,7 @@ int do_bp_debug( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 	return  0;
 }
 
-int do_bp_mod( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
+int do_bp_mod(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
 	switch (argc) {
 	case 2:			/* modul number */
 		byModuleCount = atoi((uchar *)argv[1]);
@@ -757,7 +757,7 @@ int do_bp_mod( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
 	return  0;
 }
 
-int do_bp_dpr_size( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) {
+int do_bp_dpr_size(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
 	switch (argc) {
 	case 2:			/* modul number */
 		g_wDprSize = simple_strtoul((char *)argv[1], NULL, 16);
@@ -774,7 +774,7 @@ int do_bp_dpr_size( cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[] ) 
 }
 
 #ifdef DEBUG
-int do_bp_debug_random_function( cmd_tbl_t *cmdtp, int flag, int argc,
+int do_bp_debug_random_function(struct cmd_tbl *cmdtp, int flag, int argc,
 		char * const argv[] )
 {
 	int n;
@@ -793,11 +793,6 @@ int do_bp_debug_random_function( cmd_tbl_t *cmdtp, int flag, int argc,
 	return  0;
 }
 #endif
-
-//defined in hrttest.c
-/*int hrt_test( cmd_tbl_t *cmdtp, int flag, int argc, char *argv[] ){
-
-}*/
 
 U_BOOT_CMD(
 	bprrg, 1, 1, do_bp_reset_random_generator,
