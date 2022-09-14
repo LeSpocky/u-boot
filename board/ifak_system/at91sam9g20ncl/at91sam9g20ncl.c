@@ -23,7 +23,6 @@
 #include <asm/arch/gpio.h>
 
 #include "button.h"
-#include <status_led.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -168,10 +167,6 @@ int board_init(void)
 
 #ifdef CONFIG_CMD_NAND
 	at91sam9g20ncl_nand_hw_init();
-#endif
-
-#ifdef CONFIG_AT91_LED
-	coloured_LED_init();	/* init LED */
 #endif
 
 #ifdef CONFIG_TT_NCL_BUTTON
