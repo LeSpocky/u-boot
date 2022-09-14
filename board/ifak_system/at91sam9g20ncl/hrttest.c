@@ -20,6 +20,9 @@
 #include <asm/arch/at91_rstc.h>
 #include <asm/arch/gpio.h>
 */
+
+#include <linux/delay.h>
+
 #include "backplane.h"
 
 #define DPRAM_CHANNEL0		0x0100

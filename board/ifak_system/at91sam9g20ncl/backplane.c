@@ -28,6 +28,8 @@
 #include <asm/arch/gpio.h>
 */
 
+#include <linux/delay.h>
+
 #define led_pin (1 << 4)
 
 //#define DEBUG
