@@ -23,8 +23,6 @@
 #include <asm/arch/clk.h>
 #include <asm/arch/gpio.h>
 
-#include "button.h"
-
 DECLARE_GLOBAL_DATA_PTR;
 
 /* ------------------------------------------------------------------------- */
@@ -168,10 +166,6 @@ int board_init(void)
 
 #ifdef CONFIG_CMD_NAND
 	at91sam9g20ncl_nand_hw_init();
-#endif
-
-#ifdef CONFIG_TT_NCL_BUTTON
-	ncl_button_init();	/* init BUTTON */
 #endif
 
 #ifdef CONFIG_FPGA

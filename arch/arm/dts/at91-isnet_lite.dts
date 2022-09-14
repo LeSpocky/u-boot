@@ -36,16 +36,6 @@
 
 	ahb {
 		apb {
-			/*
-			pinctrl@fffff400 {
-				pinctrl {
-					pinctrl_key_gpio: key_gpio {
-						atmel,pins = <AT91_PIOA 11 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;
-					};
-				};
-			};
-			*/
-
 			dbgu: serial@fffff200 {
 				u-boot,dm-pre-reloc;
 				status = "okay";
@@ -88,16 +78,11 @@
 	gpio_keys {
 		compatible = "gpio-keys";
 
-		/*
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_key_gpio>;
-		*/
-
+		/* label is used as is to identify button in U-Boot shell command */
 		reset {
-			label = "Reset Button";
+			label = "reset";
 			gpios = <&pioA 11 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
-			wakeup-source;
 			debounce-interval = <60>;
 		};
 	};
