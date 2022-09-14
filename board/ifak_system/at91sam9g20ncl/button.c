@@ -4,7 +4,7 @@
  *	@author		Peter Schulz <psu@ifak-system.com>
  *	@author		Alexander Dahl <ada@thorsis.com>
  *
- *	@copyright	2010,2012 ifak system GmbH
+ *	@copyright	2010 ifak system GmbH
  *	@copyright	2019 Thorsis Technologies GmbH
  **********************************************************************/
 
@@ -12,6 +12,7 @@
 
 #include <common.h>
 #include <command.h>
+#include <log.h>
 #include <asm/arch/at91sam9260.h>
 #include <asm/arch/at91_pmc.h>
 #include <asm/arch/gpio.h>
