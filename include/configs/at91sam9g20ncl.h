@@ -94,9 +94,6 @@
 #define CONFIG_SYS_FPGA_PROG_FEEDBACK
 #define CONFIG_FPGA_COUNT		1
 
-#define CONFIG_SYS_MEMTEST_START	CONFIG_SYS_SDRAM_BASE
-#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + CONFIG_SYS_SDRAM_SIZE - SZ_2M)
-
 #if defined(CONFIG_NAND_BOOT)
 
 /* bootstrap + u-boot + env + linux in nandflash */
