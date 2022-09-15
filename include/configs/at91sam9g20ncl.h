@@ -31,7 +31,6 @@
 #define CONFIG_CMDLINE_TAG		/* enable passing of ATAGs */
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_INITRD_TAG
-#define CONFIG_SKIP_LOWLEVEL_INIT
 
 /* general purpose I/O */
 #define CONFIG_ATMEL_LEGACY		/* required until (g)pio is fixed */
@@ -85,9 +84,6 @@
 #define CONFIG_SYS_NAND_ONFI_DETECTION
 #endif
 
-/* load address */
-#define CONFIG_SYS_LOAD_ADDR		0x21800000
-
 /* FPGA */
 #undef FPGA_DEBUG
 #define CONFIG_SYS_FPGA_CHECK_CTRLC
@@ -100,11 +96,6 @@
 #define CONFIG_BOOTCOMMAND		"nand read 0x21800000 0x0120000 0x200000; bootm 0x21800000"
 
 #endif
-
-/*
- * Size of malloc() pool
- */
-#define CONFIG_SYS_MALLOC_LEN	ROUND(3 * CONFIG_ENV_SIZE + 128*1024, 0x1000)
 
 #endif /* __CONFIG_H */
 
