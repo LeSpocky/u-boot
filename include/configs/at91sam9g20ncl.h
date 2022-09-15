@@ -27,11 +27,6 @@
 #define CONFIG_SYS_AT91_SLOW_CLOCK	32768		/* slow clock xtal */
 #define CONFIG_SYS_AT91_MAIN_CLOCK	18432000	/* main clock xtal */
 
-/* Misc CPU related */
-#define CONFIG_CMDLINE_TAG		/* enable passing of ATAGs */
-#define CONFIG_SETUP_MEMORY_TAGS
-#define CONFIG_INITRD_TAG
-
 /* general purpose I/O */
 #define CONFIG_ATMEL_LEGACY		/* required until (g)pio is fixed */
 
@@ -62,14 +57,6 @@
 # define CONFIG_SYS_INIT_SP_ADDR \
 	(ATMEL_BASE_SRAM1 + 16 * 1024 - GENERATED_GBL_DATA_SIZE)
 #endif
-
-/*
- * The (arm)linux board id set by generic code depending on configured board
- * (see boards.cfg for different boards)
- *
- * NOTE	We pretend to be sam9g20ek!
- */
-#define CONFIG_MACH_TYPE MACH_TYPE_AT91SAM9G20EK
 
 /* NAND flash */
 #ifdef CONFIG_CMD_NAND
