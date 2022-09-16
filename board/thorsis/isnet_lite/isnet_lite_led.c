@@ -10,7 +10,7 @@
 #include <log.h>
 #include <linux/delay.h>
 
-#include "../../thorsis/common/tt_led.h"
+#include "../common/tt_led.h"
 
 #define TT_LED_LABEL	"status"
 

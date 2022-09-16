@@ -974,7 +974,7 @@ dtb-$(CONFIG_TARGET_AT91SAM9260EK) += \
 	at91sam9g20ek.dtb	\
 	at91sam9g20ek_2mmc.dtb
 
-dtb-$(CONFIG_TARGET_AT91SAM9G20NCL) += at91-isnet_lite.dtb
+dtb-$(CONFIG_TARGET_ISNET_LITE) += at91-isnet_lite.dtb
 
 dtb-$(CONFIG_TARGET_AT91SAM9M10G45EK) += at91sam9m10g45ek.dtb
 

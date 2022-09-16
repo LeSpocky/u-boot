@@ -1,0 +1,12 @@
+if TARGET_ISNET_LITE
+
+config SYS_BOARD
+	default "isnet_lite"
+
+config SYS_VENDOR
+	default "thorsis"
+
+config SYS_CONFIG_NAME
+	default "isnet_lite"
+
+endif

@@ -75,11 +75,6 @@ config TARGET_AT91SAM9260EK
 	select AT91SAM9260
 	select BOARD_EARLY_INIT_F
 
-config TARGET_AT91SAM9G20NCL
-	bool "isNet Lite"
-	select AT91SAM9G20
-	select BOARD_EARLY_INIT_F
-
 config TARGET_ETHERNUT5
 	bool "Ethernut5 board"
 	select AT91SAM9XE
@@ -154,6 +149,14 @@ config TARGET_GARDENA_SMART_GATEWAY_AT91SAM
 	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	select SUPPORT_SPL
+
+config TARGET_ISNET_LITE
+	bool "Thorsis isNet Lite board"
+	select AT91SAM9G20
+	select BOARD_EARLY_INIT_F
+	help
+	  The Thorsis Technologies isNet Lite is a modular ethernet
+	  gateway based on an AT91SAM9G20 SoC.
 
 config TARGET_MUXGATE
 	bool "Thorsis MUXgate board"
@@ -421,7 +424,6 @@ source "board/conclusive/kstr-sama5d27/Kconfig"
 source "board/egnite/ethernut5/Kconfig"
 source "board/esd/meesc/Kconfig"
 source "board/gardena/smart-gateway-at91sam/Kconfig"
-source "board/ifak_system/at91sam9g20ncl/Kconfig"
 source "board/l+g/vinco/Kconfig"
 source "board/ronetix/pm9261/Kconfig"
 source "board/ronetix/pm9263/Kconfig"
@@ -429,6 +431,7 @@ source "board/ronetix/pm9g45/Kconfig"
 source "board/siemens/corvus/Kconfig"
 source "board/siemens/taurus/Kconfig"
 source "board/siemens/smartweb/Kconfig"
+source "board/thorsis/isnet_lite/Kconfig"
 source "board/thorsis/muxgate/Kconfig"
 source "board/thorsis/proficube/Kconfig"
 source "board/thorsis/vera2/Kconfig"

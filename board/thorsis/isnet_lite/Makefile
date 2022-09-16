@@ -13,7 +13,7 @@
 # (C) Copyright 2019
 # Thorsis Technologies GmbH
 
-obj-y				+= at91sam9g20ncl.o
+obj-y				+= isnet_lite.o
 obj-$(CONFIG_LED)		+= isnet_lite_led.o
 obj-$(CONFIG_FPGA)		+= fpga.o
 obj-y				+= backplane.o
