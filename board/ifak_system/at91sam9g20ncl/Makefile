@@ -14,6 +14,7 @@
 # Thorsis Technologies GmbH
 
 obj-y				+= at91sam9g20ncl.o
+obj-$(CONFIG_LED)		+= isnet_lite_led.o
 obj-$(CONFIG_FPGA)		+= fpga.o
 obj-y				+= backplane.o
 obj-y				+= hrttest.o
