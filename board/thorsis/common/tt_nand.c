@@ -3,6 +3,9 @@
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#if defined(CONFIG_SAMA5D2)
+
 #include <asm/io.h>
 #include <asm/arch/atmel_pio4.h>
 #include <asm/arch/sama5d2_smc.h>
@@ -56,3 +59,5 @@ void tt_nand_configure_smc(struct at91_smc *smc)
 	       AT91_SMC_MODE_TDF_CYCLE(3),
 	       &smc->cs[3].mode);
 }
+
+#endif
