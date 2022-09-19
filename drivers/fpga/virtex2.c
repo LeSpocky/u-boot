@@ -12,20 +12,13 @@
  * on spartan2.c (Rich Ireland, rireland@enterasys.com).
  */
 
+#define LOG_CATEGORY UCLASS_FS_FIRMWARE_LOADER
+
 #include <common.h>
 #include <console.h>
+#include <log.h>
 #include <virtex2.h>
 #include <linux/delay.h>
-
-#if 0
-#define FPGA_DEBUG
-#endif
-
-#ifdef	FPGA_DEBUG
-#define	PRINTF(fmt, args...)	printf(fmt, ##args)
-#else
-#define PRINTF(fmt, args...)
-#endif
 
 /*
  * If the SelectMap interface can be overrun by the processor, define
@@ -89,12 +82,12 @@ static int virtex2_load(xilinx_desc *desc, const void *buf, size_t bsize,
 
 	switch (desc->iface) {
 	case slave_serial:
-		PRINTF("%s: Launching Slave Serial Load\n", __func__);
+		log_debug("%s: Launching Slave Serial Load\n", __func__);
 		ret_val = virtex2_ss_load(desc, buf, bsize);
 		break;
 
 	case slave_selectmap:
-		PRINTF("%s: Launching Slave Parallel Load\n", __func__);
+		log_debug("%s: Launching Slave Parallel Load\n", __func__);
 		ret_val = virtex2_ssm_load(desc, buf, bsize);
 		break;
 
@@ -111,12 +104,12 @@ static int virtex2_dump(xilinx_desc *desc, const void *buf, size_t bsize)
 
 	switch (desc->iface) {
 	case slave_serial:
-		PRINTF("%s: Launching Slave Serial Dump\n", __func__);
+		log_debug("%s: Launching Slave Serial Dump\n", __func__);
 		ret_val = virtex2_ss_dump(desc, buf, bsize);
 		break;
 
 	case slave_parallel:
-		PRINTF("%s: Launching Slave Parallel Dump\n", __func__);
+		log_debug("%s: Launching Slave Parallel Dump\n", __func__);
 		ret_val = virtex2_ssm_dump(desc, buf, bsize);
 		break;
 
@@ -150,8 +143,8 @@ static int virtex2_slave_pre(xilinx_virtex2_slave_fns *fn, int cookie)
 {
 	unsigned long ts;
 
-	PRINTF("%s:%d: Start with interface functions @ 0x%p\n",
-	       __func__, __LINE__, fn);
+	log_debug("%s:%d: Start with interface functions @ 0x%p\n",
+		  __func__, __LINE__, fn);
 
 	if (!fn) {
 		printf("%s:%d: NULL Interface function table!\n",
@@ -160,7 +153,7 @@ static int virtex2_slave_pre(xilinx_virtex2_slave_fns *fn, int cookie)
 	}
 
 	/* Gotta split this one up (so the stack won't blow??) */
-	PRINTF("%s:%d: Function Table:\n"
+	log_debug("%s:%d: Function Table:\n"
 	       "  base   0x%p\n"
 	       "  struct 0x%p\n"
 	       "  pre    0x%p\n"
@@ -169,7 +162,7 @@ static int virtex2_slave_pre(xilinx_virtex2_slave_fns *fn, int cookie)
 	       "  error  0x%p\n",
 	       __func__, __LINE__,
 	       &fn, fn, fn->pre, fn->pgm, fn->init, fn->err);
-	PRINTF("  clock  0x%p\n"
+	log_debug("  clock  0x%p\n"
 	       "  cs     0x%p\n"
 	       "  write  0x%p\n"
 	       "  rdata  0x%p\n"
@@ -330,8 +323,8 @@ static int virtex2_ssm_load(xilinx_desc *desc, const void *buf, size_t bsize)
 #endif
 
 		if ((*fn->done)(cookie) == FPGA_SUCCESS) {
-			PRINTF("%s:%d:done went active early, bytecount = %d\n",
-			       __func__, __LINE__, bytecount);
+			log_debug("%s:%d:done went active early, bytecount = %d\n",
+				  __func__, __LINE__, bytecount);
 			break;
 		}
 
@@ -465,8 +458,8 @@ static int virtex2_ss_load(xilinx_desc *desc, const void *buf, size_t bsize)
 #endif
 
 			if ((*fn->done)(cookie) == FPGA_SUCCESS) {
-				PRINTF("%s:%d:done went active early, bytecount = %d\n",
-				       __func__, __LINE__, bytecount);
+				log_debug("%s:%d:done went active early, bytecount = %d\n",
+					  __func__, __LINE__, bytecount);
 				break;
 			}
 
