@@ -285,7 +285,7 @@ int do_bp_test(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) 
 		for (i=0x0; i<g_wDprSize; i++) {
 			g_byCmpBuffer[n][i] = 0xFF & bp_rand();
 		}
-		memcpy( (volatile unsigned char *) (n * 0x10000 + BP_BASE_ADDR),
+		memcpy_toio(BP_BASE_ADDR + n * 0x10000,
 				&g_byCmpBuffer[n][0], g_wDprSize );
 		printf("done\n\r");
 	}
@@ -331,7 +331,7 @@ int do_bp_test(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) 
 					for(i=0; i<uiNumberOfBytes; i++) {
 						g_byCmpBuffer[n][uiStartAddr+i] = 0xFF & bp_rand();
 					}
-					memcpy( (volatile unsigned char *) (uiStartAddr + n * 0x10000 + BP_BASE_ADDR),
+					memcpy_toio(BP_BASE_ADDR + uiStartAddr + n * 0x10000,
 							&g_byCmpBuffer[n][uiStartAddr], uiNumberOfBytes );
 #ifdef DEBUG_RANDOM_TEST
 					printf("  WE:%.7X...%.7X\n\r",uiStartAddr+n*0x10000,uiStartAddr+i+n*0x10000-1);
