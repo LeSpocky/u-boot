@@ -9,4 +9,13 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
 	default "isnet_lite"
 
+menu "isNet Lite board options"
+
+config TT_NCL_HRTTEST
+	bool "hrttest"
+	help
+	  Runtime HART request test.
+
+endmenu
+
 endif
