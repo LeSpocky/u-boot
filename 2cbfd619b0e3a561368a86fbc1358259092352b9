@@ -1,0 +1,4 @@
+RFC -> v2:
+  - Added/Improved Kconfig help texts
+  - Use `uclass_first_device_err()` in test
+  - Add compatibles match list to sandbox driver
