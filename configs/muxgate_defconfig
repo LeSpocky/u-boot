@@ -43,7 +43,7 @@ CONFIG_CMD_PING=y
 CONFIG_CMD_FS_GENERIC=y
 CONFIG_CMD_MTDPARTS=y
 CONFIG_MTDIDS_DEFAULT="nand0=atmel_nand"
-CONFIG_MTDPARTS_DEFAULT="mtdparts=atmel_nand:256k(bootstrap)ro,768k(uboot)ro,256k(env1),256k(env2),256k(fpga_led)ro,256k(reserved)ro,50M(rootfs_rec)ro,-(filesystem)"
+CONFIG_MTDPARTS_DEFAULT="mtdparts=atmel_nand:256k(bootstrap)ro,768k(uboot)ro,256k(env1),256k(env2),512k(reserved)ro,-(UBI)"
 CONFIG_CMD_UBI=y
 CONFIG_OF_CONTROL=y
 CONFIG_ENV_IS_IN_NAND=y
@@ -60,6 +60,7 @@ CONFIG_AT91_H32MX=y
 CONFIG_AT91_GENERIC_CLK=y
 CONFIG_ATMEL_PIO4=y
 CONFIG_DM_74X164=y
+# CONFIG_I2C is not set
 CONFIG_LED=y
 CONFIG_LED_GPIO=y
 # CONFIG_MMC is not set
@@ -73,6 +74,7 @@ CONFIG_DM_ETH=y
 CONFIG_MACB=y
 CONFIG_PINCTRL=y
 CONFIG_PINCTRL_AT91PIO4=y
+# CONFIG_POWER is not set
 CONFIG_DM_SERIAL=y
 CONFIG_ATMEL_USART=y
 CONFIG_SPI=y
