@@ -146,12 +146,12 @@ int board_init(void)
 	int ret;
 #endif
 
-	if (IS_ENABLED(CONFIG_SPL_BUILD)) {
-		/* Check *at build time* if the filename is an non-empty string */
-		if (sizeof(CONFIG_ZYNQMP_SPL_PM_CFG_OBJ_FILE) > 1)
-			zynqmp_pmufw_load_config_object(zynqmp_pm_cfg_obj,
+#if defined(CONFIG_SPL_BUILD)
+	/* Check *at build time* if the filename is an non-empty string */
+	if (sizeof(CONFIG_ZYNQMP_SPL_PM_CFG_OBJ_FILE) > 1)
+		zynqmp_pmufw_load_config_object(zynqmp_pm_cfg_obj,
 							zynqmp_pm_cfg_obj_size);
-	}
+#endif
 
 #if defined(CONFIG_ZYNQMP_FIRMWARE)
 	struct udevice *dev;
