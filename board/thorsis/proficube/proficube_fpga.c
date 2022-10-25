@@ -312,6 +312,10 @@ static const struct proficube_fpga_info proficube_fpgas[] = {
 		.fpgadesc = &proficube_fpga_t20q144
 	},
 	{
+		.fpgaimg = "fpga_t20q144-v1dot4.uimg",
+		.fpgadesc = &proficube_fpga_t20q144
+	},
+	{
 		.fpgaimg = NULL,
 		.fpgadesc = NULL
 	}
