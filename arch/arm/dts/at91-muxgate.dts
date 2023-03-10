@@ -130,57 +130,75 @@
 		 * NOTE	If you switch ON both colors of the same LED,
 		 *	it will go off. We're just misusing the
 		 *	gpio-leds driver here for simplicity.
+		 *
+		 * Front view of the case, 'o' are the LEDs, numbers the
+		 * bit positions, chars the labels.
+		 *
+		 * +-----------+
+		 * |           |
+		 * |           |
+		 * | ST     Tx |
+		 * | 45 o o 67 |
+		 * | 01 o o 23 |
+		 * | Err    Rx |
+		 * |           |
+		 * |           |
+		 * +-----------+
 		 */
-		red-1 {
-			label = "red:indicator-1";
+
+		led-0 {
+			label = "red:fault";
 			gpios = <&gpio_spi 0 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
-		green-1 {
-			label = "green:indicator-1";
+		led-1 {
+			label = "green:fault";
 			gpios = <&gpio_spi 1 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
-		red-2 {
-			label = "red:indicator-2";
+		led-2 {
+			label = "red:rx";
 			gpios = <&gpio_spi 2 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
-		green-2 {
-			label = "green:indicator-2";
+		led-3 {
+			label = "green:rx";
 			gpios = <&gpio_spi 3 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
-		red-3 {
-			label = "red:indicator-3";
+		led-4 {
+			label = "red:status";
 			gpios = <&gpio_spi 4 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
-		green-3 {
-			label = "green:indicator-3";
+		led-5 {
+			label = "green:status";
 			gpios = <&gpio_spi 5 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
-		red-4 {
-			label = "red:indicator-4";
+		led-6 {
+			label = "red:tx";
 			gpios = <&gpio_spi 6 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
-		green-4 {
-			label = "green:indicator-4";
+		led-7 {
+			label = "green:tx";
 			gpios = <&gpio_spi 7 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
-		/* separate LED, might be missing */
-		led-5 {
+		/*
+		 * maybe not populated on PCB
+		 * (this led could use pwm, but we use it as simple gpio-led in u-boot only.)
+		 */
+		led-8 {
 			label = "red:debug";
 			gpios = <&pioA PIN_PB5 GPIO_ACTIVE_HIGH>;
 			default-state = "keep";
