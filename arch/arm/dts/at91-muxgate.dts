@@ -159,13 +159,13 @@
 		};
 
 		led-2 {
-			label = "red:rx";
+			label = "red:rx-0";
 			gpios = <&gpio_spi 2 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
 		led-3 {
-			label = "green:rx";
+			label = "green:rx-0";
 			gpios = <&gpio_spi 3 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
@@ -183,13 +183,13 @@
 		};
 
 		led-6 {
-			label = "red:tx";
+			label = "red:tx-0";
 			gpios = <&gpio_spi 6 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 
 		led-7 {
-			label = "green:tx";
+			label = "green:tx-0";
 			gpios = <&gpio_spi 7 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};

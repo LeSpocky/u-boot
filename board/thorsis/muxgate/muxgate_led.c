@@ -13,10 +13,11 @@
 
 static int tt_ledtest(void)
 {
-	const char *labels[9] = { "green:fault", "green:rx",
-							  "green:status", "green:tx",
-							  "red:fault", "red:rx",
-							  "red:status", "red:tx", "red:debug" };
+	const char *labels[9] = { "green:fault", "green:rx-0",
+				  "green:status", "green:tx-0",
+				  "red:fault", "red:rx-0",
+				  "red:status", "red:tx-0",
+				  "red:debug" };
 	struct udevice *leds[9];
 	int ec, i;
 
