@@ -16,4 +16,6 @@ config BOARD_SPECIFIC_OPTIONS # dummy
 	def_bool y
 	imply DISTRO_DEFAULTS
 
+source "board/thorsis/common/Kconfig"
+
 endif

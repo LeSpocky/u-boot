@@ -1,0 +1,4 @@
+config TT_DRAM
+	bool
+	depends on SAMA5D2
+	default (TARGET_MUXGATE || TARGET_PROFICUBE || TARGET_VERA2)
