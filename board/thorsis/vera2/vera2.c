@@ -17,6 +17,8 @@
 #include <asm/arch/sama5d2.h>
 #include <asm/arch/sama5d2_smc.h>
 
+#include "../common/tt_dram.h"
+
 #ifdef CONFIG_NAND_ATMEL
 #include "../common/tt_nand.h"
 #endif
@@ -94,9 +96,5 @@ int board_init(void)
 
 int dram_init(void)
 {
-	pr_debug("%s: called\n", __func__);
-
-	gd->ram_size = get_ram_size((void *)CONFIG_SYS_SDRAM_BASE,
-				    CONFIG_SYS_SDRAM_SIZE);
-	return 0;
+	return tt_dram_init_sama5_sip();
 }
