@@ -57,6 +57,7 @@
 				};
 			};
 
+			/* node name changed from f801c000 to f801c600 for use as i2c */
 			flx0: flexcom@f801c600 {
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
 				status = "okay";

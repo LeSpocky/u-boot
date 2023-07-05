@@ -163,6 +163,7 @@
 				clock-names = "pclk", "gclk";
 			};
 
+			/* node name changed from f801c000 to f801c600 for use as i2c */
 			flx0: flexcom@f801c600 {
 				compatible = "atmel,sama5d2-flexcom";
 				reg = <0xf801c000 0x200>;
