@@ -62,13 +62,6 @@
 #undef FPGA_DEBUG
 #define CONFIG_FPGA_COUNT		1
 
-#if defined(CONFIG_NAND_BOOT)
-
-/* bootstrap + u-boot + env + linux in nandflash */
-#define CONFIG_BOOTCOMMAND		"nand read 0x21800000 0x0120000 0x200000; bootm 0x21800000"
-
-#endif
-
 #endif /* __CONFIG_H */
 
 /* vim: set noet sts=0 ts=8 sw=8 sr: */
