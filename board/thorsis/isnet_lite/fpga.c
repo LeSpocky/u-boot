@@ -169,26 +169,21 @@ int fpga_post_fn (int cookie)
 	return fpga_abort_fn (cookie);
 }
 
-/* Note that these are pointers to code that is in Flash.  They will be
- * relocated at runtime.
- */
-Altera_CYC2_Passive_Serial_fns fpga_fns = {
-	fpga_pre_fn,
-	fpga_config_fn,
-	fpga_status_fn,
-	fpga_done_fn,
-	fpga_write_fn,
-	fpga_abort_fn,
-	fpga_post_fn
+static Altera_CYC2_Passive_Serial_fns isnet_lite_fns = {
+	.pre = fpga_pre_fn,
+	.config = fpga_config_fn,
+	.status = fpga_status_fn,
+	.done = fpga_done_fn,
+	.write = fpga_write_fn,
+	.abort = fpga_abort_fn,
+	.post = fpga_post_fn,
 };
 
-Altera_desc fpga[CONFIG_FPGA_COUNT] = {
-	{Altera_CYC2,
-	 passive_serial,
-	 Altera_EP2C35_SIZE,
-	 (void *) &fpga_fns,
-	 NULL,
-	 0}
+static Altera_desc isnet_lite_fpga = {
+	.family = Altera_CYC2,
+	.iface = passive_serial,
+	.size = Altera_EP2C35_SIZE,
+	.iface_fns = &isnet_lite_fns,
 };
 
 /*
@@ -196,18 +191,13 @@ Altera_desc fpga[CONFIG_FPGA_COUNT] = {
  */
 int ncl_fpga_init( void )
 {
-	int i;
-
 	at91_periph_clk_enable(ATMEL_ID_PIOA);
 
 	PRINTF( "%s:%d: Initialize FPGA interface\n", __FUNCTION__, __LINE__ );
 	fpga_init();
 
-	for ( i = 0; i < CONFIG_FPGA_COUNT; i++ )
-	{
-		PRINTF( "%s:%d: Adding fpga %d\n", __FUNCTION__, __LINE__, i );
-		fpga_add( fpga_altera, &fpga[i] );
-	}
+	PRINTF( "%s:%d: Adding fpga 0\n", __FUNCTION__, __LINE__ );
+	fpga_add( fpga_altera, &isnet_lite_fpga );
 
 	return 1;
 }

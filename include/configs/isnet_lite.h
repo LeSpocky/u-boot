@@ -54,7 +54,6 @@
 
 /* FPGA */
 #undef FPGA_DEBUG
-#define CONFIG_FPGA_COUNT		1
 
 #endif /* __CONFIG_H */
 
