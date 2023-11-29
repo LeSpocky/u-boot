@@ -21,24 +21,19 @@
   * todo: add support for compressed uImages (WARNING: compressed images will not be decompressed!)
   */
 
+#define LOG_CATEGORY LOGC_BOARD
+
 #include <common.h>
 #include <altera.h>
 #include <ACEX1K.h>
 #include <command.h>
 #include <console.h>
 #include <fpga.h>
+#include <log.h>
 #include <asm/arch/at91sam9260.h>
 #include <asm/arch/at91_pmc.h>
 #include <asm/arch/gpio.h>
 #include <mach/clk.h>
-
-#if defined(CONFIG_FPGA)
-
-#ifdef FPGA_DEBUG
-#define	PRINTF(fmt,args...)	printf (fmt ,##args)
-#else
-#define	PRINTF(fmt,args...)
-#endif
 
 #define ERROR_FPGA_PRG_INIT_LOW  -1        /* Timeout after PRG* asserted   */
 #define ERROR_FPGA_PRG_INIT_HIGH -2        /* Timeout after PRG* deasserted */
@@ -81,7 +76,7 @@ int fpga_pre_fn (int cookie)
 	at91_set_gpio_input(NCL_PIN_CON_DON,1);
 	at91_set_gpio_input(NCL_PIN_STATUS,0);
 
-	PRINTF("FPGA IO configured\n");
+	log_debug("FPGA IO configured\n");
 
 	return FPGA_SUCCESS;
 }
@@ -91,7 +86,7 @@ int fpga_config_fn (int assert_config, int flush, int cookie)
 {
 	if (assert_config) {
 		at91_set_gpio_output(NCL_PIN_CONFIG,1);
-		PRINTF("CONFIG set to HIGH\n");
+		log_debug("CONFIG set to HIGH\n");
 	} else {
 		at91_set_gpio_output(NCL_PIN_CONFIG,0);
 	}
@@ -102,10 +97,10 @@ int fpga_config_fn (int assert_config, int flush, int cookie)
 int fpga_status_fn (int cookie)
 {
 	if (at91_get_gpio_value(NCL_PIN_STATUS)) {
-		PRINTF("STATUS = HIGH\n");
+		log_debug("STATUS = HIGH\n");
 		return FPGA_FAIL;
 	}
-	PRINTF("STATUS = LOW\n");
+	log_debug("STATUS = LOW\n");
 	return FPGA_SUCCESS;
 }
 
@@ -113,10 +108,10 @@ int fpga_status_fn (int cookie)
 int fpga_done_fn (int cookie)
 {
 	if (at91_get_gpio_value(NCL_PIN_CON_DON)) {
-		PRINTF("CONF_DON = HIGH\n");
+		log_debug("CONF_DON = HIGH\n");
 		return FPGA_FAIL;
 	}
-	PRINTF("CONF_DON = LOW\n");
+	log_debug("CONF_DON = LOW\n");
 	return FPGA_SUCCESS;
 }
 
@@ -193,15 +188,13 @@ int ncl_fpga_init( void )
 {
 	at91_periph_clk_enable(ATMEL_ID_PIOA);
 
-	PRINTF( "%s:%d: Initialize FPGA interface\n", __FUNCTION__, __LINE__ );
+	log_debug("Initialize FPGA interface\n");
 	fpga_init();
 
-	PRINTF( "%s:%d: Adding fpga 0\n", __FUNCTION__, __LINE__ );
+	log_debug("Adding fpga 0\n");
 	fpga_add( fpga_altera, &isnet_lite_fpga );
 
 	return 1;
 }
-
-#endif
 
 /* vim: set noet sts=0 ts=8 sw=8 sr: */

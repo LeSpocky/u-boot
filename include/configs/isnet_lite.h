@@ -51,9 +51,6 @@
 #define CONFIG_SYS_NAND_READY_PIN	AT91_PIN_PC13
 #endif
 
-/* FPGA */
-#undef FPGA_DEBUG
-
 #endif /* __CONFIG_H */
 
 /* vim: set noet sts=0 ts=8 sw=8 sr: */
