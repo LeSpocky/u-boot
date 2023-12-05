@@ -24,8 +24,8 @@
 #include <linux/sizes.h>
 
 /* ARM asynchronous clock */
-#define CONFIG_SYS_AT91_SLOW_CLOCK	32768		/* slow clock xtal */
-#define CONFIG_SYS_AT91_MAIN_CLOCK	18432000	/* main clock xtal */
+#define CFG_SYS_AT91_SLOW_CLOCK	32768		/* slow clock xtal */
+#define CFG_SYS_AT91_MAIN_CLOCK	18432000	/* main clock xtal */
 
 /*
  * SDRAM: 1 bank, min 32, max 128 MB
