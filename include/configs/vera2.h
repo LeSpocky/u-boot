@@ -20,14 +20,14 @@
 /* NAND flash */
 #ifdef CONFIG_NAND_BOOT
 
-#define CONFIG_SYS_NAND_BASE		ATMEL_BASE_CS3
-#define CONFIG_SYS_NAND_MASK_ALE	BIT(21)
-#define CONFIG_SYS_NAND_MASK_CLE	BIT(22)
+#define CFG_SYS_NAND_BASE		ATMEL_BASE_CS3
+#define CFG_SYS_NAND_MASK_ALE	BIT(21)
+#define CFG_SYS_NAND_MASK_CLE	BIT(22)
 /*
  * as of U-Boot v2019.01 using the RDY pin does not work with atmel nand
  * driver and the pio4 controller on SAMA5D2 …
  */
-#undef CONFIG_SYS_NAND_READY_PIN
+#undef CFG_SYS_NAND_READY_PIN
 
 #endif
 
