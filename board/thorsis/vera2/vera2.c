@@ -81,7 +81,7 @@ int board_init(void)
 	pr_debug("%s: called\n", __func__);
 
 	/* address of boot parameters */
-	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + 0x100;
+	gd->bd->bi_boot_params = CFG_SYS_SDRAM_BASE + 0x100;
 
 #ifdef CONFIG_NAND_ATMEL
 	board_nand_hw_init();

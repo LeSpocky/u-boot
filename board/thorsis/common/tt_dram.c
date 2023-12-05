@@ -33,9 +33,9 @@ int tt_dram_init_sama5_sip(void)
 
 	pr_debug("exid: 0x%08x\n", extension_id);
 	pr_debug("size: 0x%08lx (%ld)\n", size, size);
-	pr_debug("CONFIG_SYS_SDRAM_BASE: %p\n", (void *) CONFIG_SYS_SDRAM_BASE);
+	pr_debug("CFG_SYS_SDRAM_BASE: %p\n", (void *) CFG_SYS_SDRAM_BASE);
 
-	gd->ram_size = get_ram_size((void *)CONFIG_SYS_SDRAM_BASE, size);
+	gd->ram_size = get_ram_size((void *)CFG_SYS_SDRAM_BASE, size);
 
 	pr_debug("gd->ram_size: 0x%08lx (%lu)\n", gd->ram_size, gd->ram_size);
 
