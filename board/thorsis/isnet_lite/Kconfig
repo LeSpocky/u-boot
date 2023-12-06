@@ -13,6 +13,7 @@ menu "isNet Lite board options"
 
 config TT_NCL_HRTTEST
 	bool "hrttest"
+	depends on FPGA
 	help
 	  Runtime HART request test.
 

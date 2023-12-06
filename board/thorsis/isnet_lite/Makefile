@@ -15,8 +15,7 @@
 
 obj-y				+= isnet_lite.o
 obj-$(CONFIG_LED)		+= isnet_lite_led.o
-obj-$(CONFIG_FPGA)		+= fpga.o
-obj-$(CONFIG_TT_NCL_HRTTEST)	+= backplane.o
+obj-$(CONFIG_FPGA)		+= fpga.o backplane.o
 obj-$(CONFIG_TT_NCL_HRTTEST)	+= hrttest.o
 
 # vim: ft=make noet sts=0 ts=8 sw=8 sr
