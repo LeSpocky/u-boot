@@ -8,6 +8,7 @@
 #include "sama5d2-pinfunc.h"
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/pinctrl/at91.h>
 
 / {
 	model = "Thorsis Technologies MUXgate";
@@ -124,6 +125,28 @@
 	};
 };
 
+&ebi {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_nand_default>;
+	status = "okay";
+
+	nand_controller: nand-controller {
+		status = "okay";
+
+		nand@3 {
+			reg = <0x3 0x0 0x800000>;
+			atmel,rb = <0>;
+
+			nand-bus-width = <8>;
+			nand-ecc-mode = "hw";
+			nand-on-flash-bbt;
+			nand-ecc-strength = <8>;
+			nand-ecc-step-size = <512>;
+			label = "atmel_nand";
+		};
+	};
+};
+
 &macb0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_macb0_default>;
@@ -153,6 +176,31 @@
 			 <PIN_PC18__GMDC>,
 			 <PIN_PC19__GMDIO>;
 		bias-disable;
+	};
+
+	pinctrl_nand_default: nand_default {
+		rd_we_data {
+			pinmux = <PIN_PA22__D0>,
+				 <PIN_PA23__D1>,
+				 <PIN_PA24__D2>,
+				 <PIN_PA25__D3>,
+				 <PIN_PA26__D4>,
+				 <PIN_PA27__D5>,
+				 <PIN_PA28__D6>,
+				 <PIN_PA29__D7>,
+				 <PIN_PA30__NWE_NANDWE>,
+				 <PIN_PB2__NRD_NANDOE>;
+			bias-disable;
+			atmel,drive-strength = <ATMEL_PIO_DRVSTR_ME>;
+		};
+
+		ale_cle_rdy_cs {
+			pinmux = <PIN_PB0__A21_NANDALE>,
+				 <PIN_PB1__A22_NANDCLE>,
+				 <PIN_PC8__NANDRDY>,
+				 <PIN_PA31__NCS3>;
+			bias-pull-up;
+		};
 	};
 
 	pinctrl_spi0_default: spi0_default {
