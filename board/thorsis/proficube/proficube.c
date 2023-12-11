@@ -79,8 +79,10 @@ static void board_ebi_init(void)
 	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 25, 0);	/* A14 */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTB, 26, 0);	/* A15 */
 
+#ifdef CONFIG_NAND_ATMEL
 	/* Configure data, NRD, and NWE lines (also needed for NAND!) */
 	tt_nand_configure_pio_datarw();
+#endif
 
 	/* Configure SMC CS1 for FPGA */
 	atmel_pio4_set_b_periph(AT91_PIO_PORTC, 6, ATMEL_PIO_PUEN_MASK);	/* NCS1 */
