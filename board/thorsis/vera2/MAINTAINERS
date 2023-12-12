@@ -1,0 +1,7 @@
+Vera2 Board
+M:	Alexander Dahl <ada@thorsis.com>
+S:	Maintained
+F:	board/thorsis/vera2
+F:	configs/vera2_defconfig
+F:	include/configs/vera2.h
+F:	arch/arm/dts/at91-vera2*.dts*

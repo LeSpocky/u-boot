@@ -1,0 +1,7 @@
+isNet Lite Board
+M:	Alexander Dahl <ada@thorsis.com>
+S:	Maintained
+F:	board/thorsis/isnet_lite
+F:	configs/isnet_lite_defconfig
+F:	include/configs/isnet_lite.h
+F:	arch/arm/dts/at91-isnet_lite*.dts*

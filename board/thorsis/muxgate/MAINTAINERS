@@ -1,0 +1,7 @@
+MuxGate Board
+M:	Alexander Dahl <ada@thorsis.com>
+S:	Maintained
+F:	board/thorsis/muxgate
+F:	configs/muxgate_defconfig
+F:	include/configs/muxgate.h
+F:	arch/arm/dts/at91-muxgate*.dts*
