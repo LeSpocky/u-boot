@@ -1,0 +1,33 @@
+/*
+ * at91-vera2-u-boot.dtsi - Device Tree include for Thorsis Technologies Vera2 board
+ *
+ * © 2023 Thorsis Technologies GmbH
+ */
+
+/ {
+	chosen {
+		u-boot,dm-pre-reloc;
+	};
+};
+
+&pinctrl_sdmmc0_default {
+	cmd_dat {
+		u-boot,dm-pre-reloc;
+	};
+
+	ck_cd {
+		u-boot,dm-pre-reloc;
+	};
+};
+
+&pinctrl_uart1_default {
+	u-boot,dm-pre-reloc;
+};
+
+&sdmmc0 {
+	u-boot,dm-pre-reloc;
+};
+
+&uart1 {
+	u-boot,dm-pre-reloc;
+};

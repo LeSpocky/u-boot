@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * at91-isnet_lite-u-boot.dtsi -- Device Tree include for Thorsis Technologies isNet Lite board
+ *
+ * Copyright 2023 Thorsis Technologies GmbH
+ *
+ * Author: Alexander Dahl <ada@thorsis.com>
+ */
+
+/ {
+	chosen {
+		u-boot,dm-pre-reloc;
+	};
+};
+
+&dbgu {
+	u-boot,dm-pre-reloc;
+};

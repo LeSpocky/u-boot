@@ -1,0 +1,27 @@
+/*
+ * at91-muxgate-u-boot.dtsi – Device Tree include for Thorsis Technologies MUXgate board
+ *
+ * © 2023 Thorsis Technologies GmbH
+ */
+
+/ {
+	chosen {
+		u-boot,dm-pre-reloc;
+	};
+};
+
+&pinctrl_spi0_default {
+	u-boot,dm-pre-reloc;
+};
+
+&pinctrl_uart1_default {
+	u-boot,dm-pre-reloc;
+};
+
+&spi0 {
+	u-boot,dm-pre-reloc;
+};
+
+&uart1 {
+	u-boot,dm-pre-reloc;
+};

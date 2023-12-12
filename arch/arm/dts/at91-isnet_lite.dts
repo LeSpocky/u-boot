@@ -1,11 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0
 /*
- * at91-isnet-lite.dts -- Device Tree file for Thorsis Technologies isNet Lite board
+ * at91-isnet_lite.dts -- Device Tree file for Thorsis Technologies isNet Lite board
  *
  * Copyright 2022 Thorsis Technologies GmbH
  *
  * Author: Alexander Dahl <ada@thorsis.com>
- *
- * Licensed under GPLv2.
  */
 /dts-v1/;
 #include <dt-bindings/input/input.h>
@@ -16,7 +15,6 @@
 	compatible = "thorsis,isnet-lite", "atmel,at91sam9g20", "atmel,at91sam9";
 
 	chosen {
-		u-boot,dm-pre-reloc;
 		stdout-path = &dbgu;
 	};
 
@@ -37,7 +35,6 @@
 	ahb {
 		apb {
 			dbgu: serial@fffff200 {
-				u-boot,dm-pre-reloc;
 				status = "okay";
 			};
 
