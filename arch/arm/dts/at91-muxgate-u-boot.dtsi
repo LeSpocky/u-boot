@@ -6,22 +6,22 @@
 
 / {
 	chosen {
-		u-boot,dm-pre-reloc;
+		bootph-all;
 	};
 };
 
 &pinctrl_spi0_default {
-	u-boot,dm-pre-reloc;
+	bootph-all;
 };
 
 &pinctrl_uart1_default {
-	u-boot,dm-pre-reloc;
+	bootph-all;
 };
 
 &spi0 {
-	u-boot,dm-pre-reloc;
+	bootph-all;
 };
 
 &uart1 {
-	u-boot,dm-pre-reloc;
+	bootph-all;
 };

@@ -9,10 +9,10 @@
 
 / {
 	chosen {
-		u-boot,dm-pre-reloc;
+		bootph-all;
 	};
 };
 
 &dbgu {
-	u-boot,dm-pre-reloc;
+	bootph-all;
 };

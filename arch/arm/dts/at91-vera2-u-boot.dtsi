@@ -6,28 +6,28 @@
 
 / {
 	chosen {
-		u-boot,dm-pre-reloc;
+		bootph-all;
 	};
 };
 
 &pinctrl_sdmmc0_default {
 	cmd_dat {
-		u-boot,dm-pre-reloc;
+		bootph-all;
 	};
 
 	ck_cd {
-		u-boot,dm-pre-reloc;
+		bootph-all;
 	};
 };
 
 &pinctrl_uart1_default {
-	u-boot,dm-pre-reloc;
+	bootph-all;
 };
 
 &sdmmc0 {
-	u-boot,dm-pre-reloc;
+	bootph-all;
 };
 
 &uart1 {
-	u-boot,dm-pre-reloc;
+	bootph-all;
 };
