@@ -45,7 +45,7 @@ int do_bp_dpr(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
 	switch (argc) {
 	case 2:
 		g_wDprSize = simple_strtoul(argv[1], NULL, 16);
-		/* fall through */
+		fallthrough;
 	case 1:
 		printf("g_wDprSize = 0x%X\n", g_wDprSize);
 		return CMD_RET_SUCCESS;

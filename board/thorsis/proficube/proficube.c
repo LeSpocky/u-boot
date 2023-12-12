@@ -210,7 +210,6 @@ static void board_nand_hw_init(void)
 
 	/* Configure SMC CS3 for NAND */
 	tt_nand_configure_smc(smc);
-
 }
 #endif
 

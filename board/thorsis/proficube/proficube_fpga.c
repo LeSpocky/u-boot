@@ -72,13 +72,10 @@ static int proficube_fpga_config(int assert_config, int flush, int cookie)
 {
 	log_debug("%s: called\n", __func__);
 
-	if (assert_config)
-	{
+	if (assert_config) {
 		log_debug("Setting nCONFIG to HIGH.\n");
 		atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_nCONFIG, 1);
-	}
-	else
-	{
+	} else {
 		log_debug("Setting nCONFIG to LOW.\n");
 		atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_nCONFIG, 0);
 	}
@@ -116,13 +113,13 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	size_t i;
 
 	log_debug("%s: called (%s)\n", __func__,
-		 PROFICUBE_USE_SPI ? "spi" : "gpio");
+		  PROFICUBE_USE_SPI ? "spi" : "gpio");
 
 	fpga_desc = proficube_get_fpga_desc();
 	if (fpga_desc) {
 		if (len > fpga_desc->size) {
 			log_err("FPGA image too big (%zu > %zu)!\n",
-			       len, fpga_desc->size);
+				len, fpga_desc->size);
 			return FPGA_FAIL;
 		}
 	} else {
@@ -131,14 +128,14 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	}
 
 	data = malloc(len);
-	if (!data)
-	{
+	if (!data) {
 		log_err("Could not allocate memory!\n");
 		return FPGA_FAIL;
 	}
 
 #ifdef CONFIG_DM_SPI
 	struct udevice *dev;
+
 	log_debug("Using SPI CS%u.\n", PROFICUBE_FPGA_SPI_CS);
 	ret = _spi_get_bus_and_cs(PROFICUBE_FPGA_SPI_BUS,
 				  PROFICUBE_FPGA_SPI_CS,
@@ -146,8 +143,7 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 				  "spi_generic_drv",
 				  PROFICUBE_FPGA_SPI_DEV_NAME, &dev,
 				  &slave);
-	if (ret)
-	{
+	if (ret) {
 		log_err("spi_get_bus_and_cs() failed: %d!\n", ret);
 		goto err_data_allocated;
 	}
@@ -156,20 +152,17 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 #endif
 
 	ret = spi_claim_bus(slave);
-	if (ret)
-	{
+	if (ret) {
 		log_debug("spi_claim_bus(%p) failed: %d!\n", slave, ret);
 		goto err_data_allocated;
 	}
 
-	for (i = 0; i < len; i++)
-	{
+	for (i = 0; i < len; i++) {
 		data[i] = bitrev8( *((const uint8_t *)buf + i) );
 	}
 
 	ret = spi_xfer(slave, len * 8, data, NULL, SPI_XFER_ONCE);
-	if(ret)
-	{
+	if (ret) {
 		log_err("Error %d during SPI transaction\n", ret);
 	}
 
@@ -191,13 +184,13 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 	size_t bytecount = 0;
 
 	log_debug("%s: called (%s)\n", __func__,
-		 PROFICUBE_USE_SPI ? "spi" : "gpio");
+		  PROFICUBE_USE_SPI ? "spi" : "gpio");
 
 	fpga_desc = proficube_get_fpga_desc();
 	if (fpga_desc) {
 		if (len > fpga_desc->size) {
 			log_err("FPGA image too big (%zu > %zu)!\n",
-			       len, fpga_desc->size);
+				len, fpga_desc->size);
 			return FPGA_FAIL;
 		}
 	} else {
@@ -211,13 +204,11 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 		atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_SPI_CS(PROFICUBE_FPGA_SPI_CS), 1);
 	}
 
-	while (bytecount < len)
-	{
+	while (bytecount < len) {
 		uint8_t val = data[bytecount++];
 		uint8_t i = 8;
 
-		do
-		{
+		do {
 			switch (fpga_desc->family) {
 			case ALTERA_FAMILY_EFINIX_TRION:
 #if 0
@@ -235,23 +226,20 @@ static int proficube_fpga_write(const void *buf, size_t len, int flush, int cook
 			}
 
 			/* set clk to 1 */
-			atmel_pio4_set_pio_output(
-				PROFICUBE_FPGA_PIN_DCLK, 1);
+			atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_DCLK, 1);
 
 			/* set clk to 0 */
-			atmel_pio4_set_pio_output(
-				PROFICUBE_FPGA_PIN_DCLK, 0);
+			atmel_pio4_set_pio_output(PROFICUBE_FPGA_PIN_DCLK, 0);
 
 			val >>= 1;
 			i--;
 		} while (i > 0);
 
 #ifdef CONFIG_SYS_FPGA_PROG_FEEDBACK
-		if (bytecount % len_40 == 0)
-		{
+		if (bytecount % len_40 == 0) {
 			putc('.');		/* let them know we are alive */
 #ifdef CONFIG_SYS_FPGA_CHECK_CTRLC
-			if (ctrlc ()) return FPGA_FAIL;
+			if (ctrlc()) return FPGA_FAIL;
 #endif
 		}
 #endif
