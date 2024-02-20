@@ -152,25 +152,45 @@
 				#address-cells = <1>;
 				#size-cells = <1>;
 
+				/* 256 kiB */
 				at91bootstrap@0 {
 					label = "at91bootstrap";
 					reg = <0x0 0x40000>;
 				};
 
+				/* 1 MiB */
 				uboot@40000 {
 					label = "u-boot";
-					reg = <0x40000 0xc0000>;
+					reg = <0x40000 0x100000>;
 				};
 
-				ubootenvred@100000 {
-					label = "U-Boot Env Redundant";
-					reg = <0x100000 0x40000>;
-				};
-
+				/* 256 kiB */
 				ubootenv@140000 {
 					label = "U-Boot Env";
 					reg = <0x140000 0x40000>;
 				};
+
+				/* 256 kiB */
+				ubootenvred@180000 {
+					label = "U-Boot Env Redundant";
+					reg = <0x180000 0x40000>;
+				};
+
+				/* reserved: 0x001c0000-0x00200000 (256 kiB) */
+
+				/*
+				 * 253 MiB.  Starts at offset 2 MiB after
+				 * bootstrap, U-Boot and Env, and ends 1 MiB
+				 * before end, leaving space for BBT.
+				 */
+				ubi@200000 {
+					label = "UBI";
+					reg = <0x200000 0xfd00000>;
+				};
+
+				/* reserved: 0x0ff00000-0x0ff80000 (512 kiB) */
+
+				/* BBT: 0x0ff80000-0x10000000 (512 kiB) */
 			};
 		};
 	};
