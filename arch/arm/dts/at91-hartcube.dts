@@ -5,6 +5,7 @@
  */
 /dts-v1/;
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
 #include <dt-bindings/mfd/atmel-flexcom.h>
 #include "sam9x60.dtsi"
 
@@ -63,60 +64,61 @@
 		/*
 		 * (this led could use pwm, but we use it as simple gpio-led in u-boot only.)
 		 */
-		led-0 {
-			label = "led-0";
+		led_11_red: led-0 {
+			color = <LED_COLOR_ID_RED>;
 			gpios = <&pioC 18 GPIO_ACTIVE_HIGH>;
 		};
 
 		/*
 		 * (this led could use pwm, but we use it as simple gpio-led in u-boot only.)
 		 */
-		led-1 {
-			label = "led-1";
+		led_12_red: led-1 {
+			color = <LED_COLOR_ID_RED>;
 			gpios = <&pioC 19 GPIO_ACTIVE_HIGH>;
 		};
 
 		/*
 		 * (this led could use pwm, but we use it as simple gpio-led in u-boot only.)
 		 */
-		led-2 {
-			label = "led-2";
+		led_13_red: led-2 {
+			color = <LED_COLOR_ID_RED>;
 			gpios = <&pioC 20 GPIO_ACTIVE_HIGH>;
 		};
 
 		/*
 		 * (this led could use pwm, but we use it as simple gpio-led in u-boot only.)
 		 */
-		led-3 {
-			label = "led-3";
+		led_14_red: led-3 {
+			color = <LED_COLOR_ID_RED>;
 			gpios = <&pioC 21 GPIO_ACTIVE_HIGH>;
 		};
 
-		led-4 {
-			label = "led-4";
+		led_11_green: led-4 {
+			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pioC 22 GPIO_ACTIVE_HIGH>;
 		};
 
-		led-5 {
-			label = "led-5";
+		led_12_green: led-5 {
+			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pioC 23 GPIO_ACTIVE_HIGH>;
 		};
 
-		led-6 {
-			label = "led-6";
+		led_13_green: led-6 {
+			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pioC 24 GPIO_ACTIVE_HIGH>;
 		};
 
-		led-7 {
-			label = "led-7";
+		led_14_green: led-7 {
+			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pioC 25 GPIO_ACTIVE_HIGH>;
 		};
 
 		/*
 		 * maybe not populated on PCB
 		 */
-		led-8 {
-			label = "green:debug";
+		led_debug: led-8 {
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_DEBUG;
 			gpios = <&pioD 19 GPIO_ACTIVE_LOW>;
 			default-state = "keep";
 		};

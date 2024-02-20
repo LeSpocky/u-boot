@@ -18,7 +18,7 @@
 	};
 
 	config {
-		u-boot,boot-led = "blue";
+		u-boot,boot-led = "led-4";
 	};
 };
 
@@ -28,6 +28,50 @@
 
 &dbgu {
 	bootph-all;
+};
+
+&led_11_red {
+	label = "led-0";
+	default-state = "off";
+};
+
+&led_12_red {
+	label = "led-1";
+	default-state = "off";
+};
+
+&led_13_red {
+	label = "led-2";
+	default-state = "off";
+};
+
+&led_14_red {
+	label = "led-3";
+	default-state = "off";
+};
+
+&led_11_green {
+	label = "led-4";
+	default-state = "off";
+};
+
+&led_12_green {
+	label = "led-5";
+	default-state = "off";
+};
+
+&led_13_green {
+	label = "led-6";
+	default-state = "off";
+};
+
+&led_14_green {
+	label = "led-7";
+	default-state = "off";
+};
+
+&led_debug {
+	label = "green:debug";
 };
 
 &main_rc {
