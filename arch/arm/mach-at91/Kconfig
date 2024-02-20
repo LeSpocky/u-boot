@@ -150,6 +150,13 @@ config TARGET_GARDENA_SMART_GATEWAY_AT91SAM
 	select BOARD_LATE_INIT
 	select SUPPORT_SPL
 
+config TARGET_HARTCUBE
+	bool "Thorsis HARTcube board"
+	select SAM9X60
+	help
+	  The Thorsis Technologies HARTcube is a monolithic ethernet to
+	  HART gateway based on a SAM9X60 SoC.
+
 config TARGET_ISNET_LITE
 	bool "Thorsis isNet Lite board"
 	select AT91SAM9G20
@@ -431,6 +438,7 @@ source "board/ronetix/pm9g45/Kconfig"
 source "board/siemens/corvus/Kconfig"
 source "board/siemens/taurus/Kconfig"
 source "board/siemens/smartweb/Kconfig"
+source "board/thorsis/hartcube/Kconfig"
 source "board/thorsis/isnet_lite/Kconfig"
 source "board/thorsis/muxgate/Kconfig"
 source "board/thorsis/proficube/Kconfig"

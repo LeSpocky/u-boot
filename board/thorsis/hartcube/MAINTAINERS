@@ -1,0 +1,7 @@
+HARTcube Board
+M:	Alexander Dahl <ada@thorsis.com>
+S:	Maintained
+F:	board/thorsis/hartcube
+F:	configs/hartcube_defconfig
+F:	include/configs/hartcube.h
+F:	arch/arm/dts/at91-hartcube*.dts*

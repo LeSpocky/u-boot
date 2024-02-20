@@ -1,0 +1,71 @@
+/*
+ * at91-hartcube-u-boot.dtsi - Device Tree Include file for HARTcube board
+ *
+ * © 2024 Thorsis Technologies GmbH
+ */
+
+/ {
+	ahb {
+		bootph-all;
+
+		apb {
+			bootph-all;
+		};
+	};
+
+	chosen {
+		bootph-all;
+	};
+
+	config {
+		u-boot,boot-led = "blue";
+	};
+};
+
+&clk32 {
+	bootph-all;
+};
+
+&dbgu {
+	bootph-all;
+};
+
+&main_rc {
+	bootph-all;
+};
+
+&main_xtal {
+	bootph-all;
+};
+
+&pinctrl {
+	bootph-all;
+};
+
+&pinctrl_dbgu {
+	bootph-all;
+};
+
+&pioA {
+	bootph-all;
+};
+
+&pioB {
+	bootph-all;
+};
+
+&pit64b0 {
+	bootph-all;
+};
+
+&pmc {
+	bootph-all;
+};
+
+&slow_rc_osc {
+	bootph-all;
+};
+
+&slow_xtal {
+	bootph-all;
+};

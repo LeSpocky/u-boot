@@ -1,0 +1,15 @@
+if TARGET_HARTCUBE
+
+config SYS_BOARD
+	default "hartcube"
+
+config SYS_VENDOR
+	default "thorsis"
+
+config SYS_SOC
+        default "at91"
+
+config SYS_CONFIG_NAME
+	default "hartcube"
+
+endif

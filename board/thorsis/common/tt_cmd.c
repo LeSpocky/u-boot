@@ -16,6 +16,13 @@ static int do_tt_hello(struct cmd_tbl *cmdtp, int flag,
 	return CMD_RET_SUCCESS;
 }
 
+__weak int do_tt_ledtest(struct cmd_tbl *cmdtp, int flag,
+		  int argc, char * const argv[])
+{
+	pr_err("LED test not implemented for this board!\n");
+	return CMD_RET_FAILURE;
+}
+
 static char tt_help_text[] =
 	"hello    - Print hello world\n"
 #ifdef CONFIG_LED
