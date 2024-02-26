@@ -51,11 +51,13 @@
 
 #include <asm-generic/gpio.h>
 #include <clk.h>
+#include <command.h>
 #include <dm/device_compat.h>
 #include <dm/devres.h>
 #include <dm/of_addr.h>
 #include <dm/of_access.h>
 #include <dm/uclass.h>
+#include <linux/bitops.h>
 #include <linux/completion.h>
 #include <linux/io.h>
 #include <linux/iopoll.h>
@@ -69,6 +71,7 @@
 #include <nand.h>
 #include <regmap.h>
 #include <syscon.h>
+#include <vsprintf.h>
 
 #include "pmecc.h"
 
@@ -216,6 +219,7 @@ struct atmel_nand_controller_ops {
 	int (*ecc_init)(struct nand_chip *chip);
 	int (*setup_data_interface)(struct atmel_nand *nand, int csline,
 				    const struct nand_data_interface *conf);
+	void (*print_info)(struct atmel_nand *nand, int csline);
 };
 
 struct atmel_nand_controller_caps {
@@ -2041,12 +2045,201 @@ err:
 	return ret;
 }
 
+#ifdef CONFIG_CMD_NAND_ATMEL_DEBUG
+u32 atmel_smc_decode_ncycles(u32 reg, u32 shift, u32 msbpos, u32 msbwidth, u32 msbfactor )
+{
+	/*
+	 *	Examples:
+	 *
+	 *	NRD setup length = (128 * NRD_SETUP[5] + NRD_SETUP[4:0]) clock cycles.
+	 *	NRD pulse length = (256 * NRD_PULSE[6] + NRD_PULSE[5:0]) clock cycles.
+	 *	Read cycle length = (NRD_CYCLE[8:7] * 256) + NRD_CYCLE[6:0] clock cycles.
+	 */
+
+	reg >>= shift;
+
+	u32 lsbmask = GENMASK(msbpos - 1, 0);
+	u32 msbmask = GENMASK(msbwidth - 1, 0) << msbpos;
+	u32 msb = (reg & msbmask) >> msbpos;
+	u32 lsb = (reg & lsbmask);
+
+	return msb * msbfactor + lsb;
+}
+
+static void atmel_smc_cs_conf_print_raw(struct atmel_smc_cs_conf *conf, int cs)
+{
+	printf("SMC_SETUP%d:    0x%08x\n", cs, conf->setup);
+	printf("SMC_PULSE%d:    0x%08x\n", cs, conf->pulse);
+	printf("SMC_CYCLE%d:    0x%08x\n", cs, conf->cycle);
+	printf("SMC_MODE%d:     0x%08x\n", cs, conf->mode);
+}
+
+static void atmel_hsmc_cs_conf_print_raw(struct atmel_smc_cs_conf *conf, int cs)
+{
+	printf("HSMC_SETUP%d:   0x%08x\n", cs, conf->setup);
+	printf("HSMC_PULSE%d:   0x%08x\n", cs, conf->pulse);
+	printf("HSMC_CYCLE%d:   0x%08x\n", cs, conf->cycle);
+	printf("HSMC_TIMINGS%d: 0x%08x\n", cs, conf->timings);
+	printf("HSMC_MODE%d:    0x%08x\n", cs, conf->mode);
+}
+
+static void atmel_smc_print_setup(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+	u32 ncycles;
+
+	ncycles = atmel_smc_decode_ncycles(conf->setup, 24, 5, 1, 128);
+	printf("NCS_RD_SETUP: %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+	ncycles = atmel_smc_decode_ncycles(conf->setup, 16, 5, 1, 128);
+	printf("NRD_SETUP:    %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+	ncycles = atmel_smc_decode_ncycles(conf->setup, 8, 5, 1, 128);
+	printf("NCS_WR_SETUP: %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+	ncycles = atmel_smc_decode_ncycles(conf->setup, 0, 5, 1, 128);
+	printf("NWE_SETUP:    %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+}
+
+static void atmel_smc_print_pulse(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+	u32 ncycles;
+
+	ncycles = atmel_smc_decode_ncycles(conf->pulse, 24, 6, 1, 256);
+	printf("NCS_RD_PULSE: %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+	ncycles = atmel_smc_decode_ncycles(conf->pulse, 16, 6, 1, 256);
+	printf("NRD_PULSE:    %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+	ncycles = atmel_smc_decode_ncycles(conf->pulse, 8, 6, 1, 256);
+	printf("NCS_WR_PULSE: %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+	ncycles = atmel_smc_decode_ncycles(conf->pulse, 0, 6, 1, 256);
+	printf("NWE_PULSE:    %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+
+}
+
+static void atmel_smc_print_cycle(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+	u32 ncycles;
+
+	ncycles = atmel_smc_decode_ncycles(conf->cycle, 16, 7, 2, 256 );
+	printf("NRD_CYCLE:    %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+	ncycles = atmel_smc_decode_ncycles(conf->cycle, 0, 7, 2, 256 );
+	printf("NWE_CYCLE:    %3d clock cycles, %u ns\n",
+	       ncycles, ncycles * clk_period_ns);
+}
+
+static void atmel_smc_print_mode(struct atmel_smc_cs_conf *conf) {
+	u8 dbw;
+
+	if (conf->mode & BIT(24)) {
+		printf("Asynchronous burst read in Page mode is applied on the corresponding chip select.\n");
+		printf("Page Size: %u-byte page\n",
+		       4 << ((conf->mode & GENMASK(29,28)) >> 28));
+	} else {
+		printf("Standard read is applied.\n");
+	}
+
+	printf("TDF optimization %s\n",
+	       (conf->mode & BIT(20)) ? "enabled" : "disabled");
+	printf("TDF cycles: %lu\n", (conf->mode & GENMASK(19,16)) >> 16);
+
+	dbw = 8 << ((conf->mode & GENMASK(13,12)) >> 12);
+	printf("Data Bus Width: %u-bit bus\n", dbw);
+	if (dbw > 8)
+		printf("Byte %s access type\n",
+		       (conf->mode & BIT(8)) ? "write" : "select");
+
+	printf("NWAIT Mode: %lu\n", (conf->mode & GENMASK(5,4)) >> 4);
+	printf("Write operation controlled by %s signal\n",
+	       (conf->mode & BIT(1)) ? "NWE" : "NCS");
+	printf("Read operation controlled by %s signal\n",
+	       (conf->mode & BIT(0)) ? "NRD" : "NCS");
+}
+
+static void atmel_hsmc_print_mode(struct atmel_smc_cs_conf *conf) {
+	u8 dbw;
+
+	printf("TDF optimization %s\n",
+	       (conf->mode & BIT(20)) ? "enabled" : "disabled");
+	printf("TDF cycles: %lu\n", (conf->mode & GENMASK(19,16)) >> 16);
+
+	dbw = 8 << ((conf->mode & BIT(12)) >> 12);
+	printf("Data Bus Width: %u-bit bus\n", dbw);
+	if (dbw > 8)
+		printf("Byte %s access type\n",
+		       (conf->mode & BIT(8)) ? "write" : "select");
+
+	printf("NWAIT Mode: %lu\n", (conf->mode & GENMASK(5,4)) >> 4);
+	printf("Write operation controlled by %s signal\n",
+	       (conf->mode & BIT(1)) ? "NWE" : "NCS");
+	printf("Read operation controlled by %s signal\n",
+	       (conf->mode & BIT(0)) ? "NRD" : "NCS");
+}
+
+static void atmel_hsmc_print_timings(struct atmel_smc_cs_conf *conf) {
+	/* tbd */
+}
+
+static void atmel_smc_print_info(struct atmel_nand *nand, int csline)
+{
+	struct atmel_nand_controller *nc;
+	struct atmel_smc_cs_conf smcconf;
+	struct atmel_nand_cs *cs;
+	u32 mck_period_ns;
+
+	nc = to_nand_controller(nand->controller);
+	cs = &nand->cs[csline];
+
+	atmel_smc_cs_conf_init(&smcconf);
+	atmel_smc_cs_conf_get(nc->smc, cs->id, &smcconf);
+
+	atmel_smc_cs_conf_print_raw(&smcconf, cs->id);
+
+	mck_period_ns = NSEC_PER_SEC / clk_get_rate(nc->mck);
+	atmel_smc_print_setup(&smcconf, mck_period_ns);
+	atmel_smc_print_pulse(&smcconf, mck_period_ns);
+	atmel_smc_print_cycle(&smcconf, mck_period_ns);
+
+	atmel_smc_print_mode(&smcconf);
+}
+
+static void atmel_hsmc_print_info(struct atmel_nand *nand, int csline)
+{
+	struct atmel_hsmc_nand_controller *hsmc_nc;
+	struct atmel_nand_controller *nc;
+	struct atmel_smc_cs_conf smcconf;
+	struct atmel_nand_cs *cs;
+	u32 mck_period_ns;
+
+	nc = to_nand_controller(nand->controller);
+	hsmc_nc = to_hsmc_nand_controller(nand->controller);
+	cs = &nand->cs[csline];
+
+	atmel_smc_cs_conf_init(&smcconf);
+	atmel_hsmc_cs_conf_get(nc->smc, hsmc_nc->hsmc_layout, cs->id, &smcconf);
+
+	atmel_hsmc_cs_conf_print_raw(&smcconf, cs->id);
+
+	mck_period_ns = NSEC_PER_SEC / clk_get_rate(nc->mck);
+	atmel_smc_print_setup(&smcconf, mck_period_ns);
+	atmel_smc_print_pulse(&smcconf, mck_period_ns);
+	atmel_smc_print_cycle(&smcconf, mck_period_ns);
+
+	atmel_hsmc_print_mode(&smcconf);
+	atmel_hsmc_print_timings(&smcconf);
+}
+#endif
+
 static const struct atmel_nand_controller_ops atmel_hsmc_nc_ops = {
 	.probe = atmel_hsmc_nand_controller_probe,
 	.remove = atmel_hsmc_nand_controller_remove,
 	.ecc_init = atmel_hsmc_nand_ecc_init,
 	.nand_init = atmel_hsmc_nand_init,
 	.setup_data_interface = atmel_hsmc_nand_setup_data_interface,
+#ifdef CONFIG_CMD_NAND_ATMEL_DEBUG
+	.print_info = atmel_hsmc_print_info,
+#endif
 };
 
 static const struct atmel_nand_controller_caps atmel_sama5_nc_caps = {
@@ -2117,6 +2310,9 @@ static const struct atmel_nand_controller_ops atmel_smc_nc_ops = {
 	.ecc_init = atmel_nand_ecc_init,
 	.nand_init = atmel_smc_nand_init,
 	.setup_data_interface = atmel_smc_nand_setup_data_interface,
+#ifdef CONFIG_CMD_NAND_ATMEL_DEBUG
+	.print_info = atmel_smc_print_info,
+#endif
 };
 
 static const struct atmel_nand_controller_caps atmel_sam9260_nc_caps = {
@@ -2247,3 +2443,44 @@ void board_nand_init(void)
 		printf("Failed to initialize NAND controller. (error %d)\n",
 		       ret);
 }
+
+#ifdef CONFIG_CMD_NAND_ATMEL_DEBUG
+static int do_hsmc_decode(struct cmd_tbl *cmdtp, int flag,
+			  int argc, char * const argv[])
+{
+	struct atmel_nand_controller *nc;
+	struct atmel_nand *nand;
+	struct nand_chip *chip;
+	struct mtd_info *mtd;
+	int i, j;
+
+	for (i = 0; i < CONFIG_SYS_MAX_NAND_DEVICE; i++) {
+		putc('\n');
+		mtd = get_nand_dev_by_index(i);
+		if (!mtd)
+			continue;
+
+		chip = mtd_to_nand(mtd);
+		nand = to_atmel_nand(chip);
+		nc = to_nand_controller(nand->controller);
+		printf("mck clock rate: %lu\n", clk_get_rate(nc->mck));
+		if (!nc->caps->ops->print_info)
+			continue;
+
+		for (j = 0; j < nand->numcs; j++)
+		{
+			putc('\n');
+			nc->caps->ops->print_info(nand, j);
+		}
+	}
+
+	return CMD_RET_SUCCESS;
+}
+
+static char hsmc_help_text[] =
+	"decode - Decode SMC registers\n"
+	;
+
+U_BOOT_CMD_WITH_SUBCMDS(hsmc, "Atmel Static Memory Controller (SMC) debugging", hsmc_help_text,
+			U_BOOT_SUBCMD_MKENT(decode, 1, 1, do_hsmc_decode));
+#endif
