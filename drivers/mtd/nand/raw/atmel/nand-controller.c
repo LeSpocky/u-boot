@@ -2046,7 +2046,7 @@ err:
 }
 
 #ifdef CONFIG_CMD_NAND_ATMEL_DEBUG
-u32 atmel_smc_decode_ncycles(u32 reg, u32 shift, u32 msbpos, u32 msbwidth, u32 msbfactor )
+u32 atmel_smc_decode_ncycles(u32 reg, u32 shift, u32 msbpos, u32 msbwidth, u32 msbfactor)
 {
 	/*
 	 *	Examples:
@@ -2084,82 +2084,90 @@ static void atmel_hsmc_cs_conf_print_raw(struct atmel_smc_cs_conf *conf, int cs)
 }
 
 static void atmel_smc_print_reg(const char *name, u32 setup, u32 pulse,
-				u32 cycle, u32 clk_period_ns) {
+				u32 cycle, u32 clk_period_ns)
+{
 	u32 hold = cycle - pulse - setup;
+
 	printf("%6s: setup: %u (%u ns), pulse: %u (%u ns), hold: %u (%u ns), cycle: %u (%u ns)\n",
-		 name, setup, setup * clk_period_ns, pulse, pulse * clk_period_ns,
-		 hold, hold * clk_period_ns, cycle, cycle * clk_period_ns);
+	       name, setup, setup * clk_period_ns, pulse, pulse * clk_period_ns,
+	       hold, hold * clk_period_ns, cycle, cycle * clk_period_ns);
 }
 
-static void atmel_smc_print_ncs_rd(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+static void atmel_smc_print_ncs_rd(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
+{
 	u32 ncs_rd_setup = atmel_smc_decode_ncycles(conf->setup, 24, 5, 1, 128);
 	u32 ncs_rd_pulse = atmel_smc_decode_ncycles(conf->pulse, 24, 6, 1, 256);
-	u32 nrd_cycle = atmel_smc_decode_ncycles(conf->cycle, 16, 7, 2, 256 );
+	u32 nrd_cycle = atmel_smc_decode_ncycles(conf->cycle, 16, 7, 2, 256);
 
 	atmel_smc_print_reg("NCS_RD", ncs_rd_setup, ncs_rd_pulse,
 			    nrd_cycle, clk_period_ns);
 }
 
-static void atmel_smc_print_nrd(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+static void atmel_smc_print_nrd(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
+{
 	u32 nrd_setup = atmel_smc_decode_ncycles(conf->setup, 16, 5, 1, 128);
 	u32 nrd_pulse = atmel_smc_decode_ncycles(conf->pulse, 16, 6, 1, 256);
-	u32 nrd_cycle = atmel_smc_decode_ncycles(conf->cycle, 16, 7, 2, 256 );
+	u32 nrd_cycle = atmel_smc_decode_ncycles(conf->cycle, 16, 7, 2, 256);
 
 	atmel_smc_print_reg("NRD", nrd_setup, nrd_pulse, nrd_cycle, clk_period_ns);
 }
 
-static void atmel_smc_print_ncs_wr(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+static void atmel_smc_print_ncs_wr(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
+{
 	u32 ncs_wr_setup = atmel_smc_decode_ncycles(conf->setup, 8, 5, 1, 128);
 	u32 ncs_wr_pulse = atmel_smc_decode_ncycles(conf->pulse, 8, 6, 1, 256);
-	u32 nwe_cycle = atmel_smc_decode_ncycles(conf->cycle, 0, 7, 2, 256 );
+	u32 nwe_cycle = atmel_smc_decode_ncycles(conf->cycle, 0, 7, 2, 256);
 
 	atmel_smc_print_reg("NCS_WR", ncs_wr_setup, ncs_wr_pulse,
 			    nwe_cycle, clk_period_ns);
 }
 
-static void atmel_smc_print_nwe(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+static void atmel_smc_print_nwe(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
+{
 	u32 nwe_setup = atmel_smc_decode_ncycles(conf->setup, 0, 5, 1, 128);
 	u32 nwe_pulse = atmel_smc_decode_ncycles(conf->pulse, 0, 6, 1, 256);
-	u32 nwe_cycle = atmel_smc_decode_ncycles(conf->cycle, 0, 7, 2, 256 );
+	u32 nwe_cycle = atmel_smc_decode_ncycles(conf->cycle, 0, 7, 2, 256);
 
 	atmel_smc_print_reg("NWE", nwe_setup, nwe_pulse, nwe_cycle, clk_period_ns);
 }
 
-static void atmel_smc_print_mode(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+static void atmel_smc_print_mode(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
+{
 	u32 tdf;
 	u8 dbw;
 
 	if (conf->mode & BIT(24)) {
 		printf("Asynchronous burst read in Page mode is applied on the corresponding chip select.\n");
 		printf("Page Size: %u-byte page\n",
-		       4 << ((conf->mode & GENMASK(29,28)) >> 28));
+		       4 << ((conf->mode & GENMASK(29, 28)) >> 28));
 	} else {
 		printf("Standard read is applied.\n");
 	}
 
-	tdf = (conf->mode & GENMASK(19,16)) >> 16;
+	tdf = (conf->mode & GENMASK(19, 16)) >> 16;
 	printf("TDF optimization %s\n",
 	       (conf->mode & BIT(20)) ? "enabled" : "disabled");
 	printf("TDF cycles: %u (%u ns)\n", tdf, tdf * clk_period_ns);
 
-	dbw = 8 << ((conf->mode & GENMASK(13,12)) >> 12);
+	dbw = 8 << ((conf->mode & GENMASK(13, 12)) >> 12);
 	printf("Data Bus Width: %u-bit bus\n", dbw);
 	if (dbw > 8)
 		printf("Byte %s access type\n",
 		       (conf->mode & BIT(8)) ? "write" : "select");
 
-	printf("NWAIT Mode: %lu\n", (conf->mode & GENMASK(5,4)) >> 4);
+	printf("NWAIT Mode: %lu\n", (conf->mode & GENMASK(5, 4)) >> 4);
 	printf("Write operation controlled by %s signal\n",
 	       (conf->mode & BIT(1)) ? "NWE" : "NCS");
 	printf("Read operation controlled by %s signal\n",
 	       (conf->mode & BIT(0)) ? "NRD" : "NCS");
 }
 
-static void atmel_hsmc_print_mode(struct atmel_smc_cs_conf *conf, u32 clk_period_ns) {
+static void atmel_hsmc_print_mode(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
+{
 	u32 tdf;
 	u8 dbw;
 
-	tdf = (conf->mode & GENMASK(19,16)) >> 16;
+	tdf = (conf->mode & GENMASK(19, 16)) >> 16;
 	printf("TDF optimization %s\n",
 	       (conf->mode & BIT(20)) ? "enabled" : "disabled");
 	printf("TDF cycles: %u (%u ns)\n", tdf, tdf * clk_period_ns);
@@ -2170,14 +2178,15 @@ static void atmel_hsmc_print_mode(struct atmel_smc_cs_conf *conf, u32 clk_period
 		printf("Byte %s access type\n",
 		       (conf->mode & BIT(8)) ? "write" : "select");
 
-	printf("NWAIT Mode: %lu\n", (conf->mode & GENMASK(5,4)) >> 4);
+	printf("NWAIT Mode: %lu\n", (conf->mode & GENMASK(5, 4)) >> 4);
 	printf("Write operation controlled by %s signal\n",
 	       (conf->mode & BIT(1)) ? "NWE" : "NCS");
 	printf("Read operation controlled by %s signal\n",
 	       (conf->mode & BIT(0)) ? "NRD" : "NCS");
 }
 
-static void atmel_hsmc_print_timings(struct atmel_smc_cs_conf *conf) {
+static void atmel_hsmc_print_timings(struct atmel_smc_cs_conf *conf)
+{
 	/* tbd */
 }
 
@@ -2471,8 +2480,7 @@ static int do_hsmc_decode(struct cmd_tbl *cmdtp, int flag,
 		if (!nc->caps->ops->print_info)
 			continue;
 
-		for (j = 0; j < nand->numcs; j++)
-		{
+		for (j = 0; j < nand->numcs; j++) {
 			putc('\n');
 			nc->caps->ops->print_info(nand, j);
 		}

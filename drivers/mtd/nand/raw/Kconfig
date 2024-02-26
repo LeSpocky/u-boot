@@ -61,7 +61,9 @@ config CMD_NAND_ATMEL_DEBUG
 	bool "Optional debug commands for Atmel NAND controller"
 	depends on DM_NAND_ATMEL
 	help
-	  Decode Static Memory Controller (SMC) registers and more.
+	  Add commands for debugging internals of the Atmel NAND flash
+	  controller, for example:
+	  - Decode Static Memory Controller (SMC) registers
 
 config NAND_ATMEL
 	bool "Support Atmel NAND controller"
