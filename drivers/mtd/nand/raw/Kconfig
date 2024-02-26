@@ -50,11 +50,20 @@ config SYS_NAND_NO_SUBPAGE_WRITE
 
 config DM_NAND_ATMEL
 	bool "Support Atmel NAND controller with DM support"
+	select MFD_ATMEL_SMC
 	select SYS_NAND_SELF_INIT
 	imply SYS_NAND_USE_FLASH_BBT
 	help
 	  Enable this driver for NAND flash platforms using an Atmel NAND
 	  controller.
+
+config CMD_NAND_ATMEL_DEBUG
+	bool "Optional debug commands for Atmel NAND controller"
+	depends on DM_NAND_ATMEL
+	help
+	  Add commands for debugging internals of the Atmel NAND flash
+	  controller, for example:
+	  - Decode Static Memory Controller (SMC) registers
 
 config NAND_ATMEL
 	bool "Support Atmel NAND controller"
