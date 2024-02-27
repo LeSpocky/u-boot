@@ -494,6 +494,48 @@ static void adjust_size_for_badblocks(loff_t *size, loff_t offset, int dev)
 	}
 }
 
+#ifdef CONFIG_CMD_NAND_ONFI
+static int do_nand_onfi(struct mtd_info *mtd, int mode)
+{
+	struct nand_chip *chip;
+	int ret;
+	int i;
+
+	if (mtd->type != MTD_NANDFLASH) {
+		printf("MTD device is no NAND flash!\n");
+		return CMD_RET_FAILURE;
+	}
+
+	chip = mtd_to_nand(mtd);
+
+	if (mode < 0) {
+		printf("Reporting current ONFI settings not yet supported!\n");
+		return CMD_RET_FAILURE;
+	}
+
+	ret = onfi_init_data_interface(chip, chip->data_interface,
+				       NAND_SDR_IFACE, mode);
+	if (ret) {
+		printf("onfi_init_data_interface() for mode %d failed with error %d\n",
+		       mode, ret);
+		return CMD_RET_FAILURE;
+	}
+
+	for (i = 0; i < chip->numchips; i++) {
+		chip->select_chip(mtd, i);
+		ret = nand_setup_data_interface(chip, i);
+		chip->select_chip(mtd, -1);
+		if (ret) {
+			printf("nand_setup_data_interface() for mode %d failed with error %d\n",
+			       mode, ret);
+			return CMD_RET_FAILURE;
+		}
+	}
+
+	return CMD_RET_SUCCESS;
+}
+#endif
+
 static int do_nand(struct cmd_tbl *cmdtp, int flag, int argc,
 		   char *const argv[])
 {
@@ -919,6 +961,21 @@ static int do_nand(struct cmd_tbl *cmdtp, int flag, int argc,
 	}
 #endif
 
+#ifdef CONFIG_CMD_NAND_ONFI
+	/*
+	 * Syntax is:
+	 *   0    1     2
+	 *   nand onfi [mode]
+	 */
+	if (strcmp(cmd, "onfi") == 0) {
+		int mode = -1;
+
+		if (argc > 2)
+			mode = dectoul(argv[2], NULL);
+		return do_nand_onfi(mtd, mode);
+	}
+#endif
+
 usage:
 	return CMD_RET_USAGE;
 }
@@ -960,6 +1017,10 @@ U_BOOT_LONGHELP(nand,
 	"nand lock [tight] [status]\n"
 	"    bring nand to lock state or display locked pages\n"
 	"nand unlock[.allexcept] [offset] [size] - unlock section"
+#endif
+#ifdef CONFIG_CMD_NAND_ONFI
+	"\n"
+	"nand onfi [mode] - set ONFI mode\n"
 #endif
 #ifdef CONFIG_ENV_OFFSET_OOB
 	"\n"
