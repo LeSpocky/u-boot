@@ -1447,6 +1447,7 @@ config CMD_NAND
 	  NAND support.
 
 if CMD_NAND
+
 config CMD_NAND_TRIMFFS
 	bool "nand write.trimffs"
 	default y if ARCH_SUNXI
@@ -1462,6 +1463,11 @@ config CMD_NAND_TORTURE
 	bool "nand torture"
 	help
 	  NAND torture support.
+
+config CMD_NAND_ONFI
+	bool "nand onfi"
+	help
+	  Set ONFI timing modes explicitly.
 
 endif # CMD_NAND
 
