@@ -1315,6 +1315,7 @@ void nand_write_buf16(struct mtd_info *mtd, const uint8_t *buf, int len);
 void nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len);
 void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len);
 uint8_t nand_read_byte(struct mtd_info *mtd);
+int nand_setup_data_interface(struct nand_chip *chip, int chipnr);
 
 /* get timing characteristics from ONFI timing mode. */
 const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
