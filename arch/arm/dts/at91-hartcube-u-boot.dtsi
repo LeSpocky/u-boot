@@ -113,3 +113,11 @@
 &slow_xtal {
 	bootph-all;
 };
+
+&sdhci0 {
+	status = "disabled";
+};
+
+&sdhci1 {
+	status = "disabled";
+};
