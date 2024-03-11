@@ -23,6 +23,7 @@ static int atmel_ebi_probe(struct udevice *dev)
 }
 
 static const struct udevice_id atmel_ebi_match[] = {
+	{.compatible = "atmel,at91sam9260-ebi"},
 	{.compatible = "microchip,sam9x60-ebi"},
 	{.compatible = "atmel,sama5d3-ebi"},
 	{ /* Sentinel */ }
