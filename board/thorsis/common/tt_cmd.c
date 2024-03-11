@@ -23,12 +23,14 @@ __weak int do_tt_ledtest(struct cmd_tbl *cmdtp, int flag,
 	return CMD_RET_FAILURE;
 }
 
+#ifdef CONFIG_SYS_LONGHELP
 static char tt_help_text[] =
 	"hello    - Print hello world\n"
 #ifdef CONFIG_LED
 	"tt ledtest  - Turn on and off all LEDs once\n"
 #endif
 	;
+#endif
 
 U_BOOT_CMD_WITH_SUBCMDS(tt, "tt common commands", tt_help_text,
 #ifdef CONFIG_LED

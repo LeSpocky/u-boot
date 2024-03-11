@@ -417,7 +417,9 @@ int do_bp_test_short_read_write(struct cmd_tbl *cmdtp, int flag, int argc,
 		byModule = atoi((uchar *)argv[1]);
 		break;
 	default:
+#ifdef CONFIG_SYS_LONGHELP
 		printf("Usage:\n%s\n", cmdtp->help);
+#endif
 		return 1;
 	}
 
@@ -752,7 +754,9 @@ int do_bp_mod(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
 		printf ("byModuleCount = %i\n", byModuleCount);
 		return 0;
 	default:
+#ifdef CONFIG_SYS_LONGHELP
 		printf ("Usage:\n%s\n", cmdtp->help);
+#endif
 		return 1;
 	}
 
@@ -768,7 +772,9 @@ int do_bp_dpr_size(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[
 		printf ("g_wDprSize = %X\n", g_wDprSize);
 		return 0;
 	default:
+#ifdef CONFIG_SYS_LONGHELP
 		printf ("Usage:\n%s\n", cmdtp->help);
+#endif
 		return 1;
 	}
 
