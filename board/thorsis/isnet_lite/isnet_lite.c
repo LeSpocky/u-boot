@@ -35,7 +35,7 @@ DECLARE_GLOBAL_DATA_PTR;
 int ncl_fpga_init( void );
 #endif
 
-#ifdef CONFIG_NAND_ATMEL
+#ifdef CONFIG_CMD_NAND
 static void at91sam9g20ncl_nand_hw_init(void)
 {
 	struct at91_smc *smc = (struct at91_smc *)ATMEL_BASE_SMC;
@@ -162,7 +162,7 @@ int board_init(void)
 	/* adress of boot parameters */
 	gd->bd->bi_boot_params = CFG_SYS_SDRAM_BASE + 0x100;
 
-#ifdef CONFIG_NAND_ATMEL
+#ifdef CONFIG_CMD_NAND
 	at91sam9g20ncl_nand_hw_init();
 #endif
 
