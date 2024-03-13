@@ -7,4 +7,6 @@
 
 void board_fpga_init(void);
 
+int tt_fpga_abort(int cookie);
+
 #endif

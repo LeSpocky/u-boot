@@ -25,6 +25,7 @@
 #include <log.h>
 #include <malloc.h>
 
+#include "../common/tt_fpga.h"
 #include "proficube_fpga.h"
 
 struct proficube_fpga_info {
@@ -57,13 +58,6 @@ static uint8_t bitrev8(uint8_t v)
 }
 #endif
 #endif
-
-static int proficube_fpga_abort(int cookie)
-{
-	log_debug("%s: called\n", __func__);
-
-	return FPGA_SUCCESS;
-}
 
 /**
  * Set state of nCONFIG pin.
@@ -261,7 +255,7 @@ static Altera_CYC2_Passive_Serial_fns proficube_fns = {
 	.status = proficube_fpga_status,
 	.done = proficube_fpga_done,
 	.write = proficube_fpga_write,
-	.abort = proficube_fpga_abort,
+	.abort = tt_fpga_abort,
 	.post = NULL
 };
 

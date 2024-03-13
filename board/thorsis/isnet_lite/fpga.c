@@ -35,6 +35,9 @@
 #include <asm/arch/gpio.h>
 #include <mach/clk.h>
 
+#include "../common/tt_fpga.h"
+
+
 #define ERROR_FPGA_PRG_INIT_LOW  -1        /* Timeout after PRG* asserted   */
 #define ERROR_FPGA_PRG_INIT_HIGH -2        /* Timeout after PRG* deasserted */
 #define ERROR_FPGA_PRG_DONE      -3        /* Timeout after programming     */
@@ -152,26 +155,14 @@ int fpga_write_fn( const void *buf, size_t len, int flush, int cookie )
 	return FPGA_SUCCESS;
 }
 
-/* called, when programming is aborted */
-int fpga_abort_fn (int cookie)
-{
-	return FPGA_SUCCESS;
-}
-
-/* called, when programming was succesful */
-int fpga_post_fn (int cookie)
-{
-	return fpga_abort_fn (cookie);
-}
-
 static Altera_CYC2_Passive_Serial_fns isnet_lite_fns = {
 	.pre = fpga_pre_fn,
 	.config = fpga_config_fn,
 	.status = fpga_status_fn,
 	.done = fpga_done_fn,
 	.write = fpga_write_fn,
-	.abort = fpga_abort_fn,
-	.post = fpga_post_fn,
+	.abort = tt_fpga_abort,
+	.post = NULL,
 };
 
 static Altera_desc isnet_lite_fpga = {

@@ -11,6 +11,8 @@
 #include <linux/errno.h>
 #include <log.h>
 
+#include "../common/tt_fpga.h"
+
 static int hartcube_fpga_config(int assert_config, int flush, int cookie)
 {
 	log_debug("%s: entered\n", __func__);
@@ -35,20 +37,13 @@ static int hartcube_fpga_write(const void *buf, size_t len, int flush, int cooki
 	return log_ret(-ENOSYS);
 }
 
-static int hartcube_fpga_abort(int cookie)
-{
-	log_debug("%s: called\n", __func__);
-
-	return FPGA_SUCCESS;
-}
-
 static Altera_CYC2_Passive_Serial_fns hartcube_fns = {
 	.pre = NULL,
 	.config = hartcube_fpga_config,
 	.status = hartcube_fpga_status,
 	.done = hartcube_fpga_done,
 	.write = hartcube_fpga_write,
-	.abort = hartcube_fpga_abort,
+	.abort = tt_fpga_abort,
 	.post = NULL
 };
 
