@@ -2,7 +2,7 @@
  * © 2024 Thorsis Technologies GmbH
  */
 
-#define LOG_CATEGORY LOGC_BOARD
+#define LOG_CATEGORY UCLASS_FPGA
 
 #include <ACEX1K.h>
 #include <altera.h>

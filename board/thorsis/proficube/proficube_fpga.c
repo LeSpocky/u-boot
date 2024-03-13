@@ -10,7 +10,7 @@
  * 	bus and cs here.
  */
 
-#define LOG_CATEGORY LOGC_BOARD
+#define LOG_CATEGORY UCLASS_FPGA
 
 #include <common.h>
 #include <asm/arch/atmel_pio4.h>

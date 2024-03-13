@@ -21,7 +21,7 @@
   * todo: add support for compressed uImages (WARNING: compressed images will not be decompressed!)
   */
 
-#define LOG_CATEGORY LOGC_BOARD
+#define LOG_CATEGORY UCLASS_FPGA
 
 #include <common.h>
 #include <altera.h>
