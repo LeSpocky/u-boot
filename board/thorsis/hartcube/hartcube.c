@@ -3,7 +3,7 @@
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-#include <common.h>
+
 #include <debug_uart.h>
 #include <fdtdec.h>
 #include <init.h>
