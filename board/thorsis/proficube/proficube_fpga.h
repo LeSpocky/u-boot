@@ -32,6 +32,4 @@
 #define _PROFICUBE_FPGA_PIN_SPI_CS(x)	PROFICUBE_FPGA_PIN_SPI_CS##x
 #define PROFICUBE_FPGA_PIN_SPI_CS(x)	_PROFICUBE_FPGA_PIN_SPI_CS(x)
 
-void board_fpga_init(void);
-
 #endif

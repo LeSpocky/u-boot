@@ -181,10 +181,7 @@ static Altera_desc isnet_lite_fpga = {
 	.iface_fns = &isnet_lite_fns,
 };
 
-/*
- *	Initialize the fpga.  Return 1 on success, 0 on failure.
- */
-int ncl_fpga_init( void )
+void board_fpga_init(void)
 {
 	at91_periph_clk_enable(ATMEL_ID_PIOA);
 
@@ -193,8 +190,6 @@ int ncl_fpga_init( void )
 
 	log_debug("Adding fpga 0\n");
 	fpga_add( fpga_altera, &isnet_lite_fpga );
-
-	return 1;
 }
 
 /* vim: set noet sts=0 ts=8 sw=8 sr: */

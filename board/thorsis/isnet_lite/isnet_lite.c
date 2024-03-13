@@ -24,16 +24,16 @@
 #include <asm/arch/clk.h>
 #include <asm/arch/gpio.h>
 
+#ifdef CONFIG_FPGA
+#include "../common/tt_fpga.h"
+#endif
+
 DECLARE_GLOBAL_DATA_PTR;
 
 /* ------------------------------------------------------------------------- */
 /*
  * Miscelaneous platform dependent initialisations
  */
-
-#ifdef CONFIG_FPGA
-int ncl_fpga_init( void );
-#endif
 
 #ifdef CONFIG_CMD_NAND
 static void at91sam9g20ncl_nand_hw_init(void)
@@ -167,7 +167,7 @@ int board_init(void)
 #endif
 
 #ifdef CONFIG_FPGA
-	ncl_fpga_init();
+	board_fpga_init();
 #endif
 
 	at91sam9g20ncl_reg_hw_init();

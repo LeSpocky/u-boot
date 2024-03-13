@@ -1,3 +1,8 @@
+/*
+ * © 2024 Thorsis Technologies GmbH
+ */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <common.h>
 #include <debug_uart.h>
 #include <fdtdec.h>
@@ -7,6 +12,10 @@
 #include <asm/arch/at91_common.h>
 #include <asm/global_data.h>
 #include <dm/ofnode.h>
+
+#ifdef CONFIG_FPGA
+#include "../common/tt_fpga.h"
+#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -38,10 +47,28 @@ void board_debug_uart_init(void)
 }
 #endif
 
+#ifdef CONFIG_FPGA
+static void board_fpga_hw_init(void)
+{
+	pr_debug("%s: entered\n", __func__);
+
+	/*
+	 * TODO	Init GPIOs for /CONFIG, CONF_DONE, /STATUS, /FPGA_RES, …
+	 */
+
+	pr_debug("%s: leaving\n", __func__);
+}
+#endif
+
 int board_init(void)
 {
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = gd->bd->bi_dram[0].start + 0x100;
+
+#ifdef CONFIG_FPGA
+	board_fpga_hw_init();
+	board_fpga_init();
+#endif
 
 	board_leds_init();
 

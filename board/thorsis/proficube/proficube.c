@@ -19,6 +19,7 @@
 #include "../common/tt_dram.h"
 
 #ifdef CONFIG_FPGA
+#include "../common/tt_fpga.h"
 #include "proficube_fpga.h"
 #endif
 
