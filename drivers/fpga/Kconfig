@@ -49,6 +49,15 @@ config FPGA_CYCLON2
 	  Enable FPGA driver for loading bitstream in BIT and BIN format
 	  on Altera Cyclone II device.
 
+config FPGA_ALTERA_PS_SPI
+	bool "Altera FPGA Passive Serial over SPI"
+	depends on FPGA_CYCLON2 && DM_FPGA && DM_SPI
+	select BITREVERSE
+	help
+	  Support the passive serial interface over SPI.
+	  Uses modern device tree and driver model based SPI and hooks
+	  into the old Cyclone functions.
+
 config FPGA_INTEL_SDM_MAILBOX
 	bool "Enable Intel FPGA Full Reconfiguration SDM Mailbox driver"
 	depends on TARGET_SOCFPGA_SOC64
