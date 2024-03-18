@@ -4,18 +4,16 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+#include <common.h>
 #include <debug_uart.h>
+#include <dm.h>
 #include <fdtdec.h>
+#include <fpga.h>
 #include <init.h>
 #include <led.h>
 #include <log.h>
 #include <asm/arch/at91_common.h>
 #include <asm/global_data.h>
-#include <dm/ofnode.h>
-
-#ifdef CONFIG_FPGA
-#include "../common/tt_fpga.h"
-#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -47,31 +45,16 @@ void board_debug_uart_init(void)
 }
 #endif
 
-#ifdef CONFIG_FPGA
-static void board_fpga_hw_init(void)
+int board_init(void)
 {
 	pr_debug("%s: entered\n", __func__);
 
-	/*
-	 * TODO	Init GPIOs for /CONFIG, CONF_DONE, /STATUS, /FPGA_RES, …
-	 */
-
-	pr_debug("%s: leaving\n", __func__);
-}
-#endif
-
-int board_init(void)
-{
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = gd->bd->bi_dram[0].start + 0x100;
 
-#ifdef CONFIG_FPGA
-	board_fpga_hw_init();
-	board_fpga_init();
-#endif
-
 	board_leds_init();
 
+	pr_debug("%s: leaving\n", __func__);
 	return 0;
 }
 
@@ -84,3 +67,26 @@ int dram_init(void)
 {
 	return fdtdec_setup_mem_size_base();
 }
+
+#ifdef CONFIG_MISC_INIT_R
+int misc_init_r(void)
+{
+	pr_debug("%s: entered\n", __func__);
+
+	if (IS_ENABLED(CONFIG_FPGA)) {
+		fpga_init();
+
+		if (IS_ENABLED(CONFIG_DM_FPGA)) {
+			struct udevice *udev;
+			int ret;
+
+			ret = uclass_get_device(UCLASS_FPGA, 0, &udev);
+			if (ret)
+				return log_ret(ret);
+		}
+	}
+
+	pr_debug("%s: leaving\n", __func__);
+	return 0;
+}
+#endif
