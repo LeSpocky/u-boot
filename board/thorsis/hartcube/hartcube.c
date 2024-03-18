@@ -19,23 +19,23 @@ DECLARE_GLOBAL_DATA_PTR;
 
 static void board_leds_init(void)
 {
-#if CONFIG_IS_ENABLED(LED)
-	const char *led_name;
-	struct udevice *dev;
-	int ret;
+	if (IS_ENABLED(CONFIG_LED)) {
+		const char *led_name;
+		struct udevice *dev;
+		int ret;
 
-	led_name = ofnode_conf_read_str("u-boot,boot-led");
-	if (!led_name)
-		return;
+		led_name = ofnode_conf_read_str("u-boot,boot-led");
+		if (!led_name)
+			return;
 
-	ret = led_get_by_label(led_name, &dev);
-	if (ret)
-		return;
+		ret = led_get_by_label(led_name, &dev);
+		if (ret)
+			return;
 
-	led_set_state(dev, LEDST_ON);
-#else
-	pr_warn("LED support disabled!\n");
-#endif
+		led_set_state(dev, LEDST_ON);
+	} else {
+		pr_warn("LED support disabled!\n");
+	}
 }
 
 #ifdef CONFIG_DEBUG_UART_BOARD_INIT
