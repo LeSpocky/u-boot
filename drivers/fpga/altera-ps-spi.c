@@ -84,7 +84,7 @@ static int altera_ps_spi_write(const void *buf, size_t len, int flush, int cooki
 	u8 *data = NULL;
 	int ret;
 
-	if (len > priv->desc.size) {
+	if ((priv->desc.size != (size_t) -1) && (len > priv->desc.size)) {
 		dev_err(dev, "FPGA image too big (%zu > %zu)!\n",
 			len, priv->desc.size);
 		return log_ret(-ENOSPC);
@@ -173,8 +173,11 @@ static int altera_ps_spi_of_to_plat(struct udevice *dev)
 
 	/* Altera Size */
 	ret = dev_read_u32(dev, "altr,size", &priv->desc.size);
-	if (ret)
-		return log_ret(ret);
+	if (ret) {
+		dev_dbg(dev,
+			"Property \"altr,size\" not set, driver won't check size on write!\n");
+		priv->desc.size = (size_t) -1;
+	}
 
 	return 0;
 }
