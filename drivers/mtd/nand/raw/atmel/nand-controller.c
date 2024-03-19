@@ -2158,11 +2158,11 @@ static void atmel_smc_print_mode(struct atmel_smc_cs_conf *conf, u32 clk_period_
 	u8 dbw;
 
 	if (conf->mode & BIT(24)) {
-		printf("Asynchronous burst read in Page mode is applied on the corresponding chip select.\n");
+		printf("Asynchronous burst read in Page mode applied on the corresponding chip select\n");
 		printf("Page Size: %u-byte page\n",
 		       4 << ((conf->mode & GENMASK(29, 28)) >> 28));
 	} else {
-		printf("Standard read is applied.\n");
+		printf("Standard read applied\n");
 	}
 
 	tdf = (conf->mode & GENMASK(19, 16)) >> 16;
@@ -2520,7 +2520,7 @@ static int do_hsmc_decode(struct cmd_tbl *cmdtp, int flag,
 		chip = mtd_to_nand(mtd);
 		nand = to_atmel_nand(chip);
 		nc = to_nand_controller(nand->controller);
-		printf("mck clock rate: %lu\n", clk_get_rate(nc->mck));
+		printf("MCK rate: %lu MHz\n", clk_get_rate(nc->mck) / 1000000);
 		if (!nc->caps->ops->print_info)
 			continue;
 
