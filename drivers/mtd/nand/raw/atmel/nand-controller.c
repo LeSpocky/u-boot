@@ -2100,8 +2100,12 @@ static void atmel_smc_print_reg(const char *name, u32 setup, u32 pulse,
 
 static void atmel_smc_print_ncs_rd(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
 {
-	u32 ncs_rd_setup = atmel_smc_decode_ncycles(conf->setup, 24, 5, 1, 128);
-	u32 ncs_rd_pulse = atmel_smc_decode_ncycles(conf->pulse, 24, 6, 1, 256);
+	u32 ncs_rd_setup = atmel_smc_decode_ncycles(conf->setup,
+						    ATMEL_SMC_NCS_RD_SHIFT,
+						    5, 1, 128);
+	u32 ncs_rd_pulse = atmel_smc_decode_ncycles(conf->pulse,
+						    ATMEL_SMC_NCS_RD_SHIFT,
+						    6, 1, 256);
 	u32 nrd_cycle = atmel_smc_decode_ncycles(conf->cycle, 16, 7, 2, 256);
 
 	atmel_smc_print_reg("NCS_RD", ncs_rd_setup, ncs_rd_pulse,
@@ -2110,8 +2114,12 @@ static void atmel_smc_print_ncs_rd(struct atmel_smc_cs_conf *conf, u32 clk_perio
 
 static void atmel_smc_print_nrd(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
 {
-	u32 nrd_setup = atmel_smc_decode_ncycles(conf->setup, 16, 5, 1, 128);
-	u32 nrd_pulse = atmel_smc_decode_ncycles(conf->pulse, 16, 6, 1, 256);
+	u32 nrd_setup = atmel_smc_decode_ncycles(conf->setup,
+						 ATMEL_SMC_NRD_SHIFT,
+						 5, 1, 128);
+	u32 nrd_pulse = atmel_smc_decode_ncycles(conf->pulse,
+						 ATMEL_SMC_NRD_SHIFT,
+						 6, 1, 256);
 	u32 nrd_cycle = atmel_smc_decode_ncycles(conf->cycle, 16, 7, 2, 256);
 
 	atmel_smc_print_reg("NRD", nrd_setup, nrd_pulse, nrd_cycle, clk_period_ns);
@@ -2119,8 +2127,12 @@ static void atmel_smc_print_nrd(struct atmel_smc_cs_conf *conf, u32 clk_period_n
 
 static void atmel_smc_print_ncs_wr(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
 {
-	u32 ncs_wr_setup = atmel_smc_decode_ncycles(conf->setup, 8, 5, 1, 128);
-	u32 ncs_wr_pulse = atmel_smc_decode_ncycles(conf->pulse, 8, 6, 1, 256);
+	u32 ncs_wr_setup = atmel_smc_decode_ncycles(conf->setup,
+						    ATMEL_SMC_NCS_WR_SHIFT,
+						    5, 1, 128);
+	u32 ncs_wr_pulse = atmel_smc_decode_ncycles(conf->pulse,
+						    ATMEL_SMC_NCS_WR_SHIFT,
+						    6, 1, 256);
 	u32 nwe_cycle = atmel_smc_decode_ncycles(conf->cycle, 0, 7, 2, 256);
 
 	atmel_smc_print_reg("NCS_WR", ncs_wr_setup, ncs_wr_pulse,
@@ -2129,8 +2141,12 @@ static void atmel_smc_print_ncs_wr(struct atmel_smc_cs_conf *conf, u32 clk_perio
 
 static void atmel_smc_print_nwe(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
 {
-	u32 nwe_setup = atmel_smc_decode_ncycles(conf->setup, 0, 5, 1, 128);
-	u32 nwe_pulse = atmel_smc_decode_ncycles(conf->pulse, 0, 6, 1, 256);
+	u32 nwe_setup = atmel_smc_decode_ncycles(conf->setup,
+						 ATMEL_SMC_NWE_SHIFT,
+						 5, 1, 128);
+	u32 nwe_pulse = atmel_smc_decode_ncycles(conf->pulse,
+						 ATMEL_SMC_NWE_SHIFT,
+						 6, 1, 256);
 	u32 nwe_cycle = atmel_smc_decode_ncycles(conf->cycle, 0, 7, 2, 256);
 
 	atmel_smc_print_reg("NWE", nwe_setup, nwe_pulse, nwe_cycle, clk_period_ns);
