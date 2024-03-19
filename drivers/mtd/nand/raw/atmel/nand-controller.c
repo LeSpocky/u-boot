@@ -2206,9 +2206,39 @@ static void atmel_hsmc_print_mode(struct atmel_smc_cs_conf *conf, u32 clk_period
 	       (conf->mode & BIT(0)) ? "NRD" : "NCS");
 }
 
-static void atmel_hsmc_print_timings(struct atmel_smc_cs_conf *conf)
+static void atmel_hsmc_print_timings(struct atmel_smc_cs_conf *conf, u32 clk_period_ns)
 {
-	/* tbd */
+	u32 twb = atmel_smc_decode_ncycles(conf->timings,
+					   ATMEL_HSMC_TIMINGS_TWB_SHIFT,
+					   3, 1, 64);
+	u32 trr = atmel_smc_decode_ncycles(conf->timings,
+					   ATMEL_HSMC_TIMINGS_TRR_SHIFT,
+					   3, 1, 64);
+	u32 tar = atmel_smc_decode_ncycles(conf->timings,
+					   ATMEL_HSMC_TIMINGS_TAR_SHIFT,
+					   3, 1, 64);
+	u32 tadl = atmel_smc_decode_ncycles(conf->timings,
+					    ATMEL_HSMC_TIMINGS_TADL_SHIFT,
+					    3, 1, 64);
+	u32 tclr = atmel_smc_decode_ncycles(conf->timings,
+					    ATMEL_HSMC_TIMINGS_TCLR_SHIFT,
+					    3, 1, 64);
+
+	printf("NFSEL (NAND Flash Selection) is %s\n",
+	       conf->timings & ATMEL_HSMC_TIMINGS_NFSEL ? "set" : "cleared");
+	printf("OCMS (Off Chip Memory Scrambling) is %s\n",
+	       conf->timings & ATMEL_HSMC_TIMINGS_OCMS ? "enabled" : "disabled");
+
+	printf("TWB (WEN High to REN to Busy): %u (%u ns)\n",
+	       twb, twb * clk_period_ns);
+	printf("TRR (Ready to REN Low Delay):  %u (%u ns)\n",
+	       trr, trr * clk_period_ns);
+	printf("TAR (ALE to REN Low Delay):    %u (%u ns)\n",
+	       tar, tar * clk_period_ns);
+	printf("TADL (ALE to Data Start):      %u (%u ns)\n",
+	       tadl, tadl * clk_period_ns);
+	printf("TCLR (CLE to REN Low Delay):   %u (%u ns)\n",
+	       tclr, tclr * clk_period_ns);
 }
 
 static void atmel_smc_print_info(struct atmel_nand *nand, int csline)
@@ -2261,7 +2291,7 @@ static void atmel_hsmc_print_info(struct atmel_nand *nand, int csline)
 	atmel_smc_print_nwe(&smcconf, mck_period_ns);
 
 	atmel_hsmc_print_mode(&smcconf, mck_period_ns);
-	atmel_hsmc_print_timings(&smcconf);
+	atmel_hsmc_print_timings(&smcconf, mck_period_ns);
 }
 #endif
 
