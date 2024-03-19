@@ -1468,6 +1468,10 @@ config CMD_NAND_ONFI
 	bool "nand onfi"
 	help
 	  Set ONFI timing modes explicitly.
+	  This is a debugging command to switch to slower ONFI timing
+	  modes for testing.
+	  In normal operation determining the timing mode automatically
+	  should work fine, and you don't need this.
 
 endif # CMD_NAND
 

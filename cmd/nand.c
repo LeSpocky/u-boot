@@ -494,7 +494,8 @@ static void adjust_size_for_badblocks(loff_t *size, loff_t offset, int dev)
 }
 
 #ifdef CONFIG_CMD_NAND_ONFI
-static int do_nand_onfi(struct mtd_info *mtd, int mode) {
+static int do_nand_onfi(struct mtd_info *mtd, int mode)
+{
 	struct nand_chip *chip;
 	int ret;
 	int i;
@@ -509,22 +510,24 @@ static int do_nand_onfi(struct mtd_info *mtd, int mode) {
 	if (mode < 0) {
 		printf("Reporting current ONFI settings not yet supported!\n");
 		return CMD_RET_FAILURE;
-	} else {
-		ret = onfi_init_data_interface(chip, chip->data_interface,
-					       NAND_SDR_IFACE, mode);
+	}
+
+	ret = onfi_init_data_interface(chip, chip->data_interface,
+				       NAND_SDR_IFACE, mode);
+	if (ret) {
+		printf("onfi_init_data_interface() for mode %d failed with error %d\n",
+		       mode, ret);
+		return CMD_RET_FAILURE;
+	}
+
+	for (i = 0; i < chip->numchips; i++) {
+		chip->select_chip(mtd, i);
+		ret = nand_setup_data_interface(chip, i);
+		chip->select_chip(mtd, -1);
 		if (ret) {
-			printf("onfi_init_data_interface() for mode %d failed with error %d\n",
+			printf("nand_setup_data_interface() for mode %d failed with error %d\n",
 			       mode, ret);
 			return CMD_RET_FAILURE;
-		}
-
-		for (i = 0; i < chip->numchips; i++) {
-			ret = nand_setup_data_interface(chip, i);
-			if (ret) {
-				printf("nand_setup_data_interface() for mode %d failed with error %d\n",
-				       mode, ret);
-				return CMD_RET_FAILURE;
-			}
 		}
 	}
 
@@ -965,6 +968,7 @@ static int do_nand(struct cmd_tbl *cmdtp, int flag, int argc,
 	 */
 	if (strcmp(cmd, "onfi") == 0) {
 		int mode = -1;
+
 		if (argc > 2)
 			mode = dectoul(argv[2], NULL);
 		return do_nand_onfi(mtd, mode);
