@@ -12,4 +12,9 @@ config SYS_SOC
 config SYS_CONFIG_NAME
 	default "hartcube"
 
+config BOARD_SPECIFIC_OPTIONS # dummy
+	def_bool y
+	select PARTITIONS
+	imply DISTRO_DEFAULTS
+
 endif
