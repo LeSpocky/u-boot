@@ -974,7 +974,8 @@ dtb-$(CONFIG_TARGET_AT91SAM9260EK) += \
 	at91sam9g20ek.dtb	\
 	at91sam9g20ek_2mmc.dtb
 
-dtb-$(CONFIG_TARGET_ISNET_LITE) += at91-isnet_lite.dtb
+dtb-$(CONFIG_AT91SAM9G20) += \
+	at91-isnet_lite.dtb
 
 dtb-$(CONFIG_TARGET_AT91SAM9M10G45EK) += at91sam9m10g45ek.dtb
 
@@ -991,6 +992,9 @@ dtb-$(CONFIG_TARGET_SAM9X60EK) += sam9x60ek.dtb
 
 dtb-$(CONFIG_TARGET_SAM9X60_CURIOSITY) += at91-sam9x60_curiosity.dtb
 
+dtb-$(CONFIG_SAM9X60) += \
+	at91-hartcube.dtb
+
 dtb-$(CONFIG_TARGET_AT91SAM9N12EK) += at91sam9n12ek.dtb
 
 dtb-$(CONFIG_TARGET_GARDENA_SMART_GATEWAY_AT91SAM) += \
@@ -1005,12 +1009,6 @@ dtb-$(CONFIG_TARGET_OMAP3_EVM) += \
 	omap3-evm.dtb
 
 dtb-$(CONFIG_TARGET_DEVKIT8000) += omap3-devkit8000.dtb
-
-dtb-$(CONFIG_TARGET_MUXGATE) += \
-	at91-muxgate.dtb
-
-dtb-$(CONFIG_TARGET_PROFICUBE) += \
-	at91-proficube.dtb
 
 dtb-$(CONFIG_TARGET_SAMA7G5EK) += \
 	at91-sama7g5ek.dtb
@@ -1040,6 +1038,11 @@ dtb-$(CONFIG_TARGET_SAMA5D2_ICP) += \
 dtb-$(CONFIG_TARGET_SAMA5D29_CURIOSITY) += \
 	at91-sama5d29_curiosity.dtb
 
+dtb-$(CONFIG_SAMA5D2) += \
+	at91-muxgate.dtb \
+	at91-proficube.dtb \
+	at91-vera2.dtb
+
 dtb-$(CONFIG_TARGET_SAMA5D3XEK) += \
 	sama5d31ek.dtb \
 	sama5d33ek.dtb \
@@ -1056,9 +1059,6 @@ dtb-$(CONFIG_TARGET_SAMA5D4EK) += \
 
 dtb-$(CONFIG_TARGET_SAMA5D4_XPLAINED) += \
 	at91-sama5d4_xplained.dtb
-
-dtb-$(CONFIG_TARGET_VERA2) += \
-	at91-vera2.dtb
 
 dtb-$(CONFIG_TARGET_VINCO) += \
 	at91-vinco.dtb
