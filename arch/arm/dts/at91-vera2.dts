@@ -83,10 +83,6 @@
 	pinctrl-0 = <&pinctrl_macb0_rmii>;
 	phy-mode = "rmii";
 	status = "okay";
-
-	phy0: ethernet-phy@1 {
-		reg = <0x1>;
-	};
 };
 
 &pioA {
