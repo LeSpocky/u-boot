@@ -154,8 +154,10 @@
 			pinctrl-0 = <&pinctrl_fpga>;
 
 			compatible = "efinix,fpga-passive-serial";
-			spi-max-frequency = <50000000>;
 			reg = <0>;
+			spi-max-frequency = <50000000>;
+			spi-cpha;
+			spi-cpol;
 			nconfig-gpios = <&pioB 12 GPIO_ACTIVE_LOW>;
 			nstat-gpios = <&pioB 14 GPIO_ACTIVE_LOW>;
 			confd-gpios = <&pioB 13 GPIO_ACTIVE_HIGH>;
