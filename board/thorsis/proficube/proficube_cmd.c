@@ -2,8 +2,8 @@
  * Copyright 2019 Thorsis Technologies GmbH
  */
 
-#include <common.h>
 #include <command.h>
+#include <config.h>
 
 #ifdef CONFIG_FPGA
 #include "proficube_bp.h"

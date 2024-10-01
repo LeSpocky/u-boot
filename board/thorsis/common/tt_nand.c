@@ -4,6 +4,8 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+#include <config.h>
+
 #if defined(CONFIG_SAMA5D2)
 
 #include <asm/io.h>

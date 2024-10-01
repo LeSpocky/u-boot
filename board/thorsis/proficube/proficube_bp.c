@@ -2,12 +2,13 @@
  * Copyright 2019 Thorsis Technologies GmbH
  */
 
-#include <common.h>
-
-#include <asm/io.h>
 #include <command.h>
 #include <console.h>
 #include <rand.h>
+#include <stdio.h>
+#include <time.h>
+#include <vsprintf.h>
+#include <asm/io.h>
 
 /* TODO	Get through DT?	*/
 #define BP_BASE_MOD	0x60000000

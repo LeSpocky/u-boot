@@ -13,6 +13,7 @@
 #include <altera.h>
 #include <ACEX1K.h>		/* ACEX device family */
 #include <linux/delay.h>
+#include <linux/string.h>
 
 /* Note: The assumption is that we cannot possibly run fast enough to
  * overrun the device (the Slave Parallel mode can free run at 50MHz).

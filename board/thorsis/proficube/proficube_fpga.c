@@ -12,18 +12,18 @@
 
 #define LOG_CATEGORY UCLASS_FPGA
 
-#include <common.h>
-#include <asm/arch/atmel_pio4.h>
 #include <ACEX1K.h>
 #include <altera.h>
+#include <config.h>
 #include <console.h>
 #include <dm.h>
 #include <efinix.h>
 #include <env.h>
-#include <errno.h>
 #include <fpga.h>
 #include <log.h>
 #include <malloc.h>
+#include <asm/arch/atmel_pio4.h>
+#include <linux/string.h>
 
 #include "../common/tt_fpga.h"
 #include "proficube_fpga.h"

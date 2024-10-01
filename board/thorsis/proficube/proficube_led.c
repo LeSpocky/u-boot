@@ -2,8 +2,6 @@
  * Copyright 2019 Thorsis Technologies GmbH
  */
 
-#include <common.h>
-
 #include <asm/io.h>
 #include <command.h>
 #include <linux/delay.h>

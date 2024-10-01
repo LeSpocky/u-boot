@@ -3,10 +3,11 @@
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-#include <common.h>
+
 #include <init.h>
 #include <asm/global_data.h>
 #include <asm/arch/sama5d2.h>
+#include <linux/printk.h>
 #include <linux/sizes.h>
 
 DECLARE_GLOBAL_DATA_PTR;

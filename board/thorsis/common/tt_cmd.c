@@ -2,8 +2,10 @@
  * © 2020 Thorsis Technologies GmbH
  */
 
-#include <common.h>
 #include <command.h>
+#include <config.h>
+#include <stdio.h>
+#include <linux/printk.h>
 
 #ifdef CONFIG_LED
 #include "tt_led.h"

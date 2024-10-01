@@ -11,17 +11,19 @@
  * Thorsis Technologies GmbH
  */
 
-#include <common.h>
+#include <bootstage.h>
+#include <config.h>
 #include <debug_uart.h>
 #include <init.h>
 #include <log.h>
 #include <net.h>
 #include <asm/global_data.h>
 #include <asm/io.h>
+#include <asm/arch/at91sam9260.h>
 #include <asm/arch/at91sam9260_matrix.h>
 #include <asm/arch/at91sam9_smc.h>
 #include <asm/arch/at91_common.h>
-#include <asm/arch/clk.h>
+#include <asm/arch/at91_pio.h>
 #include <asm/arch/gpio.h>
 
 #ifdef CONFIG_FPGA

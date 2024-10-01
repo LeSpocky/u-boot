@@ -4,7 +4,7 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
-#include <common.h>
+#include <config.h>
 #include <debug_uart.h>
 #include <dm.h>
 #include <fdtdec.h>
@@ -14,6 +14,8 @@
 #include <log.h>
 #include <asm/arch/at91_common.h>
 #include <asm/global_data.h>
+#include <linux/kconfig.h>
+#include <linux/printk.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 

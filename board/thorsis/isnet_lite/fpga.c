@@ -23,15 +23,14 @@
 
 #define LOG_CATEGORY UCLASS_FPGA
 
-#include <common.h>
 #include <altera.h>
 #include <ACEX1K.h>
-#include <command.h>
+#include <config.h>
 #include <console.h>
 #include <fpga.h>
 #include <log.h>
+#include <stdio.h>
 #include <asm/arch/at91sam9260.h>
-#include <asm/arch/at91_pmc.h>
 #include <asm/arch/gpio.h>
 #include <mach/clk.h>
 

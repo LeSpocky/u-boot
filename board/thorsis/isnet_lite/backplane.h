@@ -9,8 +9,7 @@
 #ifndef	_BACKPLANE_H_
 #define	_BACKPLANE_H_
 
-#include <common.h>
-#include <asm/types.h>
+#include <linux/types.h>
 
 typedef unsigned char BOOL;
 typedef unsigned char BYTE;

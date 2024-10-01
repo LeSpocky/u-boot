@@ -3,11 +3,12 @@
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-#include <common.h>
+
 #include <command.h>
+#include <dm.h>
 #include <led.h>
 #include <linux/delay.h>
-#include <vsprintf.h>
+#include <linux/printk.h>
 
 #include "../common/tt_led.h"
 

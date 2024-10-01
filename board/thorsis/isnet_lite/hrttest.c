@@ -8,9 +8,9 @@
  *	@copyright	2019 Thorsis Technologies GmbH
  **********************************************************************/
 
-#include <common.h>
 #include <command.h>
 #include <console.h>
+#include <stdio.h>
 
 /*
 #include <asm/arch/at91sam9260_matrix.h>

@@ -4,8 +4,8 @@
 
 #define LOG_CATEGORY LOGC_BOARD
 
-#include <common.h>
 #include <command.h>
+#include <dm.h>
 #include <led.h>
 #include <log.h>
 #include <linux/delay.h>
