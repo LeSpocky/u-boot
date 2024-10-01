@@ -193,7 +193,7 @@ static int hrttest_getParam( void ) {
 	return 0;
 }
 
-int do_hrt_test(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
+static int do_hrt_test(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[] ) {
 	int i=0;
 	int module=0;
 	BYTE channel=0;

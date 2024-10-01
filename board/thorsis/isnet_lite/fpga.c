@@ -60,7 +60,7 @@
 		at91_set_gpio_output(NCL_PIN_CLK,0);} /* set clk to 0  */
 
 /* Plattforminitializations */
-int fpga_pre_fn (int cookie)
+static int fpga_pre_fn (int cookie)
 {
 	/* initialize the GPIO Pins */
 	/* output */
@@ -84,7 +84,7 @@ int fpga_pre_fn (int cookie)
 }
 
 /* Set the state of CONFIG Pin */
-int fpga_config_fn (int assert_config, int flush, int cookie)
+static int fpga_config_fn (int assert_config, int flush, int cookie)
 {
 	if (assert_config) {
 		at91_set_gpio_output(NCL_PIN_CONFIG,1);
@@ -96,7 +96,7 @@ int fpga_config_fn (int assert_config, int flush, int cookie)
 }
 
 /* Returns the state of STATUS Pin */
-int fpga_status_fn (int cookie)
+static int fpga_status_fn (int cookie)
 {
 	if (at91_get_gpio_value(NCL_PIN_STATUS)) {
 		log_debug("STATUS = HIGH\n");
@@ -107,7 +107,7 @@ int fpga_status_fn (int cookie)
 }
 
 /* Returns the state of CONF_DONE Pin */
-int fpga_done_fn (int cookie)
+static int fpga_done_fn (int cookie)
 {
 	if (at91_get_gpio_value(NCL_PIN_CON_DON)) {
 		log_debug("CONF_DON = HIGH\n");
@@ -120,7 +120,7 @@ int fpga_done_fn (int cookie)
 /* writes the complete buffer to the FPGA
    writing the complete buffer in one function is much faster,
    then calling it for every bit */
-int fpga_write_fn( const void *buf, size_t len, int flush, int cookie )
+static int fpga_write_fn( const void *buf, size_t len, int flush, int cookie )
 {
 	size_t bytecount = 0;
 	unsigned char *data = (unsigned char *) buf;
