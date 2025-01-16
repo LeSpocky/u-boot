@@ -30,6 +30,10 @@
 	bootph-all;
 };
 
+&flx0 {
+	status = "disabled";
+};
+
 &led_11_red {
 	label = "led-0";
 	default-state = "off";
@@ -72,6 +76,10 @@
 
 &led_debug {
 	label = "green:debug";
+};
+
+&led_eth_speed {
+	label = "yellow:lan";
 };
 
 &main_rc {

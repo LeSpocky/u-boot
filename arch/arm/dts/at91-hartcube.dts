@@ -6,6 +6,7 @@
 /dts-v1/;
 #include <dt-bindings/input/input.h>
 #include <dt-bindings/leds/common.h>
+#include <dt-bindings/mfd/atmel-flexcom.h>
 #include <dt-bindings/pinctrl/at91.h>
 #include <efinix.h>
 #include "sam9x60.dtsi"
@@ -15,12 +16,8 @@
 	compatible = "thorsis,hartcube", "microchip,sam9x60", "atmel,at91sam9";
 
 	aliases {
-		serial0 = &dbgu;
-		gpio0 = &pioA;
-		gpio1 = &pioB;
-		gpio2 = &pioC;
-		gpio3 = &pioD;
-		spi0 = &soft_spi;
+		spi0 = &spi0;
+		spi1 = &qspi;
 	};
 
 	chosen {
@@ -75,6 +72,7 @@
 		 * (this led could use pwm, but we use it as simple gpio-led in u-boot only.)
 		 */
 		led_11_red: led-0 {
+			function = LED_FUNCTION_STATUS;
 			color = <LED_COLOR_ID_RED>;
 			gpios = <&pioC 18 GPIO_ACTIVE_HIGH>;
 		};
@@ -104,6 +102,7 @@
 		};
 
 		led_11_green: led-4 {
+			function = LED_FUNCTION_STATUS;
 			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pioC 22 GPIO_ACTIVE_HIGH>;
 		};
@@ -132,29 +131,75 @@
 			gpios = <&pioD 19 GPIO_ACTIVE_LOW>;
 			default-state = "keep";
 		};
+
+		led_eth_speed: led-9 {
+			color = <LED_COLOR_ID_YELLOW>;
+			function = LED_FUNCTION_LAN;
+			gpios = <&pioD 14 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "netdev";
+		};
 	};
 
-	soft_spi: soft-spi {
+	spi_gpio_flx0: spi-gpio-0 {
 		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_spi0>;
-		status = "okay";
+		pinctrl-0 = <&pinctrl_flx0_gpio>;
+		status = "disabled";
 
 		compatible = "spi-gpio";
-		#address-cells = <0x1>;
-		#size-cells = <0x0>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		sck-gpios = <&pioA 4 GPIO_ACTIVE_HIGH>;
+		mosi-gpios = <&pioA 1 GPIO_ACTIVE_HIGH>;
+		miso-gpios = <&pioA 0 GPIO_ACTIVE_HIGH>;
+		cs-gpios = <&pioA 3 GPIO_ACTIVE_LOW>;
+		num-cs = <1>;
+
+		flash@0 {
+			compatible = "jedec,spi-nor";
+			reg = <0>;
+			spi-max-frequency = <50000000>;
+			spi-tx-bus-width = <1>;
+			spi-rx-bus-width = <1>;
+			m25p,fast-read;
+		};
+	};
+
+	spi_gpio_qspi: spi-gpio-1 {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_qspi_gpio>;
+		status = "disabled";
+
+		compatible = "spi-gpio";
+		#address-cells = <1>;
+		#size-cells = <0>;
 
 		sck-gpios = <&pioB 19 GPIO_ACTIVE_HIGH>;
 		mosi-gpios = <&pioB 21 GPIO_ACTIVE_HIGH>;
 		miso-gpios = <&pioB 22 GPIO_ACTIVE_HIGH>;
-		cs-gpios = <&pioB 18 GPIO_ACTIVE_LOW>;
-		num-chipselects = <1>;
+		cs-gpios = <&pioB 20 GPIO_ACTIVE_LOW>, <&pioB 18 GPIO_ACTIVE_LOW>;
+		num-cs = <2>;
 
-		fpga: fpga@0 {
+		fpga@0 {
+			compatible = "thorsis,fpga-hcb";
+			reg = <0>;
+			status = "disabled";
+
+			spi-max-frequency = <1000000>;
+			spi-cs-setup-delay-ns = <500>;		// halbe Taktperiode
+			spi-cs-inactive-delay-ns = <1000>;	// ganze Taktperiode
+			spi-tx-bus-width = <1>;
+			spi-rx-bus-width = <1>;
+		};
+
+		fpga@1 {
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_fpga>;
+			status = "okay";
 
 			compatible = "efinix,fpga-passive-serial";
-			reg = <0>;
+			reg = <1>;
+
 			spi-max-frequency = <50000000>;
 			spi-cpha;
 			spi-cpol;
@@ -243,9 +288,40 @@
 	};
 };
 
+&flx0 {
+	status = "okay";
+	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flx0_default>;
+	status = "okay";
+
+	spi0: spi@400 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		flash@0 {
+			compatible = "jedec,spi-nor";
+			reg = <0>;
+			spi-max-frequency = <50000000>;
+			m25p,fast-read;
+		};
+	};
+};
+
 &macb0 {
 	phy-mode = "rmii";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_macb0_rmii>;
 	status = "okay";
+
+	/* pull-up on pin 15, phyad[1:0] is 3h.
+	 * pull-down on pin 16, phyad[2] is 0h. */
+	ethernet-phy@3 {
+		reg = <3>;
+	};
 };
 
 &pinctrl {
@@ -276,6 +352,24 @@
 		};
 	};
 
+	flexcom {
+		pinctrl_flx0_default: flx0-spi {
+			atmel,pins =
+				<AT91_PIOA 0 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS	/* MOSI */
+				 AT91_PIOA 1 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS	/* MISO */
+				 AT91_PIOA 3 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS	/* NPCS0 */
+				 AT91_PIOA 4 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS>;	/* SPCK */
+		};
+
+		pinctrl_flx0_gpio: spi-gpio-0 {
+			atmel,pins =
+				<AT91_PIOA 0 AT91_PERIPH_GPIO AT91_PINCTRL_SLEWRATE_DIS		/* MISO */
+				 AT91_PIOA 1 AT91_PERIPH_GPIO AT91_PINCTRL_SLEWRATE_DIS		/* MOSI */
+				 AT91_PIOA 3 AT91_PERIPH_GPIO AT91_PINCTRL_SLEWRATE_DIS		/* NPCS0 */
+				 AT91_PIOA 4 AT91_PERIPH_GPIO AT91_PINCTRL_SLEWRATE_DIS>;	/* SPCK */
+		};
+	};
+
 	fpga {
 		pinctrl_fpga: fpga-gpios {
 			atmel,pins = <AT91_PIOB 12 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT		/* nCONFIG     */
@@ -301,9 +395,12 @@
 				      AT91_PIOC 23 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT
 				      AT91_PIOC 24 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT
 				      AT91_PIOC 25 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT
+				      AT91_PIOD 14 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT
 				      AT91_PIOD 19 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT>;
 		};
 	};
+
+	/* U-Boot has pinctrl_macb0_rmii in sam9x60.dtsi … o.O */
 
 	nand {
 		pinctrl_nand_oe_we: nand-oe-we-0 {
@@ -323,17 +420,193 @@
 		};
 	};
 
-	spi {
-		pinctrl_spi0: soft-spi {
-			atmel,pins = <AT91_PIOB 18 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT	/* CSI_O */
-				      AT91_PIOB 19 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT	/* DCLK  */
-				      AT91_PIOB 20 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT	/* NCS   */
-				      AT91_PIOB 21 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT	/* MOSI  */
-				      AT91_PIOB 22 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;	/* ASD0  */
+	qspi {
+		pinctrl_qspi_default: qspi {
+			atmel,pins =
+				<AT91_PIOB 18 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT /* CSI_O */
+				 AT91_PIOB 19 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS
+				 AT91_PIOB 20 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT
+				 AT91_PIOB 21 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS
+				 AT91_PIOB 22 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS
+				 AT91_PIOB 23 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS
+				 AT91_PIOB 24 AT91_PERIPH_A AT91_PINCTRL_SLEWRATE_DIS>;
+		};
+
+		pinctrl_qspi_gpio: spi-gpio-1 {
+			atmel,pins =
+				<AT91_PIOB 18 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT /* CSI_O */
+				 AT91_PIOB 19 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT /* DCLK  */
+				 AT91_PIOB 20 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT /* NCS   */
+				 AT91_PIOB 21 AT91_PERIPH_GPIO AT91_PINCTRL_OUTPUT /* MOSI  */
+				 AT91_PIOB 22 AT91_PERIPH_GPIO AT91_PINCTRL_NONE   /* ASD0  */
+				 AT91_PIOB 23 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
+				 AT91_PIOB 24 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
 		};
 	};
 };
 
-&qspi {
-	status = "disabled";
+/* HW v1.6 */
+
+&pioA {
+	gpio-line-names = "MOSI",		/* PA0  */
+			  "MISO",		/* PA1  */
+			  "",			/* PA2  */
+			  "NPCS0",		/* PA3  */
+			  "SPCK",		/* PA4  */
+			  "",			/* PA5  */
+			  "",			/* PA6  */
+			  "",			/* PA7  */
+			  "",			/* PA8  */
+			  "DRXD",		/* PA9  */
+			  "DTXD",		/* PA10 */
+			  "",			/* PA11 */
+			  "",			/* PA12 */
+			  "",			/* PA13 */
+			  "",			/* PA14 */
+			  "",			/* PA15 */
+			  "",			/* PA16 */
+			  "",			/* PA17 */
+			  "",			/* PA18 */
+			  "",			/* PA19 */
+			  "",			/* PA20 */
+			  "",			/* PA21 */
+			  "",			/* PA22 */
+			  "",			/* PA23 */
+			  "",			/* PA24 */
+			  "",			/* PA25 */
+			  "",			/* PA26 */
+			  "USBA_VBUS",		/* PA27 */
+			  "",			/* PA28 */
+			  "",			/* PA29 */
+			  "",			/* PA30 */
+			  "";			/* PA31 */
 };
+
+&pioB {
+	gpio-line-names = "ETH0_RX0",		/* PB0  */
+			  "ETH0_RX1",		/* PB1  */
+			  "ETH0_RXER",		/* PB2  */
+			  "ETH0_RXDV",		/* PB3  */
+			  "ETH0_TXCK",		/* PB4  */
+			  "ETH0_MDIO",		/* PB5  */
+			  "ETH0_MDC",		/* PB6  */
+			  "ETH0_TXEN",		/* PB7  */
+			  "ETH0_IRQ",		/* PB8  */
+			  "ETH0_TX0",		/* PB9  */
+			  "ETH0_TX1",		/* PB10 */
+			  "",			/* PB11 */
+			  "nCONFIG",		/* PB12 */
+			  "CONF_DONE",		/* PB13 */
+			  "nSTATUS",		/* PB14 */
+			  "nFPGA_RES",		/* PB15 */
+			  "",			/* PB16 */
+			  "",			/* PB17 */
+			  "CSI_O",		/* PB18 */
+			  "SCK",		/* PB19 */
+			  "NCS",		/* PB20 */
+			  "SIO0",		/* PB21 */
+			  "SIO1",		/* PB22 */
+			  "SIO2",		/* PB23 */
+			  "SIO3",		/* PB24 */
+			  "";			/* PB25 */
+};
+
+&pioC {
+	gpio-line-names = "",			/* PC0  */
+			  "",			/* PC1  */
+			  "",			/* PC2  */
+			  "",			/* PC3  */
+			  "",			/* PC4  */
+			  "",			/* PC5  */
+			  "",			/* PC6  */
+			  "",			/* PC7  */
+			  "",			/* PC8  */
+			  "",			/* PC9  */
+			  "",			/* PC10 */
+			  "",			/* PC11 */
+			  "",			/* PC12 */
+			  "",			/* PC13 */
+			  "",			/* PC14 */
+			  "",			/* PC15 */
+			  "",			/* PC16 */
+			  "",			/* PC17 */
+			  "LEDA0",		/* PC18 */
+			  "LEDA1",		/* PC19 */
+			  "LEDA2",		/* PC20 */
+			  "LEDA3",		/* PC21 */
+			  "LEDK0",		/* PC22 */
+			  "LEDK1",		/* PC23 */
+			  "LEDK2",		/* PC24 */
+			  "LEDK3",		/* PC25 */
+			  "",			/* PC26 */
+			  "",			/* PC27 */
+			  "",			/* PC30 */
+			  "";			/* PC31 */
+};
+
+&pioD {
+	gpio-line-names = "NAND_RE",		/* PD0  */
+			  "NAND_WE",		/* PD1  */
+			  "NAND_ALE",		/* PD2  */
+			  "NAND_CLE",		/* PD3  */
+			  "NAND_NCS",		/* PD4  */
+			  "NAND_RDY",		/* PD5  */
+			  "NAND_D0",		/* PD6  */
+			  "NAND_D1",		/* PD7  */
+			  "NAND_D2",		/* PD8  */
+			  "NAND_D3",		/* PD9  */
+			  "NAND_D4",		/* PD10 */
+			  "NAND_D5",		/* PD11 */
+			  "NAND_D6",		/* PD12 */
+			  "NAND_D7",		/* PD13 */
+			  "ETH_LEDSPEED",	/* PD14 */
+			  "",			/* PD15 */
+			  "",			/* PD16 */
+			  "",			/* PD17 */
+			  "",			/* PD18 */
+			  "LED9",		/* PD19 */
+			  "",			/* PD20 */
+			  "FACTORY_RESET";	/* PD21 */
+};
+
+// ~781 kHz to 200 MHz
+&qspi {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_qspi_default>;
+	status = "okay";
+
+	cs-gpios = <&pioB 20 GPIO_ACTIVE_LOW>, <&pioB 18 GPIO_ACTIVE_LOW>;
+	num-cs = <2>;
+
+	fpga@0 {
+		compatible = "thorsis,fpga-hcb";
+		reg = <0>;
+		status = "disabled";
+
+		spi-max-frequency = <20000000>;		// 16 MHz tested by jbe
+		spi-cs-setup-delay-ns = <25>;		// halbe Taktperiode
+		spi-cs-inactive-delay-ns = <50>;	// ganze Taktperiode
+
+		spi-tx-bus-width = <4>;
+		spi-rx-bus-width = <4>;
+	};
+
+	fpga@1 {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_fpga>;
+		status = "okay";
+
+		compatible = "efinix,fpga-passive-serial";
+		reg = <1>;
+
+		spi-max-frequency = <50000000>;
+		spi-cpha;
+		spi-cpol;
+		nconfig-gpios = <&pioB 12 GPIO_ACTIVE_LOW>;
+		nstat-gpios = <&pioB 14 GPIO_ACTIVE_LOW>;
+		confd-gpios = <&pioB 13 GPIO_ACTIVE_HIGH>;
+		altr,size = <EFINIX_TRION_T20Q144_SIZE>;
+	};
+};
+
+/* vim: set noet sts=0 ts=8 sw=8 sr: */
