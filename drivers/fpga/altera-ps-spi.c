@@ -25,9 +25,13 @@ struct altera_ps_spi_priv {
 
 /*
  * CYC2_ps_load() wants this false, waits 100 us, wants this true.
- * Altera needs the nCONFIG line be set to low here, Efinix has that
- * wired to CRESET_N and wants that line low and then high again.
- * Pin is low active, so we have to invert assert_config.
+ * Altera needs the nCONFIG line be set to low and then high again,
+ * Efinix has that wired to CRESET_N and wants that line low and then
+ * high again, so the pin is actually low active in both cases.
+ * However CYC2_ps_load() calls ->config(false, …) first and
+ * ->config(true) after, which ignores gpio subsystem handling low
+ * active pins by itself (you give dm_gpio the logical value only).
+ * So to be compatible to old code we need to invert the boolean here.
  */
 static int altera_ps_spi_config(int assert_config, int flush, int cookie)
 {
