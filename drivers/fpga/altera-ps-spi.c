@@ -6,6 +6,7 @@
 #include <ACEX1K.h>
 #include <altera.h>
 #include <linux/bitrev.h>
+#include <linux/delay.h>
 #include <dm/device_compat.h>
 #include <dm.h>
 #include <efinix.h>
@@ -73,6 +74,11 @@ static int altera_ps_spi_done(int cookie)
 	struct udevice *dev = (struct udevice *)cookie;
 	struct altera_ps_spi_priv *priv = dev_get_priv(dev);
 	int ret;
+
+	/* SPI Passive Mode (x1) Timing Sequence suggests there are one
+	 * or two SPI clock cycles between end of data and CDONE asserted. */
+	if (priv->desc.family == ALTERA_FAMILY_EFINIX_TRION)
+		udelay(2);
 
 	ret = dm_gpio_get_value(&priv->conf_done);
 	if (ret < 0)
