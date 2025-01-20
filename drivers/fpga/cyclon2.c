@@ -143,13 +143,6 @@ static int CYC2_ps_load(Altera_desc *desc, const void *buf, size_t bsize)
 		/* Get ready for the burn */
 		CFG_FPGA_DELAY();
 
-		ret = (*fn->write) (buf, bsize, true, cookie);
-		if (ret) {
-			puts("** Write failed.\n");
-			(*fn->abort) (cookie);
-			return FPGA_FAIL;
-		}
-
 		/*
 		 * From 'AN 006: Configuring Trion FPGAs':
 		 *
@@ -157,20 +150,22 @@ static int CYC2_ps_load(Altera_desc *desc, const void *buf, size_t bsize)
 		 * > the microprocessor must continue to supply
 		 * > configuration clock to the Trion® FPGA for at least
 		 * > 100 cycles after sending the last configuration data.
+		 *
+		 * We are opportunistic here and overflow the buffer
+		 * reading whatever comes behind.
 		 */
 		if (desc->family == ALTERA_FAMILY_EFINIX_TRION) {
-			u8 dummy[120];
+			const size_t dummies = 1000;
+			log_debug("%s: Writing %zu dummy bytes to keep clock supplied.\n",
+				  __func__, dummies);
+			bsize += dummies;
+		}
 
-			memset(dummy, 0, sizeof(dummy));
-
-			log_debug("%s: Writing %u dummy bytes to keep clock supplied.\n",
-				  __func__, sizeof(dummy));
-			ret = (*fn->write) (dummy, sizeof(dummy), true, cookie);
-			if (ret) {
-				puts("** Write failed.\n");
-				(*fn->abort) (cookie);
-				return FPGA_FAIL;
-			}
+		ret = (*fn->write) (buf, bsize, true, cookie);
+		if (ret) {
+			puts("** Write failed.\n");
+			(*fn->abort) (cookie);
+			return FPGA_FAIL;
 		}
 
 #ifdef CONFIG_SYS_FPGA_PROG_FEEDBACK
