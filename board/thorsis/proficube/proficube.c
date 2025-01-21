@@ -6,7 +6,10 @@
 
 #include <config.h>
 #include <debug_uart.h>
+#include <dm.h>
+#include <fpga.h>
 #include <init.h>
+#include <log.h>
 #include <asm/global_data.h>
 #include <asm/io.h>
 #include <asm/arch/at91_pmc.h>
@@ -17,11 +20,6 @@
 #include <linux/printk.h>
 
 #include "../common/tt_dram.h"
-
-#ifdef CONFIG_FPGA
-#include "../common/tt_fpga.h"
-#include "proficube_fpga.h"
-#endif
 
 #ifdef CONFIG_NAND_ATMEL
 #include "../common/tt_nand.h"
@@ -147,36 +145,6 @@ static void board_fpga_hw_init(void)
 	pr_debug("%s: entered\n", __func__);
 
 	/*
-	 * PA08: /CONFIG
-	 * PA09: CONF_DONE
-	 * PA10: /STATUS
-	 * PA11: /FPGA_RES
-	 *
-	 * NOTE	The SPI pins are initialized by DT/pinctrl.
-	 *
-	 * PA14: SPI0_SPCK (DCLK)
-	 * PA15: SPI0_MOSI (ASD0)
-	 * PA16: SPI0_MISO (DATA0)
-	 * PA17: SPI0_NPCS0 (/CS0)
-	 * PA18: SPI0_NPCS1 (/CS1)
-	 *
-	 * PA19: /CE
-	 */
-
-	atmel_pio4_set_gpio(PROFICUBE_FPGA_PIN_nCONFIG, 0);
-	atmel_pio4_set_gpio(PROFICUBE_FPGA_PIN_CONF_DONE, 0);
-	atmel_pio4_set_gpio(PROFICUBE_FPGA_PIN_nSTATUS, 0);
-
-	/*
-	 * nCE is connected to the uC, we don't really need to set it,
-	 * just ensure it is set to low.
-	 * This is necessary for Altera Cyclon FPGAs on boards up to
-	 * v1.1, but should not hurt for the Efinix Trion on hw v1.2.
-	 */
-	atmel_pio4_set_gpio(AT91_PIO_PORTA, 19, 0);
-	atmel_pio4_set_pio_output(AT91_PIO_PORTA, 19, 0);
-
-	/*
 	 * Clock init.
 	 *
 	 * Use PA21 as PCK2 and output main clock without prescaler (24 MHz).
@@ -262,12 +230,22 @@ int dram_init(void)
 #ifdef CONFIG_MISC_INIT_R
 int misc_init_r(void)
 {
-	pr_debug("%s: called\n", __func__);
+	pr_debug("%s: entered\n", __func__);
 
-#ifdef CONFIG_FPGA
-	board_fpga_init();
-#endif
+	if (IS_ENABLED(CONFIG_FPGA)) {
+		fpga_init();
 
+		if (IS_ENABLED(CONFIG_DM_FPGA)) {
+			struct udevice *udev;
+			int ret;
+
+			ret = uclass_get_device(UCLASS_FPGA, 0, &udev);
+			if (ret)
+				return log_ret(ret);
+		}
+	}
+
+	pr_debug("%s: leaving\n", __func__);
 	return 0;
 }
 #endif

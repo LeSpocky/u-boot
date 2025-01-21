@@ -2,6 +2,6 @@ ProfiCube Board
 M:	Alexander Dahl <ada@thorsis.com>
 S:	Maintained
 F:	board/thorsis/proficube
-F:	configs/proficube_defconfig
+F:	configs/proficube*_defconfig
 F:	include/configs/proficube.h
 F:	arch/arm/dts/at91-proficube*.dts*
