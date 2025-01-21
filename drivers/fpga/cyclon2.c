@@ -13,7 +13,6 @@
 #include <altera.h>
 #include <ACEX1K.h>		/* ACEX device family */
 #include <linux/delay.h>
-#include <linux/string.h>
 
 /* Note: The assumption is that we cannot possibly run fast enough to
  * overrun the device (the Slave Parallel mode can free run at 50MHz).
@@ -142,24 +141,6 @@ static int CYC2_ps_load(Altera_desc *desc, const void *buf, size_t bsize)
 
 		/* Get ready for the burn */
 		CFG_FPGA_DELAY();
-
-		/*
-		 * From 'AN 006: Configuring Trion FPGAs':
-		 *
-		 * > Important: To ensure a successful configuration,
-		 * > the microprocessor must continue to supply
-		 * > configuration clock to the Trion® FPGA for at least
-		 * > 100 cycles after sending the last configuration data.
-		 *
-		 * We are opportunistic here and overflow the buffer
-		 * reading whatever comes behind.
-		 */
-		if (desc->family == ALTERA_FAMILY_EFINIX_TRION) {
-			const size_t dummies = 1000;
-			log_debug("%s: Writing %zu dummy bytes to keep clock supplied.\n",
-				  __func__, dummies);
-			bsize += dummies;
-		}
 
 		ret = (*fn->write) (buf, bsize, true, cookie);
 		if (ret) {

@@ -16,6 +16,12 @@
 #include <log.h>
 #include <malloc.h>
 #include <spi.h>
+#include <linux/string.h>
+
+struct altera_ps_spi_caps {
+	enum altera_family	family;
+	size_t			dummy_bytes;
+};
 
 struct altera_ps_spi_priv {
 	struct gpio_desc	*nconfig;
@@ -23,6 +29,7 @@ struct altera_ps_spi_priv {
 	struct gpio_desc	*conf_done;
 	struct gpio_desc	*nce;
 	Altera_desc		desc;
+	size_t			dummy_bytes;
 };
 
 static int altera_ps_spi_pre(int cookie)
@@ -122,9 +129,25 @@ static int altera_ps_spi_write(const void *buf, size_t len, int flush, int cooki
 		return log_ret(-ENOSPC);
 	}
 
-	data = malloc(len);
+	/*
+	 * From 'AN 006: Configuring Trion FPGAs':
+	 *
+	 * > Important: To ensure a successful configuration,
+	 * > the microprocessor must continue to supply
+	 * > configuration clock to the Trion® FPGA for at least
+	 * > 100 cycles after sending the last configuration data.
+	 */
+
+	data = malloc(len + priv->dummy_bytes);
 	if (!data)
 		return log_ret(-ENOMEM);
+
+	if (priv->dummy_bytes > 0) {
+		dev_dbg(dev,
+			"Writing %zu dummy bytes to keep clock supplied.\n",
+			priv->dummy_bytes);
+		memset(data + len, 0xFF, priv->dummy_bytes);
+	}
 
 	ret = dm_spi_claim_bus(dev);
 	if (ret)
@@ -135,7 +158,8 @@ static int altera_ps_spi_write(const void *buf, size_t len, int flush, int cooki
 		data[i] = bitrev8(*((const u8 *)buf + i));
 
 	// transfer data
-	ret = dm_spi_xfer(dev, len * 8, data, NULL, SPI_XFER_ONCE);
+	ret = dm_spi_xfer(dev, (len + priv->dummy_bytes) * 8, data,
+			  NULL, SPI_XFER_ONCE);
 	if (ret)
 		dev_err(dev, "Error %d during SPI transaction\n", ret);
 
@@ -165,12 +189,16 @@ static Altera_CYC2_Passive_Serial_fns altera_ps_spi_fns = {
 static int altera_ps_spi_probe(struct udevice *dev)
 {
 	struct altera_ps_spi_priv *priv = dev_get_priv(dev);
+	struct altera_ps_spi_caps *caps;
 
-	priv->desc.family = dev_get_driver_data(dev);
+	caps = (struct altera_ps_spi_caps *) dev_get_driver_data(dev);
+
+	priv->desc.family = caps->family;
 	priv->desc.iface = passive_serial;
 	priv->desc.iface_fns = &altera_ps_spi_fns;
 	priv->desc.base = NULL;
 	priv->desc.cookie = (uintptr_t)dev;
+	priv->dummy_bytes = caps->dummy_bytes;
 
 	/* nCONFIG pin */
 	priv->nconfig = devm_gpiod_get(dev, "nconfig",
@@ -212,14 +240,24 @@ static int altera_ps_spi_of_to_plat(struct udevice *dev)
 	return 0;
 }
 
+static const struct altera_ps_spi_caps altr_caps = {
+	.family = Altera_CYC2,
+	.dummy_bytes = 0,
+};
+
+static const struct altera_ps_spi_caps efinix_caps = {
+	.family = ALTERA_FAMILY_EFINIX_TRION,
+	.dummy_bytes = 120,
+};
+
 static const struct udevice_id altera_ps_spi_match[] = {
 	{
 		.compatible = "altr,fpga-passive-serial",
-		.data = Altera_CYC2
+		.data = (ulong) &altr_caps,
 	},
 	{
 		.compatible = "efinix,fpga-passive-serial",
-		.data = ALTERA_FAMILY_EFINIX_TRION
+		.data = (ulong) &efinix_caps,
 	},
 	{ /* sentinel */ }
 };
