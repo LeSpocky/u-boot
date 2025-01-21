@@ -18,9 +18,9 @@
 #include <spi.h>
 
 struct altera_ps_spi_priv {
-	struct gpio_desc	nconfig;
-	struct gpio_desc	nstatus;
-	struct gpio_desc	conf_done;
+	struct gpio_desc	*nconfig;
+	struct gpio_desc	*nstatus;
+	struct gpio_desc	*conf_done;
 	Altera_desc		desc;
 };
 
@@ -41,7 +41,7 @@ static int altera_ps_spi_config(int assert_config, int flush, int cookie)
 	int ret;
 
 	/* low active */
-	ret = dm_gpio_set_value(&priv->nconfig, !assert_config);
+	ret = dm_gpio_set_value(priv->nconfig, !assert_config);
 	return log_ret(ret) ? FPGA_FAIL : FPGA_SUCCESS;
 }
 
@@ -56,12 +56,19 @@ static int altera_ps_spi_status(int cookie)
 	struct altera_ps_spi_priv *priv = dev_get_priv(dev);
 	int ret;
 
+	if (!priv->nstatus) {
+		dev_dbg(dev, "Optional nSTATUS pin not defined\n");
+		return 1;
+	}
+
+	/* nSTATUS pin might be defined on Trion nonetheless, but we
+	 * don't query it for FPGA configuration here. */
 	if (priv->desc.family == ALTERA_FAMILY_EFINIX_TRION) {
 		dev_dbg(dev, "Skipping nSTATUS read on Trion\n");
 		return 1;
 	}
 
-	ret = dm_gpio_get_value(&priv->nstatus);
+	ret = dm_gpio_get_value(priv->nstatus);
 	if (ret < 0)
 		return log_ret(ret);
 
@@ -80,7 +87,7 @@ static int altera_ps_spi_done(int cookie)
 	if (priv->desc.family == ALTERA_FAMILY_EFINIX_TRION)
 		udelay(2);
 
-	ret = dm_gpio_get_value(&priv->conf_done);
+	ret = dm_gpio_get_value(priv->conf_done);
 	if (ret < 0)
 		return log_ret(ret);
 
@@ -143,7 +150,6 @@ static Altera_CYC2_Passive_Serial_fns altera_ps_spi_fns = {
 static int altera_ps_spi_probe(struct udevice *dev)
 {
 	struct altera_ps_spi_priv *priv = dev_get_priv(dev);
-	int ret;
 
 	priv->desc.family = dev_get_driver_data(dev);
 	priv->desc.iface = passive_serial;
@@ -152,24 +158,19 @@ static int altera_ps_spi_probe(struct udevice *dev)
 	priv->desc.cookie = (uintptr_t)dev;
 
 	/* nCONFIG pin */
-	ret = gpio_request_by_name(dev, "nconfig-gpios", 0, &priv->nconfig,
-				   GPIOD_IS_OUT | GPIOD_ACTIVE_LOW);
-	if (ret)
-		return log_ret(ret);
+	priv->nconfig = devm_gpiod_get(dev, "nconfig",
+				       GPIOD_IS_OUT | GPIOD_ACTIVE_LOW);
+	if (IS_ERR(priv->nconfig))
+		return log_ret(PTR_ERR(priv->nconfig));
 
 	/* nSTATUS pin */
-	if (priv->desc.family != ALTERA_FAMILY_EFINIX_TRION) {
-		ret = gpio_request_by_name(dev, "nstat-gpios", 0, &priv->nstatus,
-					   GPIOD_IS_IN | GPIOD_ACTIVE_LOW);
-		if (ret)
-			return log_ret(ret);
-	}
+	priv->nstatus = devm_gpiod_get_optional(dev, "nstat",
+						GPIOD_IS_IN | GPIOD_ACTIVE_LOW);
 
 	/* CONF_DONE pin */
-	ret = gpio_request_by_name(dev, "confd-gpios", 0, &priv->conf_done,
-				   GPIOD_IS_IN);
-	if (ret)
-		return log_ret(ret);
+	priv->conf_done = devm_gpiod_get(dev, "confd", GPIOD_IS_IN);
+	if (IS_ERR(priv->conf_done))
+		return log_ret(PTR_ERR(priv->conf_done));
 
 	fpga_add(fpga_altera, &priv->desc);
 
