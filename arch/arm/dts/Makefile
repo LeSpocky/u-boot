@@ -1041,6 +1041,7 @@ dtb-$(CONFIG_TARGET_SAMA5D29_CURIOSITY) += \
 dtb-$(CONFIG_SAMA5D2) += \
 	at91-muxgate.dtb \
 	at91-proficube.dtb \
+	at91-proficube-v1.2.dtb \
 	at91-vera2.dtb
 
 dtb-$(CONFIG_TARGET_SAMA5D3XEK) += \

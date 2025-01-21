@@ -1,0 +1,7 @@
+/*
+ * at91-proficube-v1.2-u-boot.dtsi – Device Tree include for Thorsis Technologies ProfiCube board
+ *
+ * © 2025 Thorsis Technologies GmbH
+ */
+
+#include "at91-proficube-common-u-boot.dtsi"

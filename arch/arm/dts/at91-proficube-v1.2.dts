@@ -1,0 +1,17 @@
+/*
+ * at91-proficube-v1.2.dts – Device Tree file for Thorsis Technologies ProfiCube board
+ *
+ * © 2025 Thorsis Technologies GmbH
+ */
+/dts-v1/;
+#include "at91-proficube-common.dtsi"
+#include <efinix.h>
+
+&fpga {
+	compatible = "efinix,fpga-passive-serial";
+
+	spi-max-frequency = <10000000>;
+	spi-cpha;
+	spi-cpol;
+	altr,size = <EFINIX_TRION_T20Q144_SIZE>;
+};
