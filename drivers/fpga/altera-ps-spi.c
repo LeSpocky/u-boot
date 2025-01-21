@@ -21,8 +21,23 @@ struct altera_ps_spi_priv {
 	struct gpio_desc	*nconfig;
 	struct gpio_desc	*nstatus;
 	struct gpio_desc	*conf_done;
+	struct gpio_desc	*nce;
 	Altera_desc		desc;
 };
+
+static int altera_ps_spi_pre(int cookie)
+{
+	struct udevice *dev = (struct udevice *)cookie;
+	struct altera_ps_spi_priv *priv = dev_get_priv(dev);
+
+	if (priv->nce) {
+		int ret;
+		ret = dm_gpio_set_value(priv->nce, 1);
+		return log_ret(ret) ? FPGA_FAIL : FPGA_SUCCESS;
+	}
+
+	return FPGA_SUCCESS;
+}
 
 /*
  * CYC2_ps_load() wants this false, waits 100 us, wants this true.
@@ -138,7 +153,7 @@ static int altera_ps_spi_abort(int cookie)
 }
 
 static Altera_CYC2_Passive_Serial_fns altera_ps_spi_fns = {
-	.pre = NULL,
+	.pre = altera_ps_spi_pre,
 	.config = altera_ps_spi_config,
 	.status = altera_ps_spi_status,
 	.done = altera_ps_spi_done,
@@ -171,6 +186,10 @@ static int altera_ps_spi_probe(struct udevice *dev)
 	priv->conf_done = devm_gpiod_get(dev, "confd", GPIOD_IS_IN);
 	if (IS_ERR(priv->conf_done))
 		return log_ret(PTR_ERR(priv->conf_done));
+
+	/* nCE pin */
+	priv->nce = devm_gpiod_get_optional(dev, "enable",
+					    GPIOD_IS_OUT | GPIOD_ACTIVE_LOW);
 
 	fpga_add(fpga_altera, &priv->desc);
 
