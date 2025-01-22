@@ -39,6 +39,7 @@ static int altera_ps_spi_pre(int cookie)
 
 	if (priv->nce) {
 		int ret;
+
 		ret = dm_gpio_set_value(priv->nce, 1);
 		return log_ret(ret) ? FPGA_FAIL : FPGA_SUCCESS;
 	}
@@ -83,8 +84,10 @@ static int altera_ps_spi_status(int cookie)
 		return 1;
 	}
 
-	/* nSTATUS pin might be defined on Trion nonetheless, but we
-	 * don't query it for FPGA configuration here. */
+	/*
+	 * nSTATUS pin might be defined on Trion nonetheless, but we
+	 * don't query it for FPGA configuration here.
+	 */
 	if (priv->desc.family == ALTERA_FAMILY_EFINIX_TRION) {
 		dev_dbg(dev, "Skipping nSTATUS read on Trion\n");
 		return 1;
@@ -104,8 +107,10 @@ static int altera_ps_spi_done(int cookie)
 	struct altera_ps_spi_priv *priv = dev_get_priv(dev);
 	int ret;
 
-	/* SPI Passive Mode (x1) Timing Sequence suggests there are one
-	 * or two SPI clock cycles between end of data and CDONE asserted. */
+	/*
+	 * SPI Passive Mode (x1) Timing Sequence suggests there are one
+	 * or two SPI clock cycles between end of data and CDONE asserted.
+	 */
 	if (priv->desc.family == ALTERA_FAMILY_EFINIX_TRION)
 		udelay(2);
 
@@ -123,7 +128,7 @@ static int altera_ps_spi_write(const void *buf, size_t len, int flush, int cooki
 	u8 *data = NULL;
 	int ret;
 
-	if ((priv->desc.size != (size_t) -1) && (len > priv->desc.size)) {
+	if ((priv->desc.size != (size_t)-1) && len > priv->desc.size) {
 		dev_err(dev, "FPGA image too big (%zu > %zu)!\n",
 			len, priv->desc.size);
 		return log_ret(-ENOSPC);
@@ -157,7 +162,7 @@ static int altera_ps_spi_write(const void *buf, size_t len, int flush, int cooki
 	for (int i = 0; i < len; i++)
 		data[i] = bitrev8(*((const u8 *)buf + i));
 
-	// transfer data
+	/* transfer data */
 	ret = dm_spi_xfer(dev, (len + priv->dummy_bytes) * 8, data,
 			  NULL, SPI_XFER_ONCE);
 	if (ret)
@@ -191,7 +196,7 @@ static int altera_ps_spi_probe(struct udevice *dev)
 	struct altera_ps_spi_priv *priv = dev_get_priv(dev);
 	struct altera_ps_spi_caps *caps;
 
-	caps = (struct altera_ps_spi_caps *) dev_get_driver_data(dev);
+	caps = (struct altera_ps_spi_caps *)dev_get_driver_data(dev);
 
 	priv->desc.family = caps->family;
 	priv->desc.iface = passive_serial;
@@ -234,7 +239,7 @@ static int altera_ps_spi_of_to_plat(struct udevice *dev)
 	if (ret) {
 		dev_dbg(dev,
 			"Property \"altr,size\" not set, driver won't check size on write!\n");
-		priv->desc.size = (size_t) -1;
+		priv->desc.size = (size_t)-1;
 	}
 
 	return 0;
@@ -253,11 +258,11 @@ static const struct altera_ps_spi_caps efinix_caps = {
 static const struct udevice_id altera_ps_spi_match[] = {
 	{
 		.compatible = "altr,fpga-passive-serial",
-		.data = (ulong) &altr_caps,
+		.data = (ulong)&altr_caps,
 	},
 	{
 		.compatible = "efinix,fpga-passive-serial",
-		.data = (ulong) &efinix_caps,
+		.data = (ulong)&efinix_caps,
 	},
 	{ /* sentinel */ }
 };
