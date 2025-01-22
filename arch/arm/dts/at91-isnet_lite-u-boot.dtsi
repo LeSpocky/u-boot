@@ -16,3 +16,12 @@
 &dbgu {
 	bootph-all;
 };
+
+&fpga {
+	compatible = "altr,fpga-passive-serial";
+	status = "okay";
+};
+
+&spi0 {
+	status = "okay";
+};

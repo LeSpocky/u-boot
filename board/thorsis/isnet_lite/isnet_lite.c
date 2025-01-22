@@ -16,6 +16,8 @@
 #include <bootstage.h>
 #include <config.h>
 #include <debug_uart.h>
+#include <dm.h>
+#include <fpga.h>
 #include <init.h>
 #include <net.h>
 #include <asm/global_data.h>
@@ -27,10 +29,6 @@
 #include <asm/arch/at91_pio.h>
 #include <asm/arch/gpio.h>
 #include <linux/printk.h>
-
-#ifdef CONFIG_FPGA
-#include "../common/tt_fpga.h"
-#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -170,10 +168,6 @@ int board_init(void)
 	at91sam9g20ncl_nand_hw_init();
 #endif
 
-#ifdef CONFIG_FPGA
-	board_fpga_init();
-#endif
-
 	at91sam9g20ncl_reg_hw_init();
 
 	return 0;
@@ -188,6 +182,29 @@ int dram_init(void)
 		CFG_SYS_SDRAM_SIZE);
 	return 0;
 }
+
+#ifdef CONFIG_MISC_INIT_R
+int misc_init_r(void)
+{
+	pr_debug("%s: entered\n", __func__);
+
+	if (IS_ENABLED(CONFIG_FPGA)) {
+		fpga_init();
+
+		if (IS_ENABLED(CONFIG_DM_FPGA)) {
+			struct udevice *udev;
+			int ret;
+
+			ret = uclass_get_device(UCLASS_FPGA, 0, &udev);
+			if (ret)
+				pr_err("Error (%d) finding FPGA!\n", ret);
+		}
+	}
+
+	pr_debug("%s: leaving\n", __func__);
+	return 0;
+}
+#endif
 
 #ifdef CONFIG_RESET_PHY_R
 void reset_phy(void)
