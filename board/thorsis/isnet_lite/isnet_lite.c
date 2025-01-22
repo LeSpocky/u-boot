@@ -11,11 +11,12 @@
  * Thorsis Technologies GmbH
  */
 
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
 #include <bootstage.h>
 #include <config.h>
 #include <debug_uart.h>
 #include <init.h>
-#include <log.h>
 #include <net.h>
 #include <asm/global_data.h>
 #include <asm/io.h>
@@ -25,6 +26,7 @@
 #include <asm/arch/at91_common.h>
 #include <asm/arch/at91_pio.h>
 #include <asm/arch/gpio.h>
+#include <linux/printk.h>
 
 #ifdef CONFIG_FPGA
 #include "../common/tt_fpga.h"
@@ -44,7 +46,7 @@ static void at91sam9g20ncl_nand_hw_init(void)
 	struct at91_matrix *matrix = (struct at91_matrix *)ATMEL_BASE_MATRIX;
 	unsigned long csa;
 
-	debug("%s: entered\n", __func__);
+	pr_debug("%s: entered\n", __func__);
 
 	/* Assign CS3 to NAND/SmartMedia Interface */
 	csa = readl(&matrix->ebicsa);
@@ -82,7 +84,7 @@ static void at91sam9g20ncl_reg_hw_init(void)
 {
 	struct at91_smc *smc = (struct at91_smc *) ATMEL_BASE_SMC;
 
-	debug("%s: entered\n", __func__);
+	pr_debug("%s: entered\n", __func__);
 
 	/*
 	 *	Set the PIO Register
@@ -137,7 +139,7 @@ static void at91sam9g20ncl_reg_hw_init(void)
 #if defined(CONFIG_SHOW_BOOT_PROGRESS)
 void show_boot_progress(int progress)
 {
-	debug("Boot reached stage %d\n", progress);
+	pr_debug("Boot reached stage %d\n", progress);
 }
 #endif
 
@@ -151,7 +153,7 @@ void board_debug_uart_init(void)
 #ifdef CONFIG_BOARD_EARLY_INIT_F
 int board_early_init_f(void)
 {
-	debug("%s: entered\n", __func__);
+	pr_debug("%s: entered\n", __func__);
 
 	return 0;
 }
@@ -159,7 +161,7 @@ int board_early_init_f(void)
 
 int board_init(void)
 {
-	debug("%s: entered\n", __func__);
+	pr_debug("%s: entered\n", __func__);
 
 	/* adress of boot parameters */
 	gd->bd->bi_boot_params = CFG_SYS_SDRAM_BASE + 0x100;
@@ -179,7 +181,7 @@ int board_init(void)
 
 int dram_init(void)
 {
-	debug("%s: entered\n", __func__);
+	pr_debug("%s: entered\n", __func__);
 
 	gd->ram_size = get_ram_size(
 		(void *)CFG_SYS_SDRAM_BASE,
