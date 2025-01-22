@@ -11,7 +11,6 @@
 #include <fpga.h>
 #include <init.h>
 #include <led.h>
-#include <log.h>
 #include <asm/arch/at91_common.h>
 #include <asm/global_data.h>
 #include <linux/kconfig.h>
@@ -84,7 +83,7 @@ int misc_init_r(void)
 
 			ret = uclass_get_device(UCLASS_FPGA, 0, &udev);
 			if (ret)
-				return log_ret(ret);
+				pr_err("Error (%d) finding FPGA!\n", ret);
 		}
 	}
 
