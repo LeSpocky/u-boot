@@ -16,8 +16,6 @@
 #include <bootstage.h>
 #include <config.h>
 #include <debug_uart.h>
-#include <dm.h>
-#include <fpga.h>
 #include <init.h>
 #include <net.h>
 #include <asm/global_data.h>
@@ -182,29 +180,6 @@ int dram_init(void)
 		CFG_SYS_SDRAM_SIZE);
 	return 0;
 }
-
-#ifdef CONFIG_MISC_INIT_R
-int misc_init_r(void)
-{
-	pr_debug("%s: entered\n", __func__);
-
-	if (IS_ENABLED(CONFIG_FPGA)) {
-		fpga_init();
-
-		if (IS_ENABLED(CONFIG_DM_FPGA)) {
-			struct udevice *udev;
-			int ret;
-
-			ret = uclass_get_device(UCLASS_FPGA, 0, &udev);
-			if (ret)
-				pr_err("Error (%d) finding FPGA!\n", ret);
-		}
-	}
-
-	pr_debug("%s: leaving\n", __func__);
-	return 0;
-}
-#endif
 
 #ifdef CONFIG_RESET_PHY_R
 void reset_phy(void)

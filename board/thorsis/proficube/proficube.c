@@ -6,8 +6,6 @@
 
 #include <config.h>
 #include <debug_uart.h>
-#include <dm.h>
-#include <fpga.h>
 #include <init.h>
 #include <asm/global_data.h>
 #include <asm/io.h>
@@ -225,26 +223,3 @@ int dram_init(void)
 {
 	return tt_dram_init_sama5_sip();
 }
-
-#ifdef CONFIG_MISC_INIT_R
-int misc_init_r(void)
-{
-	pr_debug("%s: entered\n", __func__);
-
-	if (IS_ENABLED(CONFIG_FPGA)) {
-		fpga_init();
-
-		if (IS_ENABLED(CONFIG_DM_FPGA)) {
-			struct udevice *udev;
-			int ret;
-
-			ret = uclass_get_device(UCLASS_FPGA, 0, &udev);
-			if (ret)
-				pr_err("Error (%d) finding FPGA!\n", ret);
-		}
-	}
-
-	pr_debug("%s: leaving\n", __func__);
-	return 0;
-}
-#endif

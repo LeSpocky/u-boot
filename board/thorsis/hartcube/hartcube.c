@@ -8,7 +8,6 @@
 #include <debug_uart.h>
 #include <dm.h>
 #include <fdtdec.h>
-#include <fpga.h>
 #include <init.h>
 #include <led.h>
 #include <asm/arch/at91_common.h>
@@ -68,26 +67,3 @@ int dram_init(void)
 {
 	return fdtdec_setup_mem_size_base();
 }
-
-#ifdef CONFIG_MISC_INIT_R
-int misc_init_r(void)
-{
-	pr_debug("%s: entered\n", __func__);
-
-	if (IS_ENABLED(CONFIG_FPGA)) {
-		fpga_init();
-
-		if (IS_ENABLED(CONFIG_DM_FPGA)) {
-			struct udevice *udev;
-			int ret;
-
-			ret = uclass_get_device(UCLASS_FPGA, 0, &udev);
-			if (ret)
-				pr_err("Error (%d) finding FPGA!\n", ret);
-		}
-	}
-
-	pr_debug("%s: leaving\n", __func__);
-	return 0;
-}
-#endif
