@@ -60,27 +60,6 @@
 				};
 			};
 
-			flx0: flexcom@f801c000 {
-				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
-				status = "okay";
-
-				i2c0: i2c@600 {
-					compatible = "microchip,sam9x60-i2c";
-					reg = <0x600 0x200>;
-					pinctrl-names = "default";
-					pinctrl-0 = <&pinctrl_flx0>;
-					#address-cells = <1>;
-					#size-cells = <0>;
-					clocks = <&pmc PMC_TYPE_PERIPHERAL 5>;
-					status = "okay";
-
-					eeprom@53 {
-						compatible = "atmel,24c02"; /* EEPROM is 2Kbits microchip 24aa025e48, an at24c02 with page size of 16 */
-						reg = <0x53>;
-						pagesize = <16>;
-					};
-				};
-			};
 		};
 	};
 };
@@ -151,6 +130,23 @@
 					reg = <0x800000 0x1f800000>;
 				};
 			};
+		};
+	};
+};
+
+&flx0 {
+	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+	status = "okay";
+
+	i2c0: i2c@600 {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_flx0>;
+		status = "okay";
+
+		eeprom@53 {
+			compatible = "atmel,24c02"; /* EEPROM is 2Kbits microchip 24aa025e48, an at24c02 with page size of 16 */
+			reg = <0x53>;
+			pagesize = <16>;
 		};
 	};
 };

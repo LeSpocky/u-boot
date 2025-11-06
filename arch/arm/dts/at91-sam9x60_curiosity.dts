@@ -160,13 +160,8 @@
 	status = "okay";
 
 	i2c0: i2c@600 {
-		compatible = "microchip,sam9x60-i2c";
-		reg = <0x600 0x200>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_flx0>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-		clocks = <&pmc PMC_TYPE_PERIPHERAL 5>;
 		status = "okay";
 
 		eeprom@53 {
