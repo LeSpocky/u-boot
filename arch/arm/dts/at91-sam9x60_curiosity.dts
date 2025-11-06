@@ -15,9 +15,12 @@
 	model = "Microchip SAM9X60 Curiosity";
 	compatible = "microchip,sam9x60-curiosity", "microchip,sam9x60", "atmel,at91sam9";
 
+	aliases {
+		i2c0 = &i2c0;
+	};
+
 	chosen {
 		stdout-path = &dbgu;
-		i2c0 = &flx0;
 	};
 
 	memory {
@@ -156,7 +159,7 @@
 	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
 	status = "okay";
 
-	i2c@600 {
+	i2c0: i2c@600 {
 		compatible = "microchip,sam9x60-i2c";
 		reg = <0x600 0x200>;
 		pinctrl-names = "default";

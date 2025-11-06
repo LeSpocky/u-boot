@@ -173,7 +173,7 @@
 				clock-names = "pclk", "gclk";
 			};
 
-			flx0: flexcom@f801c600 {
+			flx0: flexcom@f801c000 {
 				compatible = "atmel,sama5d2-flexcom";
 				reg = <0xf801c000 0x200>;
 				clocks = <&pmc PMC_TYPE_PERIPHERAL 5>;

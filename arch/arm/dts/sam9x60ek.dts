@@ -14,9 +14,12 @@
 	model = "Microchip SAM9X60-Ek";
 	compatible = "microchip,sam9x60ek", "microchip,sam9x60", "atmel,at91sam9";
 
+	aliases {
+		i2c0 = &i2c0;
+	};
+
 	chosen {
 		stdout-path = &dbgu;
-		i2c0 = &flx0;
 	};
 
 	clocks {
@@ -57,11 +60,11 @@
 				};
 			};
 
-			flx0: flexcom@f801c600 {
+			flx0: flexcom@f801c000 {
 				atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
 				status = "okay";
 
-				i2c@600 {
+				i2c0: i2c@600 {
 					compatible = "microchip,sam9x60-i2c";
 					reg = <0x600 0x200>;
 					pinctrl-names = "default";
